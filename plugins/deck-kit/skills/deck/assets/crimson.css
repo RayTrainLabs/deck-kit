@@ -819,6 +819,12 @@ body{
   box-shadow:0 0 0 calc(2 * var(--pt)) var(--page);
   print-color-adjust:exact;-webkit-print-color-adjust:exact;
 }
+/* A smaller pin, for a dense screenshot. The default .30in is right on
+   a diagram or a sparse UI and too large on a list of rows, where it
+   covers the text it is pointing at. Found by pinning a real retrieval
+   result: the pin sat on the metadata it was drawing attention to. */
+.pin.sm{width:calc(.21 * var(--in));height:calc(.21 * var(--in));
+  font-size:calc(7.5 * var(--pt))}
 .dark .shot img{border-color:var(--dark-line);background:var(--dark-card)}
 .dark .pin{box-shadow:0 0 0 calc(2 * var(--pt)) var(--dark-card)}
 
