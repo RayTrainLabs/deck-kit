@@ -67,6 +67,7 @@ Copy blocks out of `assets/layouts.html`. Never invent a class. If a slide will 
 
 Per slide:
 
+- **The cover wordmark ships as `your<em>brand</em>`.** Replace both halves with the presenter's own. The `<em>` half picks up the theme accent, so pick the split point deliberately: it is the whole design of the mark.
 - **Eyebrow** is a category, not a sentence. "Round 1", "The moment", "Where this breaks".
 - **Title is a claim.** "Four boring facts. One real problem." not "The scenario". A title ending in a colon is a label and fails the check.
 - **An analogy is never the payload.** A slide carrying the metaphor is followed immediately by the slide carrying the mechanism: the real terms, the table, the numbers, the command. Adjacent, in that order, nothing in between. Then the analogy retires.
