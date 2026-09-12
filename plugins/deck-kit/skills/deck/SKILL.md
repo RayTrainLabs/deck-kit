@@ -108,7 +108,11 @@ No dashes as punctuation. No AI lingo. Active voice. `check.py` fails the deck o
 python3 ${CLAUDE_PLUGIN_ROOT}/skills/deck/scripts/build.py <deck-dir> --theme paper
 ```
 
-`build.py` pours `slides.html` into `assets/shell.html`, inlines the theme stylesheet whole and unedited, sets the matching font link, and takes the deck title off the cover headline. Do not add rules to a theme stylesheet. If a slide needs CSS that is not in the file, stop and say so instead of inventing it.
+`build.py` pours `slides.html` into `assets/shell.html`, inlines the theme stylesheet whole and unedited, sets the matching font link, and takes the deck title off the cover headline.
+
+Do not add rules to a theme stylesheet. If a slide needs CSS that is not in the file, stop and say so instead of inventing it.
+
+`--footer "acme · B8"` sets the mark that prints opposite the page number on every slide but the cover, which already carries the wordmark at full size. The page then reads the mark on the left and the slide number on the right, on one baseline. Omit the flag and no mark prints. Pass it: a footer carrying the presenter and the module is most of what makes a printed page read as a document rather than a loose slide, and it costs one flag.
 
 Most decks are worth three companion documents beside the HTML: facilitator notes with the timings and the answers, an FAQ of what the room actually asks, and a runsheet for the day. `check.py` expects `FACILITATOR.md`, `FAQ.md` and `RUNSHEET.md` in the deck directory and fails if any is missing or is a stub.
 

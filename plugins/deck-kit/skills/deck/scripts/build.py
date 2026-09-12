@@ -2,12 +2,19 @@
 """
 Assemble index.html from the shell, a theme stylesheet and a slides fragment.
 
-    python3 build.py <deck-dir> [--theme daylight|paper]
+    python3 build.py <deck-dir> [--theme daylight|paper|sage] [--footer "acme . B8"]
 
 Reads <deck-dir>/slides.html, writes <deck-dir>/index.html. The deck title is
 the first <h1 class="t-h1"> on the cover, with tags stripped. Renumbers nothing
 and validates nothing: that is check.py's job. This exists so the theme swap is
 one flag and not a paste.
+
+--footer sets the mark that prints opposite the page number on every slide but
+the cover, which already carries the wordmark at full size. Omit it and no mark
+prints. There is no default string here on purpose: this script ships to people
+who are not us, and a brand baked into a build tool is a brand on somebody
+else's slides. It is written as a one line stylesheet after the theme, because
+the theme file is inlined whole and unedited and nothing rewrites it.
 """
 import os, re, sys
 
@@ -21,7 +28,26 @@ FONTS = {
                  "&display=swap"),
 }
 
-def main(d, theme):
+def footmark(text):
+    """The footer string as a CSS declaration, or nothing at all.
+
+    The text is restricted to letters, digits, space, dot, middot and hyphen,
+    because it lands inside a CSS string in a stylesheet and a stray quote or
+    brace there would close the rule and take the rest of the sheet with it.
+    Anything else is a mistake worth stopping for rather than escaping around.
+    """
+    if not text:
+        return ""
+    if not re.fullmatch(r"[A-Za-z0-9 .\u00b7\-]{1,32}", text):
+        sys.exit(f"--footer {text!r}: letters, digits, space, dot, middot and "
+                 "hyphen only, 32 characters max")
+    # The middot is written as a CSS escape with two spaces after it, not one.
+    # An escape is terminated by a space and that space is consumed, so
+    # "\00b7 B8" prints as ".B8" with no gap. The first space closes the
+    # escape, the second one is the space you can see.
+    return ':root{--footmark:"' + text.replace("\u00b7", "\\00b7 ") + '"}'
+
+def main(d, theme, footer=None):
     if theme not in FONTS:
         sys.exit(f"unknown theme {theme!r}. Built themes: {', '.join(FONTS)}")
     shell = open(os.path.join(HERE, "assets", "shell.html"), encoding="utf-8").read()
@@ -40,6 +66,7 @@ def main(d, theme):
     out = (shell.replace("{{DECK_TITLE}}", title)
                 .replace("{{FONTS}}", FONTS[theme])
                 .replace("{{N}}", str(n))
+                .replace("{{FOOTMARK}}", footmark(footer))
                 .replace("{{CSS}}", css)
                 .replace("{{SLIDES}}", slides))
     for stray in re.findall(r"\{\{[A-Z_]+\}\}", out):
@@ -47,12 +74,15 @@ def main(d, theme):
 
     path = os.path.join(d, "index.html")
     open(path, "w", encoding="utf-8").write(out)
-    print(f"{path}: {n} slides, theme {theme}, {len(out)} bytes")
+    print(f"{path}: {n} slides, theme {theme}, "
+          f"footer {footer or 'none'}, {len(out)} bytes")
 
 if __name__ == "__main__":
     import argparse
     p = argparse.ArgumentParser()
     p.add_argument("deck_dir", nargs="?", default=".")
     p.add_argument("--theme", default="daylight")
+    p.add_argument("--footer", default=None,
+                   help='footer mark opposite the page number, e.g. "acme \u00b7 B8"')
     a = p.parse_args()
-    main(a.deck_dir, a.theme)
+    main(a.deck_dir, a.theme, a.footer)

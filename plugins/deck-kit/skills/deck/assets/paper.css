@@ -408,3 +408,37 @@ body{
   .slide{min-height:auto;display:block;page-break-after:always;break-after:page}
   .stage{width:10in;height:5.625in}
 }
+
+/* ---- the footer mark --------------------------------------------
+   Opposite the page number, on the same baseline, on every slide
+   except the cover. The cover already carries the wordmark at full
+   size and a second mark on the same slide reads as a mistake.
+
+   The string is a variable and it is empty here. build.py writes it
+   from --footer as a one line stylesheet after this one, so a deck
+   prints "acme . B8" and a deck built without the flag prints no
+   mark at all. No brand is named in a theme file: the themes ship to
+   people who are not us.
+
+   There is no hairline above this, and that was a measurement, not a
+   taste. The checkpoint sits at 4.86in with a .375in minimum, so it
+   ends at 5.235in, and the footer baseline is 5.28in. A rule between
+   the two would print fifteen thousandths of an inch off the bottom
+   of the checkpoint and read as an underline glued to it. The two
+   items align to each other instead, which is what makes the page
+   look like it came from somewhere.
+
+   Top is 5.295 rather than the page number's 5.28 because this text
+   is 8pt against its 9.5pt: the offset puts the baselines together,
+   not the tops.
+   ------------------------------------------------------------------ */
+:root{--footmark:""}
+.stage::after{
+  content:var(--footmark);
+  position:absolute;left:var(--margin);top:calc(5.295 * var(--in));
+  font-family:var(--brand);
+  font-size:calc(8 * var(--pt));letter-spacing:.06em;
+  color:var(--muted);
+}
+.stage.dark::after{color:var(--accent-lift)}
+.stage:has(.t-h1)::after{content:none}
