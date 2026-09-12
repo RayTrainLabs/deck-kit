@@ -612,6 +612,94 @@ body{
 .dark .card.tip{border-left-color:var(--accent-lift)}
 .dark .card.tip .badge{background:var(--accent-lift);color:var(--dark-bg)}
 
+/* ---- stack: numbered full width rows ----------------------------
+   Three or four rows, each a large numeral against a heading and a
+   body that is allowed to run. It exists because the card grid
+   cannot hold a paragraph: three columns give each card about
+   2.6in of measure, and a limit or a caveat that needs four lines
+   gets truncated into uselessness or pushed off the card.
+
+   Geometry. Starts where .grid starts and is 2.85in tall, so it
+   ends at 4.2375 and clears .kicker at 4.31. Rows are distributed
+   with space-between like .chart, so three rows and four rows both
+   fill the block instead of stacking to the top. Four is the
+   ceiling: a fifth row drops each one under three lines of body and
+   the numeral stops having anything to sit beside.
+
+   The numeral is italic where the heading face has an italic worth
+   having. On a sans heading it simply reads as a slanted numeral,
+   which is why it is set here and not left to the browser. */
+.stack{
+  position:absolute;left:var(--margin);top:calc(1.3875 * var(--in));
+  width:var(--content);
+  display:grid;row-gap:calc(.14 * var(--in));
+  height:calc(3.05 * var(--in));align-content:space-between;
+}
+.st-row{
+  display:grid;grid-template-columns:calc(1.15 * var(--in)) 1fr;
+  column-gap:calc(.22 * var(--in));align-items:center;
+  background:var(--card);border:calc(1 * var(--pt)) solid var(--card-line);
+  padding:calc(.15 * var(--in)) calc(.24 * var(--in));
+  print-color-adjust:exact;-webkit-print-color-adjust:exact;
+}
+.st-num{
+  font-family:var(--head);font-weight:700;font-style:italic;
+  font-size:calc(30 * var(--pt));line-height:1;
+  text-align:center;color:var(--accent);
+}
+.st-what b{
+  font-family:var(--head);font-size:calc(12.5 * var(--pt));font-weight:600;
+  color:var(--ink);display:block;padding-bottom:calc(.055 * var(--in));
+}
+.st-what span{font-size:calc(9.8 * var(--pt));line-height:1.4;color:var(--muted)}
+.dark .st-row{background:var(--dark-card);border-color:var(--dark-line)}
+.dark .st-num{color:var(--accent-lift)}
+.dark .st-what b{color:#fff}
+.dark .st-what span{color:var(--dark-body)}
+
+/* ---- icons -------------------------------------------------------
+   Filled geometry, embedded as a mask rather than linked. Three
+   reasons it is a mask and not an <img> or an icon font. A font is an
+   external request and a deck has to open with no network. An <img>
+   carries its own colour, so it would be the one element on the slide
+   that does not follow the theme, and the supplied set is built for a
+   dark ground: four of its five colours miss the 3.0 non text floor
+   on white and all five miss it on a tinted ground. A mask has no
+   colour of its own, so every icon is the theme accent on light and
+   the lift on dark, already cleared by the same gate as everything
+   else.
+
+   Every white detail in the source, the compass needle, the rocket
+   window, the eye pupil, is a hole rather than a white fill. A white
+   pupil is a white dot on a dark slide's card. A hole shows whatever
+   ground it is sitting on, in all eleven themes.
+
+   Sized to the cap height of a card heading so it sits on the same
+   optical line as the text it labels.
+
+   An icon is a label, never an argument. If the slide reads the same
+   with the icons removed, they were decoration and the room read past
+   them. */
+.ico{
+  display:inline-block;vertical-align:-0.12em;
+  width:calc(.30 * var(--in));height:calc(.30 * var(--in));
+  background-color:var(--accent);
+  -webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;
+  -webkit-mask-position:center;mask-position:center;
+  -webkit-mask-size:contain;mask-size:contain;
+  print-color-adjust:exact;-webkit-print-color-adjust:exact;
+}
+.dark .ico{background-color:var(--accent-lift)}
+.ico.lg{width:calc(.52 * var(--in));height:calc(.52 * var(--in))}
+.ico.measure{-webkit-mask-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='black'><path d=%22M3 19h18v2H3z%22/><path d=%22M5 13h3v6H5zM10.5 4h3v15h-3zM16 9h3v10h-3z%22/></svg>");mask-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='black'><path d=%22M3 19h18v2H3z%22/><path d=%22M5 13h3v6H5zM10.5 4h3v15h-3zM16 9h3v10h-3z%22/></svg>")}
+.ico.plan{-webkit-mask-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='black'><path fill-rule=%22evenodd%22 d=%22M12 2a10 10 0 100 20 10 10 0 000-20zm4.24 5.76l-2.12 6.36-6.36 2.12 2.12-6.36 6.36-2.12z%22/></svg>");mask-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='black'><path fill-rule=%22evenodd%22 d=%22M12 2a10 10 0 100 20 10 10 0 000-20zm4.24 5.76l-2.12 6.36-6.36 2.12 2.12-6.36 6.36-2.12z%22/></svg>")}
+.ico.ship{-webkit-mask-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='black'><path fill-rule=%22evenodd%22 d=%22M12 1.8c3.6 2.7 5.6 6.9 5.6 11.4l-1.9 2.9H8.3l-1.9-2.9C6.4 8.7 8.4 4.5 12 1.8zm0 4.9a2.1 2.1 0 100 4.2 2.1 2.1 0 000-4.2z%22/><path d=%22M9.6 17.6h4.8L12 22.2z%22/><path d=%22M6.6 11.9 4 14.6v3.2l2.9-1.8zM17.4 11.9l2.6 2.7v3.2l-2.9-1.8z%22/></svg>");mask-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='black'><path fill-rule=%22evenodd%22 d=%22M12 1.8c3.6 2.7 5.6 6.9 5.6 11.4l-1.9 2.9H8.3l-1.9-2.9C6.4 8.7 8.4 4.5 12 1.8zm0 4.9a2.1 2.1 0 100 4.2 2.1 2.1 0 000-4.2z%22/><path d=%22M9.6 17.6h4.8L12 22.2z%22/><path d=%22M6.6 11.9 4 14.6v3.2l2.9-1.8zM17.4 11.9l2.6 2.7v3.2l-2.9-1.8z%22/></svg>")}
+.ico.monitor{-webkit-mask-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='black'><path fill-rule=%22evenodd%22 d=%22M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8zm11 3a3 3 0 100-6 3 3 0 000 6z%22/></svg>");mask-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='black'><path fill-rule=%22evenodd%22 d=%22M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8zm11 3a3 3 0 100-6 3 3 0 000 6z%22/></svg>")}
+.ico.loop{-webkit-mask-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='black'><g fill=%22none%22 stroke=%22black%22 stroke-width=%222.5%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><path d=%22M21 2.5v6h-6%22/><path d=%22M21.34 15.57A10 10 0 1 1 20.9 7.3%22/></g></svg>");mask-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='black'><g fill=%22none%22 stroke=%22black%22 stroke-width=%222.5%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><path d=%22M21 2.5v6h-6%22/><path d=%22M21.34 15.57A10 10 0 1 1 20.9 7.3%22/></g></svg>")}
+.ico.search{-webkit-mask-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='black'><path fill-rule=%22evenodd%22 d=%22M11 3a8 8 0 105.29 14.03l4.3 4.26 1.4-1.42-4.26-4.29A8 8 0 0011 3zm0 2a6 6 0 110 12 6 6 0 010-12z%22/></svg>");mask-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='black'><path fill-rule=%22evenodd%22 d=%22M11 3a8 8 0 105.29 14.03l4.3 4.26 1.4-1.42-4.26-4.29A8 8 0 0011 3zm0 2a6 6 0 110 12 6 6 0 010-12z%22/></svg>")}
+.ico.file{-webkit-mask-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='black'><path fill-rule=%22evenodd%22 d=%22M6 2h8l6 6v12a2 2 0 01-2 2H6a2 2 0 01-2-2V4a2 2 0 012-2zm8 2.5V8h3.5L14 4.5z%22/></svg>");mask-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='black'><path fill-rule=%22evenodd%22 d=%22M6 2h8l6 6v12a2 2 0 01-2 2H6a2 2 0 01-2-2V4a2 2 0 012-2zm8 2.5V8h3.5L14 4.5z%22/></svg>")}
+.ico.alert{-webkit-mask-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='black'><path fill-rule=%22evenodd%22 d=%22M12.87 3.5a1 1 0 00-1.74 0l-9 15.5A1 1 0 003 20.5h18a1 1 0 00.87-1.5l-9-15.5zM11 9h2v5h-2V9zm0 7h2v2h-2v-2z%22/></svg>");mask-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='black'><path fill-rule=%22evenodd%22 d=%22M12.87 3.5a1 1 0 00-1.74 0l-9 15.5A1 1 0 003 20.5h18a1 1 0 00.87-1.5l-9-15.5zM11 9h2v5h-2V9zm0 7h2v2h-2v-2z%22/></svg>")}
+
 
 /* ==== the professional departures =================================
    Everything above is sage's geometry, unchanged. These are the four

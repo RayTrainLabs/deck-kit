@@ -1,6 +1,6 @@
 ---
 name: deck
-description: Build a workshop deck as a single self contained HTML file in one of three measured themes, plus a PDF and a published link. Use for any training deck, workshop, session or talk. Trigger with /deck.
+description: Build a workshop deck as a single self contained HTML file in one of eleven themes, plus a PDF and a published link. Use for any training deck, workshop, session or talk. Trigger with /deck.
 ---
 
 # deck
@@ -113,6 +113,7 @@ Fixed rules regardless of count, each one enforced by `check.py`:
 
 - Exactly one cover, and it is slide 1.
 - The close is a transfer and it ends on a call to action. Never a thank you slide. `check.py` fails a close that says thank you, asks for questions, or invites people to connect, and fails one with no imperative on it. Make the CTA one action, put a date on it, keep it small enough to do without anyone's permission, and give it a way back to you.
+- The close also carries **one line that names the stake**, in the `band`, above the contact line. A room that walks out comfortable does the homework never. Four tests, and a line that misses any of them is a scare rather than a stake: it has to be true and defensible in the Q&A; it has to be about their situation and not about your offer; it has to be the consequence of doing nothing, which is what they are actually choosing; and it has to be something they half knew already, so the reaction is recognition and not surprise. The strongest shape is the silent failure, the thing already going wrong that does not announce itself. Nothing that trades on fear of job loss, on competitors, or on a deadline you invented. Say it and stop.
 - No placeholders on slides. `foo`, `Acme Corp`, `lorem ipsum` and `John Doe` all fail. A fake number teaches the room that the numbers do not matter.
 - Every hands on block is preceded by a tiers slide, so nobody is stuck at the door.
 - At least one honesty slide, positioned late.
@@ -191,6 +192,18 @@ If even a third of the room is non technical, keep the standard examples on the 
 Second person, present tense, contractions. Short declaratives for the landings. Concrete over abstract, always: not "busy professionals" but "a 32 year old data engineer in Berlin, 7pm Tuesday, fridge half empty". Real numbers. Name the hard thing before it is hard.
 
 No dashes as punctuation. No AI lingo. Active voice. `check.py` fails the deck on the first three.
+
+### Two elements added 2026-09-12
+
+**`stack`, numbered full width rows.** For three or four things whose bodies will not fit in a card. A `grid three` gives each card about 2.6in of measure, so a limit or a caveat that needs four lines gets truncated into uselessness. The stack gives it the full 8.925in and keeps a numeral, or an icon, as the anchor. Four rows is the ceiling. **A stack slide carries no kicker**: the stack ends at 4.4375 and the kicker sits at 4.31, inside it. `check.py` fails that pair.
+
+**`ico`, an icon.** `<span class="ico measure"></span>`, plus `lg` for the large size. Eight names: `measure` `plan` `ship` `monitor` `loop` `search` `file` `alert`.
+
+It is a CSS mask, not an image and not an icon font. A font is an external request and a deck has to open with no network; an image carries its own colour and would be the one element on the slide not following the theme. A mask has no colour of its own, so every icon is the theme accent on light and the accent lift on dark, already cleared by the same contrast gate as everything else. **Never put a colour on one.** Icon palettes tend to arrive built for a dark ground, and a set that clears 6:1 on charcoal can sit at 1.8:1 on white.
+
+Every white detail is a hole rather than a white fill: the compass needle, the rocket porthole, the eye pupil. A white pupil is a white dot on a dark slide's card. As a hole it takes whatever ground it is sitting on, in all eleven themes.
+
+**An icon is a label, never an argument.** Cover them with your thumb and read the slide. If it says the same thing, they were decoration and the room already read past them.
 
 ## Step 4, assemble
 

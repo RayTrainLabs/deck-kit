@@ -265,6 +265,24 @@ def main(d):
             if len(body) > 240:
                 warn(f"{tag}: card body is {len(body)} chars, that is four lines or more. Cut it.")
 
+        # The band is 3.7125 tall by at least 1.0125, so it occupies
+        # everything down to 4.725. The kicker at 4.31 and the source at
+        # 4.55 both sit inside that. kicker against band was already
+        # known; source against band was not, and a close slide shipped
+        # with its contact line printing underneath the band where
+        # nobody could read it. Found by rendering the page.
+        if 'class="band"' in s and 'class="source"' in s:
+            fail(f"{tag}: a band and a source line. The band runs from 3.7125 to "
+                 "4.725 and the source sits at 4.55, underneath it. Move the "
+                 "citation to a slide without a band, or drop the band.")
+        # The stack runs to 4.4375, past the kicker at 4.31. It is the
+        # layout for bodies a card cannot hold, so it owns the page the
+        # way a chart does and does not share it with a closing line.
+        if 'class="stack"' in s and 'class="kicker"' in s:
+            fail(f"{tag}: a stack and a kicker. The stack ends at 4.4375 and the "
+                 "kicker sits at 4.31, inside it. The rows are the content on a "
+                 "stack slide; put the line in the last row or drop it.")
+
         if 'class="strip"' in s and 'class="pageno"' in s:
             fail(f"{tag}: carries the recovery strip and a slide number. Strip slides drop the number.")
         pn = re.search(r'class="pageno">(\d+)<', s)
@@ -297,7 +315,7 @@ def main(d):
         # (no table, no prompt, no list, no cards) is one half of a pair, and
         # the mechanism is the very next slide. Two soft slides in a row means
         # the metaphor was never cashed out.
-        soft = not re.search(r'class="(tbl|prompt|card)"|<ul>', s)
+        soft = not re.search(r'class="(tbl|prompt|card|stack)"|<ul>', s)
         soft_slides.append((i, soft))
 
         if 'class="checkpoint"' in s: has_checkpoint = True
@@ -327,6 +345,7 @@ def main(d):
         if "chapnum" in s:           return "chapter"
         if 'class="statement"' in s: return "statement"
         if 'class="prompt"' in s:    return "prompt"
+        if 'class="stack"' in s:     return "stack"
         if 'class="tbl"' in s:       return "table"
         if 'class="timeline"' in s:  return "timeline"
         if 'class="tree"' in s:      return "tree"
