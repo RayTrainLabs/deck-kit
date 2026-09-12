@@ -37,7 +37,7 @@ A deck is scaffolding for a session that is mostly not the deck. Sixty minutes o
 Write the block plan in the chat and get it agreed before generating:
 
 1. **Blocks, not topics.** Each block is one claim, one proof of the claim, then the room doing it themselves. Budget one block per 20 to 25 minutes.
-2. **Write the one point to land for every block before any content.** One sentence. If you cannot write it, the block is not ready, and no amount of slide polish fixes that.
+2. **Write each block's single claim before any content.** One sentence. If you cannot write it, the block is not ready, and no amount of slide polish fixes that.
 3. **Pick one extended metaphor for the whole deck** and check it still holds three concepts later. One per deck. Never mix two.
 4. **Decide the hands on blocks** and what real input the room brings to each. Real, from their own week, never hypothetical.
 5. **Decide the honesty slide.** Where this breaks. Late, before the close. `check.py` fails the deck without one.
@@ -55,7 +55,8 @@ Write the block plan in the chat and get it agreed before generating:
 Fixed rules regardless of count, each one enforced by `check.py`:
 
 - Exactly one cover, and it is slide 1.
-- The close is a transfer. Never a thank you slide.
+- The close is a transfer and it ends on a call to action. Never a thank you slide. `check.py` fails a close that says thank you, asks for questions, or invites people to connect, and fails one with no imperative on it. Make the CTA one action, put a date on it, keep it small enough to do without anyone's permission, and give it a way back to you.
+- No placeholders on slides. `foo`, `Acme Corp`, `lorem ipsum` and `John Doe` all fail. A fake number teaches the room that the numbers do not matter.
 - Every hands on block is preceded by a tiers slide, so nobody is stuck at the door.
 - At least one honesty slide, positioned late.
 - One or two dark inversion slides in the whole deck, reserved for the turn of the argument.
@@ -83,7 +84,7 @@ Generate one deck and two tracks, never three decks.
 | audience | On the slides | In the notes |
 |---|---|---|
 | `non-tech` | standard track, more checkpoints, more analogies | advanced depth, verbal only |
-| `mixed` | standard track | one advanced line per block plus its pivot signal |
+| `mixed` | standard track | one advanced line per block, plus what tells you to reach for it |
 | `tech` | advanced track promoted onto the slides | standard track compressed to one recap line |
 | `exec` | standard track, hands on becomes watch and discuss | trade off table and risk slide get more room |
 

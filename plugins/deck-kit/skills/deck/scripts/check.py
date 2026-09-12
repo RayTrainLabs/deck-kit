@@ -41,6 +41,7 @@ def main(d):
         elif os.path.getsize(p) < 400:
             fail(f"{f} is {os.path.getsize(p)} bytes. That is a stub, not a document.")
 
+
     # ---- writing rules, on visible text only -----------------------
     text = visible_text(html)
     for pat, label in ((r"—", "em dash"), (r"–", "en dash"),
@@ -51,6 +52,19 @@ def main(d):
     for w in AI_LINGO:
         for m in re.finditer(rf"\b{w}\w*\b", text, re.I):
             warn(f"AI lingo '{m.group(0)}': ...{text[max(0,m.start()-40):m.start()+40].strip()}...")
+
+    # A worked example is the third leg of analogy, mechanism, example. A
+    # placeholder in the example teaches the room that the numbers do not
+    # matter, which is the opposite of the lesson.
+    # "bar" is deliberately absent: a quality bar is a real phrase and banning
+    # it cost a clean deck two false fails. foo and baz never occur in English.
+    for pat in (r"\bfoo\b", r"\bbaz\b", r"\bfoobar\b",
+                r"lorem ipsum", r"\bAcme\b", r"\bWidgets? Inc\b",
+                r"<your[^>]{0,24}here>", r"\bTODO\b", r"\bXXX\b",
+                r"\bexample\.com\b", r"\bJohn Doe\b", r"\bJane Doe\b"):
+        for m in re.finditer(pat, text, re.I):
+            fail(f"placeholder '{m.group(0)}' on a slide. Examples carry real names "
+                 f"and real numbers: ...{text[max(0,m.start()-40):m.start()+40].strip()}...")
 
     # ---- structure --------------------------------------------------
     # Theme is inferred from the font link, because that is the one thing a
@@ -232,6 +246,35 @@ def main(d):
         fail("no checkpoint anywhere in the deck.")
     if n >= 8 and not any("chapnum" in s for s in slides):
         warn("no chapter dividers in a deck this long. Blocks should be visible.")
+
+    # ---- the close is a transfer and a CTA --------------------------
+    close = visible_text(slides[-1])
+    for pat, why in (
+        (r"\bthank you\b|\bthanks\b", "a thank you. The close is a transfer, not gratitude"),
+        (r"\bany questions\b|^\s*questions\??\s*$", "'any questions'. That is not a CTA"),
+        (r"connect with me on|follow me on|\blet'?s connect\b",
+         "'let us connect'. That is a CTA for you, not for them, and the room can tell"),
+    ):
+        if re.search(pat, close, re.I | re.M):
+            fail(f"the close slide ends on {why}.")
+
+    # One action, dated, and it comes back to you. The imperative is the part
+    # that is actually detectable; the other two are worth a warn each.
+    imperative = (r"\b(run|send|bring|write|pick|take|open|start|book|try|ship|post|"
+                  r"reply|share|screenshot|do|use|put|add|delete|measure|ask|show|"
+                  r"email|message|build|fix|test|check)\b")
+    if not re.search(rf"(?:^|[.!?]\s+|>\s*){imperative}", close, re.I | re.M):
+        fail("the close slide carries no CTA. One card is an imperative: the single "
+             "thing they do next, dated, doable alone, and it comes back to you.")
+    else:
+        if not re.search(r"\b(today|tonight|tomorrow|monday|tuesday|wednesday|thursday|"
+                         r"friday|this week|next week|before|by the|within|in the next)\b",
+                         close, re.I):
+            warn("the close slide has a CTA with no date on it. 'Soon' is not a date.")
+        if not re.search(r"\b(send me|bring|reply|post it|share it|email me|show me|"
+                         r"bring it|message me)\b", close, re.I):
+            warn("the close slide has a CTA with no return path. A CTA that does not "
+                 "come back to you gives you no signal about whether the day worked.")
 
     return report()
 
