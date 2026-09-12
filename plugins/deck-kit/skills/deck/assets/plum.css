@@ -698,6 +698,44 @@ body{
 .ico.file{-webkit-mask-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='black'><path fill-rule=%22evenodd%22 d=%22M6 2h8l6 6v12a2 2 0 01-2 2H6a2 2 0 01-2-2V4a2 2 0 012-2zm8 2.5V8h3.5L14 4.5z%22/></svg>");mask-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='black'><path fill-rule=%22evenodd%22 d=%22M6 2h8l6 6v12a2 2 0 01-2 2H6a2 2 0 01-2-2V4a2 2 0 012-2zm8 2.5V8h3.5L14 4.5z%22/></svg>")}
 .ico.alert{-webkit-mask-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='black'><path fill-rule=%22evenodd%22 d=%22M12.87 3.5a1 1 0 00-1.74 0l-9 15.5A1 1 0 003 20.5h18a1 1 0 00.87-1.5l-9-15.5zM11 9h2v5h-2V9zm0 7h2v2h-2v-2z%22/></svg>");mask-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='black'><path fill-rule=%22evenodd%22 d=%22M12.87 3.5a1 1 0 00-1.74 0l-9 15.5A1 1 0 003 20.5h18a1 1 0 00.87-1.5l-9-15.5zM11 9h2v5h-2V9zm0 7h2v2h-2v-2z%22/></svg>")}
 
+/* ---- the cover wave ----------------------------------------------
+   Two overlapping low angle bands across the foot of the cover,
+   sloping up to the right. Measured off the MedtechWOMEN V10 cover,
+   which grounds its title block this way, and which is most of why
+   that cover looks designed where a bare left aligned one does not.
+
+   Four decisions worth keeping.
+
+   Flat colour, not a gradient. Two hard stopped linear gradients are
+   being used as polygon fills, which is a different thing: there is
+   no ramp, so nothing smears under a projector and nothing is lost
+   to a photocopier. The flat eight keep it for that reason.
+
+   It takes --card behind --card-line, the two palest tokens every
+   theme already defines, so it themes itself and introduces no new
+   colour. No text sits on it, so it carries no contrast risk.
+
+   Cover only. The room sees it once, which is what makes it a
+   signature rather than wallpaper. A band under a working slide is a
+   contrast problem in a nice coat.
+
+   The z-index is load bearing and not decorative. ::after is the last
+   child of .stage, so without it the wave paints on top of the
+   headline, and the cover's own elements have to be lifted above it
+   explicitly. Found by rendering: the first version painted a pale
+   slab over the author line. */
+.stage:has(.t-h1)::after{
+  content:'';display:block;
+  position:absolute;left:0;right:0;bottom:0;
+  height:calc(1.45 * var(--in));z-index:0;
+  background:
+    linear-gradient(5.5deg, var(--card-line) 0 44%, transparent 44%),
+    linear-gradient(2.4deg, var(--card) 0 88%, transparent 88%);
+  print-color-adjust:exact;-webkit-print-color-adjust:exact;
+}
+.stage:has(.t-h1) > div,
+.stage:has(.t-h1) > h1{z-index:1}
+
 
 /* ==== the professional departures =================================
    Everything above is sage's geometry, unchanged. These are the four
