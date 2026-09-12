@@ -221,6 +221,10 @@ Every white detail is a hole rather than a white fill: the compass needle, the r
 
 **An icon is a label, never an argument.** Cover them with your thumb and read the slide. If it says the same thing, they were decoration and the room already read past them.
 
+**Chapter dividers differ by style family**, so a divider reads as the same deck as the slide before it. `boxed` gets **the plate**, the number in a filled square, which is the card badge at eight times the size. `ruled` gets **the ledger**, a tracked label on a rule with a second rule under the title, which is the head of a section in a document. `edged` gets **the margin**, a rule down the full height of the left edge with the number at its foot and the title indented past it, which is the edged card taken to the scale of the page.
+
+**`social`, icon links at the foot of the close slide.** Five names: `globe` `linkedin` `github` `portfolio` `medium`. It replaces the footer mark on that slide, because the close is the contact slide and two marks on one baseline collide. The links are real hrefs and survive the PDF export.
+
 ## Step 4, assemble
 
 ```

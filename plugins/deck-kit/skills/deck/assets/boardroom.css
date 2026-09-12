@@ -730,6 +730,33 @@ body{
 }
 .stage:has(.t-h1) > div,
 .stage:has(.t-h1) > h1{z-index:1}
+.ico.globe{-webkit-mask-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='black'><g fill=%22none%22 stroke=%22black%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><circle cx=%2212%22 cy=%2212%22 r=%229.2%22/><path d=%22M2.8 12h18.4%22/><path d=%22M12 2.8a14 14 0 0 1 0 18.4 14 14 0 0 1 0-18.4z%22/></g></svg>");mask-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='black'><g fill=%22none%22 stroke=%22black%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><circle cx=%2212%22 cy=%2212%22 r=%229.2%22/><path d=%22M2.8 12h18.4%22/><path d=%22M12 2.8a14 14 0 0 1 0 18.4 14 14 0 0 1 0-18.4z%22/></g></svg>")}
+.ico.linkedin{-webkit-mask-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='black'><path d=%22M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.35V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.07 2.07 0 1 1 0-4.13 2.07 2.07 0 0 1 0 4.13zm1.78 13.02H3.56V9h3.56v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.73v20.54C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.73V1.73C24 .77 23.2 0 22.22 0z%22/></svg>");mask-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='black'><path d=%22M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.35V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.07 2.07 0 1 1 0-4.13 2.07 2.07 0 0 1 0 4.13zm1.78 13.02H3.56V9h3.56v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.73v20.54C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.73V1.73C24 .77 23.2 0 22.22 0z%22/></svg>")}
+.ico.github{-webkit-mask-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='black'><path d=%22M12 .3a12 12 0 0 0-3.8 23.4c.6.1.8-.3.8-.6v-2.1c-3.3.7-4-1.6-4-1.6-.6-1.4-1.4-1.8-1.4-1.8-1.1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1.1 1.9 2.8 1.3 3.5 1 .1-.8.4-1.3.8-1.6-2.7-.3-5.5-1.3-5.5-5.9 0-1.3.5-2.4 1.2-3.2-.1-.3-.5-1.5.1-3.2 0 0 1-.3 3.3 1.2a11.5 11.5 0 0 1 6 0C17.2 4.9 18.2 5.2 18.2 5.2c.6 1.7.2 2.9.1 3.2.8.8 1.2 1.9 1.2 3.2 0 4.6-2.8 5.6-5.5 5.9.4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6A12 12 0 0 0 12 .3z%22/></svg>");mask-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='black'><path d=%22M12 .3a12 12 0 0 0-3.8 23.4c.6.1.8-.3.8-.6v-2.1c-3.3.7-4-1.6-4-1.6-.6-1.4-1.4-1.8-1.4-1.8-1.1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1.1 1.9 2.8 1.3 3.5 1 .1-.8.4-1.3.8-1.6-2.7-.3-5.5-1.3-5.5-5.9 0-1.3.5-2.4 1.2-3.2-.1-.3-.5-1.5.1-3.2 0 0 1-.3 3.3 1.2a11.5 11.5 0 0 1 6 0C17.2 4.9 18.2 5.2 18.2 5.2c.6 1.7.2 2.9.1 3.2.8.8 1.2 1.9 1.2 3.2 0 4.6-2.8 5.6-5.5 5.9.4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6A12 12 0 0 0 12 .3z%22/></svg>")}
+.ico.portfolio{-webkit-mask-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='black'><g fill=%22none%22 stroke=%22black%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><rect x=%222.8%22 y=%226.9%22 width=%2218.4%22 height=%2213.3%22 rx=%222%22/><path d=%22M9 6.9V5.5A1.5 1.5 0 0 1 10.5 4h3A1.5 1.5 0 0 1 15 5.5v1.4%22/><path d=%22M2.8 12.6h18.4%22/></g></svg>");mask-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='black'><g fill=%22none%22 stroke=%22black%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><rect x=%222.8%22 y=%226.9%22 width=%2218.4%22 height=%2213.3%22 rx=%222%22/><path d=%22M9 6.9V5.5A1.5 1.5 0 0 1 10.5 4h3A1.5 1.5 0 0 1 15 5.5v1.4%22/><path d=%22M2.8 12.6h18.4%22/></g></svg>")}
+.ico.medium{-webkit-mask-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='black'><path d=%22M13.54 12a6.77 6.77 0 0 1-6.77 6.82A6.77 6.77 0 0 1 0 12a6.77 6.77 0 0 1 6.77-6.82A6.77 6.77 0 0 1 13.54 12zM20.96 12c0 3.54-1.51 6.42-3.38 6.42s-3.39-2.88-3.39-6.42 1.52-6.42 3.39-6.42S20.96 8.46 20.96 12zM24 12c0 3.17-.53 5.75-1.19 5.75s-1.19-2.58-1.19-5.75.53-5.75 1.19-5.75S24 8.83 24 12z%22/></svg>");mask-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='black'><path d=%22M13.54 12a6.77 6.77 0 0 1-6.77 6.82A6.77 6.77 0 0 1 0 12a6.77 6.77 0 0 1 6.77-6.82A6.77 6.77 0 0 1 13.54 12zM20.96 12c0 3.54-1.51 6.42-3.38 6.42s-3.39-2.88-3.39-6.42 1.52-6.42 3.39-6.42S20.96 8.46 20.96 12zM24 12c0 3.17-.53 5.75-1.19 5.75s-1.19-2.58-1.19-5.75.53-5.75 1.19-5.75S24 8.83 24 12z%22/></svg>")}
+
+/* ---- the social row ----------------------------------------------
+   A row of icon links at the foot of the close slide. It replaces the
+   footer mark on that slide rather than sitting beside it: the close
+   is the contact slide, so the foot belongs to the links, and two
+   marks on one baseline read as a collision.
+
+   It sits at 5.13, which clears the band's floor at 4.725 and stays
+   above the footer baseline at 5.295. The page number is at x 9.075
+   and this row is left aligned, so they never meet.
+
+   The links are real hrefs. They survive the PDF export, which is the
+   point: the deck is handed over as a file more often than it is
+   presented, and a printed URL nobody can click is a URL nobody
+   visits. */
+.social{
+  position:absolute;left:var(--margin);top:calc(5.13 * var(--in));
+  display:flex;align-items:center;gap:calc(.20 * var(--in));
+}
+.social a{display:inline-flex;text-decoration:none;line-height:0}
+.social .ico{width:calc(.245 * var(--in));height:calc(.245 * var(--in))}
+.stage:has(.social)::after{content:none}
 
 
 /* ==== the professional departures =================================
@@ -797,3 +824,25 @@ body{
           border-top:calc(6 * var(--pt)) solid var(--accent-deep)}
 .dark .card.tip{border-top-color:var(--accent-lift)}
 .title{font-weight:700;letter-spacing:-.018em}
+
+/* ---- divider: the ledger -----------------------------------------
+   A tracked label on a rule, and a second rule under the title. The
+   page reads as the head of a section in a document, which is what
+   the ruled columns on the working slides already read as.
+   The label takes the full block string rather than the numeral
+   alone, because at this size it has the room and "Block 2 of 4"
+   tells the room where it is better than "02" does. */
+.chapnum{
+  position:absolute;left:var(--margin);top:calc(1.32 * var(--in));
+  width:var(--content);text-align:left;height:auto;
+  font-family:var(--head);font-size:calc(9.5 * var(--pt));font-weight:700;
+  letter-spacing:.22em;line-height:1.2;color:var(--accent-lift);
+  background:none;
+  padding:0 0 calc(.22 * var(--in)) 0;
+  border:none;border-bottom:calc(1.5 * var(--pt)) solid var(--accent-lift);
+}
+.chapter{top:calc(2.25 * var(--in))}
+.chapter h2{
+  padding-bottom:calc(.26 * var(--in));
+  border-bottom:calc(.7 * var(--pt)) solid var(--dark-line);
+}
