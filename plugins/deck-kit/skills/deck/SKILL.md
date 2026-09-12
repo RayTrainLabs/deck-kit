@@ -22,6 +22,14 @@ Takes a topic, a slide count, an audience and a theme. Produces one HTML file th
 
 **Offer the parameters before you infer them.** Audience, theme and slide count each change what gets built, so put them to the user as a choice at the start rather than picking and mentioning it afterwards. Duration and session are safe to infer.
 
+**Render the sampler and show it in the conversation before you ask which theme.** Not a link, not a filename, not a list of names: the image, in front of them, in the message that asks the question. This is as non negotiable as asking the exits question in step 6, and for the same reason. `sage`, `mist`, `daylight` and `slate` mean something once you have seen a deck in them and nothing at all before that, so a list of names is asking somebody to pick a colour with their eyes shut.
+
+```bash
+python3 <skill>/scripts/sampler.py <somewhere>   # writes themes.png
+```
+
+Then read `themes.png` back yourself and attach it to the question. One labelled panel per built theme, each showing the page ground, a plain card, the shortcut card's tint and rule, the accent, and the band with white type on it. Putting it in a README or a docs page instead does not count: the person choosing is in this conversation, not in the repo.
+
 `references/THEMES.md` is the theme and layout menu. Read it before writing anything.
 
 | theme | Reach for it when |

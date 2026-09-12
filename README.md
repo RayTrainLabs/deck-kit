@@ -2,7 +2,11 @@
 
 A Claude Code plugin that builds a workshop deck as **one self contained HTML file**. No build step, no node_modules, no slide app. It opens in any browser, prints to a pixel faithful PDF, and publishes as a link.
 
-Three themes, eleven layouts, and a pre ship check that reads the bytes on disk rather than the model's draft.
+Eleven themes, thirteen layouts, and a pre ship check that reads the bytes on disk rather than the model's draft.
+
+![The eleven themes](themes.png)
+
+Pick by looking, not by name. Regenerate this sheet any time with `python3 scripts/sampler.py`, which renders the same working slide in every built theme: the page ground, a plain card, the shortcut card, the accent and the band.
 
 ## Install
 
@@ -30,7 +34,7 @@ That is the whole install. The plugin has no dependencies beyond **python3**, an
 
 | | |
 |---|---|
-| **Three themes** | `daylight` for hands on workshops, `paper` for executive rooms and conceptual arcs, `sage` for strategy and policy. Every colour in every theme clears WCAG AA at its size, and the ratios are written next to the tokens in the CSS |
+| **Eleven themes** | `daylight` for hands on workshops, `paper` for executive rooms, `sage` for strategy and policy, four on white for a pack that gets printed and passed around, and four on a tinted ground for a quieter room. Every colour in every theme clears WCAG AA at its size, and the ratios are written next to the tokens in the CSS |
 | **Proportional geometry** | Everything is expressed in `--in`, one tenth of the stage width. No fixed pixels anywhere, so a deck is dimensionally identical at any viewport and prints at any paper size |
 | **Eleven layouts** | cover, agenda, chapter, three-up, four-up, two-up, prompt, table, rules, statement, close. Copy the markup, never invent a class |
 | **A real check** | `check.py` reads the files off disk and fails on structure, contrast collisions, over full tables, missing checkpoints and lazy titles. Every collision it knows about was found by rendering a page and looking at it |
