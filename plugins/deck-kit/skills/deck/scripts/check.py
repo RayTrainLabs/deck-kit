@@ -249,6 +249,84 @@ def main(d):
                  "An analogy or a claim is followed immediately by the real terms, "
                  "not by another analogy or claim.")
 
+    # ---- shape and rhythm -------------------------------------------
+    # These three rules exist because a deck passed every other check in this
+    # file and was still dull to look at. Rendered as a contact sheet, thirty
+    # pages showed seventeen that were the same object: an eyebrow, a claim,
+    # and a row of bordered boxes. Nothing in the grammar was broken. The
+    # grammar was just used the same way seventeen times.
+    #
+    # The deck is judged as a sheet of thumbnails, not as one slide at a time,
+    # because that is how a room experiences it over ninety minutes.
+    def shape(s):
+        """The one thing a slide is, in the order a reader notices it."""
+        if "t-h1" in s:              return "cover"
+        if "chapnum" in s:           return "chapter"
+        if 'class="statement"' in s: return "statement"
+        if 'class="prompt"' in s:    return "prompt"
+        if 'class="tbl"' in s:       return "table"
+        if 'class="timeline"' in s:  return "timeline"
+        if 'class="tree"' in s:      return "tree"
+        if 'class="card"' in s:      return "grid"
+        return "plain"
+
+    shapes = [(i, shape(s)) for i, s in enumerate(slides, 1)]
+    body = [(i, k) for i, k in shapes if k not in ("cover", "chapter")]
+
+    if len(body) >= 8:
+        grids = [i for i, k in body if k == "grid"]
+        if len(grids) * 100 > 55 * len(body):
+            fail(f"{len(grids)} of {len(body)} content slides are card grids "
+                 f"({len(grids)*100//len(body)}%). The ceiling is 55. A grid is one "
+                 "move, not the deck. Turn the ones carrying a relationship into a "
+                 "tree or a timeline, the ones carrying a comparison into a table, "
+                 "and the ones carrying a turn into a statement.")
+
+    # Four of anything in a row reads as one long slide. A chapter divider
+    # resets the count: it is a full page of its own and the room does see it.
+    run, longest, where = 0, 0, None
+    prev = None
+    for i, k in shapes:
+        if k in ("cover", "chapter"):
+            run, prev = 0, None
+            continue
+        run = run + 1 if k == prev else 1
+        prev = k
+        if run > longest:
+            longest, where = run, (k, i)
+    if longest > 3:
+        k, i = where
+        fail(f"{longest} {k} slides in a row, ending at slide {i}. Three is the "
+             "ceiling. Break the run with a different shape, do not reorder it.")
+
+    # The band, the dark inversion, the statement and the strip are the four
+    # places the room stops reading and looks up. SKILL.md has said "roughly
+    # one slide in five" since the first version and nothing enforced it, which
+    # is how a deck shipped with two runs of five flat pages in the middle.
+    # Chapter dividers count: they are dark, and they do break the run.
+    def looks_up(s):
+        return ("stage dark" in s or 'class="band"' in s
+                or 'class="statement"' in s or 'class="strip"' in s)
+    quiet, worst, at = 0, 0, None
+    for i, s in enumerate(slides, 1):
+        if looks_up(s):
+            quiet = 0
+        else:
+            quiet += 1
+            if quiet > worst:
+                worst, at = quiet, i
+    if worst > 4:
+        fail(f"{worst} consecutive slides with nothing to look up at, ending at "
+             f"slide {at}. One in five carries a band, a dark inversion, a "
+             "statement or a strip. Put one in the middle of that run.")
+
+    if n >= 20:
+        n_stmt = sum(1 for _, k in shapes if k == "statement")
+        if n_stmt < 2:
+            fail(f"{n_stmt} statement slides in a {n} slide deck. A deck this long "
+                 "turns at least twice, and the turn is a full bleed line, not "
+                 "another row of cards.")
+
     for i, p in seen_page:
         if p != i:
             fail(f"slide {i}: page number reads {p}")

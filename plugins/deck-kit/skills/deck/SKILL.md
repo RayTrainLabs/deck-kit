@@ -62,6 +62,31 @@ Fixed rules regardless of count, each one enforced by `check.py`:
 - One or two dark inversion slides in the whole deck, reserved for the turn of the argument.
 - The accent band appears only where the room should stop reading and look up. Once per slide at most, roughly one slide in five.
 
+### Step 2b, budget the shapes before you write a word of them
+
+A deck is read as a sheet of thumbnails, not one slide at a time. This section exists because a deck once passed every other rule in this file and was still dull to look at: seventeen of its twenty five content slides were the same object, an eyebrow, a claim and a row of bordered boxes. Nothing was broken. One move was used seventeen times.
+
+Write the shape next to each slide in the plan, before the content. `check.py` fails the deck on all four of these.
+
+| Rule | Number |
+|---|---|
+| Card grids, as a share of content slides | 55 percent, ceiling |
+| The same shape in a row, chapter dividers resetting the count | 3, ceiling |
+| Consecutive slides with nothing to look up at | 4, ceiling |
+| Statement slides in a deck of 20 or more | 2, floor |
+
+The grid is the default because it is the easiest thing to write, which is exactly why it needs a cap. Before reaching for one, ask what the slide is actually carrying:
+
+| The slide carries | The shape |
+|---|---|
+| Two options weighed against each other | `tbl`, two columns, not two cards |
+| A sequence, a pipeline, a thing that happens in order | `timeline` or `tree` |
+| One claim the whole block turns on | `statement`, full bleed, dark |
+| A set of three or four parallel things | `grid`, and only here |
+| A thing they type | `prompt` |
+
+Something to look up at means a band, a dark inversion, a statement, a strip or a chapter divider. Five flat pages in a row is the point where a room stops reading the slides and starts reading their phone.
+
 ## Step 3, write the slides
 
 Copy blocks out of `assets/layouts.html`. Never invent a class. If a slide will not fit a layout, the slide is wrong, not the kit.
@@ -124,14 +149,17 @@ python3 ${CLAUDE_PLUGIN_ROOT}/skills/deck/scripts/check.py <deck-dir>
 
 It reads the files off disk, not your draft. Fix every FAIL and re run. Do not report the deck as finished on a check you did not run or did not pass. WARNs are advisory, judge them.
 
-Then look at it. Render a few pages to images and read them back:
+Then look at it, and look at all of it. The whole deck as one sheet, not two pages you picked:
 
 ```bash
 ${CLAUDE_PLUGIN_ROOT}/skills/deck/scripts/export-pdf.sh <deck-dir>
-pdftoppm -png -r 90 -f 4 -l 4 <deck-dir>/deck.pdf /tmp/p
+python3 ${CLAUDE_PLUGIN_ROOT}/skills/deck/scripts/contact.py <deck-dir>  # writes contact.png
+pdftoppm -png -r 90 -f 4 -l 4 <deck-dir>/deck.pdf /tmp/p                 # one page, close up
 ```
 
-The check catches rule breaks. It does not catch a slide that is ugly or a claim that does not land. Only looking does.
+**Open `contact.png` and read it before you report the deck as finished.** This step is not optional and it is not the same as the check. The check catches rule breaks. It does not catch a slide that is ugly, a claim that does not land, or thirty pages that are the same page. A contact sheet catches all three in about four seconds, which is why it exists.
+
+What you are looking for, in this order: can you tell two slides apart with the eyebrows covered; does the accent appear anywhere other than the chapter numerals; is there a run of flat pages in the middle; and is the cover the best page in the deck or the weakest.
 
 ## Step 6, the exits
 
