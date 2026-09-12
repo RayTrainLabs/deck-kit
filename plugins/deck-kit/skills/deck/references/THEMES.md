@@ -102,7 +102,7 @@ The same thirteen names work in all seven themes. A deck is a list of these. Cop
 
 ## Elements
 
-Drop into any layout. All three themes define them.
+Drop into any layout. All seven themes define them.
 
 | Name | What it does | Rule |
 |---|---|---|
