@@ -13,10 +13,13 @@ names mean something once you have seen the deck and nothing at all before that,
 so asking somebody to pick one from a list is asking them to guess. Every time
 the theme question gets put to a user, this sheet goes with it.
 
-The sample slide is chosen to carry the most colour information in one page: the
-page ground, a card, the shortcut card's tint and rule, the accent on an eyebrow
-and on a numeral, ink on a title, and the band with white type on it. A cover
-would be prettier and would show almost none of that.
+Two panels per theme, because neither alone is honest. The working slide carries
+the colour information: the page ground, a card, the shortcut card's tint and
+rule, the accent, and the band with white type on it. The cover carries what
+actually separates one theme's identity from another, which is the wave at its
+foot and the type at display size. Show only the working slide and every theme
+looks like the same slide recoloured, which was a fair criticism of this sheet
+before the covers had a wave.
 
 Needs pdftoppm (poppler) and Pillow, the same two the contact sheet needs.
 """
@@ -31,9 +34,21 @@ ORDER = ["daylight", "paper", "sage",
          "boardroom", "navy", "crimson", "slate",
          "mist", "moss", "linen", "plum"]
 
-# One slide. Deliberately not the cover: a cover shows the ground and the
-# wordmark and nothing else, and the thing people are actually choosing
-# between is what a working content slide looks like.
+# Two slides per theme, rendered as one deck so both come out of the same
+# PDF: the cover, which is where the theme's identity lives, and a working
+# content slide, which is where its colour decisions live.
+COVER = """<section class="slide"><div class="stage">
+  <div class="t-mark">ray<em>gency</em></div>
+  <div class="t-eyebrow">Workshop &middot; Session 2 of 3</div>
+  <h1 class="t-h1">What the cover looks like</h1>
+  <div class="t-rule"></div>
+  <div class="t-stand">One line saying what the room walks out able to do.</div>
+  <div class="t-by">Varun Tyagi &middot; Raygency</div>
+  <div class="t-meta">September 12, 2026 &nbsp; &middot; &nbsp; raygency.com</div>
+  <div class="pageno">1</div>
+</div></section>
+"""
+
 SAMPLE = """<section class="slide"><div class="stage">
   <div class="eyebrow">The mechanism</div>
   <h2 class="title">What a working slide looks like</h2>
@@ -72,7 +87,7 @@ def main(out, cols, dpi):
             d = os.path.join(tmp, name)
             os.makedirs(d)
             with open(os.path.join(d, "slides.html"), "w", encoding="utf-8") as f:
-                f.write(SAMPLE)
+                f.write(COVER + SAMPLE)
             subprocess.run([sys.executable, BUILD, d, "--theme", name],
                            check=True, stdout=subprocess.DEVNULL)
             # Chrome is what export-pdf.sh uses; going straight to PDF here
@@ -83,8 +98,9 @@ def main(out, cols, dpi):
             subprocess.run(["pdftoppm", "-png", "-r", str(dpi),
                             os.path.join(d, "deck.pdf"), os.path.join(d, "s")],
                            check=True)
-            page = sorted(glob.glob(os.path.join(d, "s-*.png")))[0]
-            panels.append((name, Image.open(page).convert("RGB")))
+            pages = sorted(glob.glob(os.path.join(d, "s-*.png")))
+            panels.append((f"{name}  cover", Image.open(pages[0]).convert("RGB")))
+            panels.append((f"{name}  slide", Image.open(pages[1]).convert("RGB")))
 
     if not panels:
         sys.exit("no themes rendered")
@@ -104,15 +120,15 @@ def main(out, cols, dpi):
     os.makedirs(out, exist_ok=True)
     path = os.path.join(out, "themes.png")
     sheet.save(path)
-    print(f"{path}: {len(panels)} themes, {cols} across, "
-          f"{sheet.size[0]}x{sheet.size[1]}")
+    print(f"{path}: {len(panels) // 2} themes, {len(panels)} panels, "
+          f"{cols} across, {sheet.size[0]}x{sheet.size[1]}")
 
 
 if __name__ == "__main__":
     import argparse
     p = argparse.ArgumentParser()
     p.add_argument("out_dir", nargs="?", default=".")
-    p.add_argument("--cols", type=int, default=4)
+    p.add_argument("--cols", type=int, default=4)  # two panels per theme
     p.add_argument("--dpi", type=int, default=60)
     a = p.parse_args()
     main(a.out_dir, a.cols, a.dpi)
