@@ -10,7 +10,7 @@
       "name": "deck-kit",
       "source": "./plugins/deck-kit",
       "displayName": "Deck Kit",
-      "description": "Build a workshop deck as one self contained HTML file in three measured themes, then export it to PDF, publish it to GitHub Pages, or rebuild it in Gamma.",
+      "description": "Build a workshop deck as one self contained HTML file in seven themes, then export it to PDF, publish it to GitHub Pages, or rebuild it in Gamma.",
       "version": "0.1.0",
       "category": "productivity",
       "keywords": [

@@ -97,37 +97,63 @@ def main(d):
     # Theme is inferred from the font link, because that is the one thing a
     # theme cannot omit. daylight substitutes Caladea for Cambria and Carlito
     # for Calibri; paper substitutes Gelasio for Georgia.
+    # Each theme's link carries one family no other theme uses, so the marker
+    # below is the whole detection. Adding a theme means adding a marker here
+    # and a stray list below, and forgetting the second is the failure that
+    # lets a deck ship with two themes' slides in it.
+    MARKERS = [
+        ("daylight",  "family=Caladea"),
+        ("paper",     "family=Gelasio"),
+        ("sage",      "family=Outfit"),
+        ("boardroom", "family=Source+Serif+4"),
+        ("navy",      "family=Archivo"),
+        ("crimson",   "family=Libre+Franklin"),
+        ("slate",     "family=Inter+Tight"),
+    ]
+    # Detection runs on comment stripped bytes. shell.html carries a comment
+    # listing every theme's font link, so a raw scan matches whichever marker
+    # is first in the list and calls every deck daylight.
+    no_comments = re.sub(r"<!--.*?-->", " ", html, flags=re.S)
+    no_comments = re.sub(r"/\*.*?\*/", " ", no_comments, flags=re.S)
     theme = None
-    if "fonts.googleapis.com/css2?family=Caladea" in html:
-        theme = "daylight"
-    elif "fonts.googleapis.com/css2?family=Gelasio" in html:
-        theme = "paper"
-    elif "fonts.googleapis.com/css2?family=Outfit" in html:
-        theme = "sage"
+    for t, marker in MARKERS:
+        if "fonts.googleapis.com/css2?" in no_comments and marker in no_comments:
+            theme = t
+            break
     if theme is None:
         fail("font link missing or unrecognised. daylight wants Caladea, Carlito and Figtree; "
-             "paper wants Gelasio; sage wants Outfit and Figtree.")
-    if theme == "sage":
-        # sage is the one theme with no serif in it. A Caladea or Gelasio
-        # reference means another theme's slide was pasted in. Comments are
-        # stripped first, for the same reason as paper below: this file and
-        # shell.html both name the fonts they are not.
-        no_comments = re.sub(r"<!--.*?-->", " ", html, flags=re.S)
-        no_comments = re.sub(r"/\*.*?\*/", " ", no_comments, flags=re.S)
-        for stray in ("Caladea", "Gelasio", "Carlito"):
-            if stray in no_comments:
-                fail(f"sage deck references {stray}. sage is Outfit and Figtree, two grotesks, "
-                     "and no serif anywhere.")
-    if theme == "paper":
-        # paper has no second family. A Carlito or Caladea reference here means
-        # a daylight slide was pasted into a paper deck. Comments are stripped
-        # first: shell.html records both font links in a comment on purpose, and
-        # paper.css explains itself by naming the font it is not.
-        no_comments = re.sub(r"<!--.*?-->", " ", html, flags=re.S)
-        no_comments = re.sub(r"/\*.*?\*/", " ", no_comments, flags=re.S)
-        for stray in ("Caladea", "Carlito", "Figtree"):
-            if stray in no_comments:
-                fail(f"paper deck references {stray}. paper is one family, Gelasio for Georgia, and nothing else.")
+             "paper wants Gelasio; sage wants Outfit and Figtree; boardroom wants Source Serif 4 "
+             "and IBM Plex Sans; navy wants Archivo and IBM Plex Sans; crimson wants Libre "
+             "Franklin; slate wants Inter Tight.")
+
+    # A font from another theme in the markup means a slide was pasted across
+    # themes, which renders as one slide in a different typeface and is almost
+    # impossible to see in a browser that has neither font installed. Comments
+    # are stripped first: shell.html records every font link in a comment on
+    # purpose, and each theme's stylesheet explains itself by naming the fonts
+    # it is not.
+    FAMILIES = {
+        "daylight":  ["Caladea", "Carlito", "Figtree"],
+        "paper":     ["Gelasio"],
+        "sage":      ["Outfit", "Figtree"],
+        "boardroom": ["Source Serif 4", "IBM Plex Sans"],
+        "navy":      ["Archivo", "IBM Plex Sans"],
+        "crimson":   ["Libre Franklin"],
+        "slate":     ["Inter Tight"],
+    }
+    if theme:
+        mine = set(FAMILIES[theme])
+        for other, fams in FAMILIES.items():
+            if other == theme:
+                continue
+            for fam in fams:
+                if fam in mine:
+                    continue
+                if re.search(r"(?<![A-Za-z+])" + re.escape(fam) + r"(?![A-Za-z])",
+                             no_comments):
+                    fail(f"{theme} deck references {fam}, which is {other}'s. "
+                         f"{theme} is {' and '.join(FAMILIES[theme])} and nothing else. "
+                         "A slide was pasted in from another theme.")
     if "@page" not in html:
         fail("@page rule missing. Print to PDF will not produce one slide per page.")
     if "--stage-w" not in html:

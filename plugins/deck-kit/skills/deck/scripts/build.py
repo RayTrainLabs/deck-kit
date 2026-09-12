@@ -2,7 +2,7 @@
 """
 Assemble index.html from the shell, a theme stylesheet and a slides fragment.
 
-    python3 build.py <deck-dir> [--theme daylight|paper|sage] [--footer "acme . B8"]
+    python3 build.py <deck-dir> [--theme daylight|paper|sage|boardroom|navy|crimson|slate] [--footer "acme . B8"]
 
 Reads <deck-dir>/slides.html, writes <deck-dir>/index.html. The deck title is
 the first <h1 class="t-h1"> on the cover, with tags stripped. Renumbers nothing
@@ -26,6 +26,17 @@ FONTS = {
     "paper":    "css2?family=Gelasio:ital,wght@0,400;0,700;1,400;1,700&display=swap",
     "sage":     ("css2?family=Outfit:wght@400;600;700&family=Figtree:wght@400;500;600;700"
                  "&display=swap"),
+    # The four generated themes. Their stylesheets and the query strings below
+    # are produced by the same run, so a font added to a palette and not copied
+    # here shows up as a theme that silently renders in the fallback stack.
+    # Keep the two in step. Each stylesheet's header names its own two families.
+    "boardroom": ("css2?family=IBM+Plex+Sans:wght@400;500;600"
+                  "&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700"
+                  "&display=swap"),
+    "navy":     ("css2?family=Archivo:wght@500;600;700"
+                 "&family=IBM+Plex+Sans:wght@400;500;600&display=swap"),
+    "crimson":  "css2?family=Libre+Franklin:wght@400;500;600;700&display=swap",
+    "slate":    "css2?family=Inter+Tight:wght@400;500;600;700&display=swap",
 }
 
 def footmark(text):

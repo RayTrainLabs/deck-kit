@@ -2,7 +2,7 @@
   "name": "deck-kit",
   "displayName": "Deck Kit",
   "version": "0.1.0",
-  "description": "Build a workshop deck as one self contained HTML file in three measured themes.",
+  "description": "Build a workshop deck as one self contained HTML file in seven themes, three measured and four generated.",
   "author": {
     "name": "Raygency",
     "url": "https://raygency.com"

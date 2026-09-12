@@ -27,7 +27,7 @@ Two working rules, both arithmetic rather than taste:
 
 ### `sage`
 
-**Looks like:** pale sage `#F2F5F1` ground, one green family, no second hue anywhere. Gradients on exactly three surfaces: the dark slides, a soft wash in the bottom right corner of the cover, and the band. Everything else is flat, because a gradient under body text moves the contrast ratio around while the reader is still inside the sentence. Outfit for headings, Figtree for body, so this is the only theme with no serif in it.
+**Looks like:** pale sage `#F2F5F1` ground, one green family, no second hue anywhere. Gradients on exactly three surfaces: the dark slides, a soft wash in the bottom right corner of the cover, and the band. Everything else is flat, because a gradient under body text moves the contrast ratio around while the reader is still inside the sentence. Outfit for headings, Figtree for body, and no serif anywhere, which was true of sage alone until the generated four arrived.
 
 Every colour was picked by computing the ratio first:
 
@@ -51,9 +51,38 @@ Two working rules:
 
 ---
 
+## The generated four
+
+`boardroom`, `navy`, `crimson` and `slate` are not measured off anything. They are generated from `sage`'s stylesheet: the geometry is copied byte for byte, the palette is computed, and fifteen contrast pairs per theme are checked before the file is written. Each stylesheet carries its own table of those ratios in its header. Read it there rather than trusting this page.
+
+They are **not named after consulting firms, and they carry no firm's colours, typefaces or name.** The published hex values for those firms contradict each other, three vendor write ups give three different answers for the same firm's blue, and none of them is official. A deck that wears another firm's identity is passing itself off. The themes are named for what they do.
+
+All four depart from `sage` in the same four ways, and the departures are the point:
+
+1. **Flat.** No gradient on a dark slide, on the cover, or on the band. A gradient is the first thing a projector in a badly lit room turns into a smear.
+2. **A small tracked chapter label** where `sage` sets a 92pt numeral, so a chapter divider can say "Block 2 of 4" rather than "02".
+3. **The source line is upright**, in `--ink-soft`, not italic.
+4. **Hairline rules.** Cards and table cells take a 0.7pt border rather than a full point.
+
+| Theme | Type | Accent | Reach for it when |
+|---|---|---|---|
+| `boardroom` | Source Serif 4 titles, IBM Plex Sans body | deep green `#04564E` | The synthesis deck. A board, an investment committee, a steering group. The only generated theme with a serif in it, and the serif is doing the work of saying this is a document, not a slideshow |
+| `navy` | Archivo titles, IBM Plex Sans body | `#1A4F8A` | The evidence deck. One blue in three values, so a chart carries rank by depth of colour instead of five competing hues |
+| `crimson` | Libre Franklin throughout | `#B3141A` | The recommendation deck, and only when it is short |
+| `slate` | Inter Tight throughout | grey `#3A4552` | Rooms where colour would be read as a claim. Regulators, auditors, legal, a supplier review |
+
+Two things found by rendering these, not by reading the CSS:
+
+- **`crimson` does not ration its red.** The stylesheet puts the accent on every eyebrow, badge, kicker, bar and numeral, exactly where `sage` puts its green. Green at that frequency reads as a house colour; red at that frequency reads as an alarm. Past about fifteen slides it stops emphasising and starts shouting. Keep crimson for one argument, or use `boardroom`.
+- **`slate`'s shortcut card is carried by its rule alone.** The tint separates from a plain card by 1.08 to 1, measured off the rendered page, which is the same separation the other three have. Theirs also turns the hue and slate's cannot, because slate has no hue. Do not soften that rule, it is the whole signal. For the same reason the wordmark reads as one flat word on slate rather than two tones.
+
+`slate` is also the only theme in the kit that survives a black and white photocopier, which is precisely what `sage` cannot do.
+
+---
+
 ## Layouts
 
-The same thirteen names work in all three themes. A deck is a list of these. Copy the markup out of `assets/layouts.html` and never invent a class.
+The same thirteen names work in all seven themes. A deck is a list of these. Copy the markup out of `assets/layouts.html` and never invent a class.
 
 | Name | What it is | Holds |
 |---|---|---|
@@ -91,7 +120,7 @@ Each of these was found by rendering a page and looking at it, not by reading th
 - `.strip` and `.checkpoint` sit at almost the same height and must never appear on the same slide.
 - A table with five or more body rows collides with a `.kicker`.
 - Six rows of wrapping cells run into the page number.
-- On `daylight` and `sage`, `.chapnum` is a 92pt numeral. Put the number alone in it and the word in the eyebrow. On `paper` it is a small tracked label and takes more.
+- On `daylight` and `sage`, `.chapnum` is a 92pt numeral. Put the number alone in it and the word in the eyebrow. On `paper` and on all four generated themes it is a small tracked label and takes more.
 - A `paper` cover headline past about 118 characters reaches a fourth line and runs into the eyebrow.
 - A seventh bar in a `chart` pushes it into the `band`. Six is the ceiling and it is geometry, not taste.
 - A `chart` and a `band` on the same slide collide. The chart owns the middle of the page.

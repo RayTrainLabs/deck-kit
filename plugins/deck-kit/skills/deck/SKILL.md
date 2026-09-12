@@ -16,7 +16,7 @@ Takes a topic, a slide count, an audience and a theme. Produces one HTML file th
 | topic | free text | required |
 | slides | 8 to 40 | 14 |
 | audience | `non-tech` `mixed` `tech` `exec` | `mixed` |
-| theme | `daylight` `paper` `sage` | `daylight` |
+| theme | `daylight` `paper` `sage` `boardroom` `navy` `crimson` `slate` | `daylight` |
 | duration | minutes in the room | 90 |
 | session | "Session 2 of 3" | omitted |
 
@@ -29,6 +29,14 @@ Takes a topic, a slide count, an audience and a theme. Produces one HTML file th
 | `daylight` | hands on workshops where people are typing along. It owns that vocabulary: prompt boxes, file trees, checkpoints, recovery strips |
 | `paper` | conceptual teaching, frameworks, an argument that is a progression rather than a task list. Executive rooms |
 | `sage` | calm subjects, strategy and policy, rooms being asked to think rather than type. Do not use it for anything printed in black and white: the structure is carried by gradients and greyscale flattens all of it |
+| `boardroom` | the synthesis deck. A board, an investment committee, a steering group. Serif titles over a sans body, deep green, and no gradient anywhere |
+| `navy` | the evidence deck. One blue in three values, so a chart carries rank by depth of colour rather than by five hues |
+| `crimson` | the recommendation deck, and only when it is short. One family, one red. The red is not rationed by the stylesheet, so past about fifteen slides it stops emphasising and starts shouting |
+| `slate` | rooms where colour would be read as a claim. Regulators, auditors, legal, a supplier review. The only theme that survives a black and white photocopier |
+
+The four generated themes are flat by construction: no gradient on the dark slides, no gradient on the band, a small tracked chapter label instead of a 92pt numeral, and hairline rules on the cards. That is the departure from `sage`, and it is deliberate. A gradient is the first thing a projector in a badly lit room turns into a smear.
+
+Each generated stylesheet carries its own contrast table in its header, computed before the file was written. Fifteen pairs per theme, every one cleared. The header also records why none of them is named after a consulting firm: the published hex values for those firms contradict each other, none is official, and a deck that wears another firm's identity is passing itself off.
 
 ## Step 0, do the research. Before the block plan, not after.
 
