@@ -37,14 +37,19 @@ ORDER = ["daylight", "paper", "sage",
 # Two slides per theme, rendered as one deck so both come out of the same
 # PDF: the cover, which is where the theme's identity lives, and a working
 # content slide, which is where its colour decisions live.
+#
+# The placeholder names are neutral on purpose. This file is in
+# SCRIPTS_VERBATIM, so unlike layouts.html nothing rewrites it on the way
+# into the kit, and a wordmark typed here ships as somebody else's wordmark
+# on somebody else's sampler. The leak gate caught exactly that once.
 COVER = """<section class="slide"><div class="stage">
-  <div class="t-mark">ray<em>gency</em></div>
+  <div class="t-mark">your<em>brand</em></div>
   <div class="t-eyebrow">Workshop &middot; Session 2 of 3</div>
   <h1 class="t-h1">What the cover looks like</h1>
   <div class="t-rule"></div>
   <div class="t-stand">One line saying what the room walks out able to do.</div>
-  <div class="t-by">Varun Tyagi &middot; Raygency</div>
-  <div class="t-meta">September 12, 2026 &nbsp; &middot; &nbsp; raygency.com</div>
+  <div class="t-by">Your Name &middot; Your Company</div>
+  <div class="t-meta">A date &nbsp; &middot; &nbsp; your site</div>
   <div class="pageno">1</div>
 </div></section>
 """
