@@ -1,4 +1,15 @@
 <title>{{DECK_TITLE}}</title>
+<!-- The icon link below is an inline SVG data URI in the theme's accent, not
+     a file. A deck is one self contained HTML file that has to work from a
+     Pages URL, from a double clicked file and from a USB stick, and an
+     external favicon.ico only works in the first of the three.
+
+     This comment does not name its own placeholder token, deliberately. The
+     substitution in build.py replaces every occurrence, so a comment that
+     spells the token out gets the whole icon pasted into it and ships the
+     link twice. The font comment below has the same shape and gets away
+     with it because a query string in a comment is invisible. -->
+{{FAVICON}}
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <!-- {{FONTS}} is the theme's font link. Exactly one of:

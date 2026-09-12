@@ -39,6 +39,42 @@ FONTS = {
     "slate":    "css2?family=Inter+Tight:wght@400;500;600;700&display=swap",
 }
 
+# Each theme's working accent, copied from the token its own stylesheet
+# defines. daylight calls it --teal and the other six call it --accent, which
+# is the same divergence that makes sage rather than daylight the base for a
+# generated theme. A mismatch here is visible only in the browser tab, so it
+# is worth reading the stylesheet rather than trusting this table.
+ACCENTS = {
+    "daylight":  "#028090",
+    "paper":     "#B85042",
+    "sage":      "#37604A",
+    "boardroom": "#04564E",
+    "navy":      "#1A4F8A",
+    "crimson":   "#B3141A",
+    "slate":     "#3A4552",
+}
+
+def favicon(theme):
+    """A rounded square in the theme accent carrying a white r, as a data URI.
+
+    Deliberately not a file. index.html is one self contained document and a
+    linked favicon.ico would resolve only when the deck is served from a web
+    root, which is one of the three ways these decks actually get opened.
+
+    The SVG is minified by hand and the # in the hex is percent encoded,
+    because an unescaped # inside a data: URI starts a fragment and silently
+    truncates the icon to nothing. The letter is set in a generic sans stack
+    rather than the theme's heading font: a data URI cannot pull a web font,
+    and at 16 pixels the difference is not visible anyway.
+    """
+    a = ACCENTS[theme].replace("#", "%23")
+    svg = (f"<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'>"
+           f"<rect width='32' height='32' rx='7' fill='{a}'/>"
+           f"<text x='16' y='23' font-family='Helvetica,Arial,sans-serif' "
+           f"font-size='21' font-weight='700' fill='%23fff' "
+           f"text-anchor='middle'>r</text></svg>")
+    return f'<link rel="icon" href="data:image/svg+xml,{svg}">'
+
 def footmark(text):
     """The footer string as a CSS declaration, or nothing at all.
 
@@ -76,6 +112,7 @@ def main(d, theme, footer=None):
     # so every placeholder is replaced exactly once, largest payload last.
     out = (shell.replace("{{DECK_TITLE}}", title)
                 .replace("{{FONTS}}", FONTS[theme])
+                .replace("{{FAVICON}}", favicon(theme))
                 .replace("{{N}}", str(n))
                 .replace("{{FOOTMARK}}", footmark(footer))
                 .replace("{{CSS}}", css)
