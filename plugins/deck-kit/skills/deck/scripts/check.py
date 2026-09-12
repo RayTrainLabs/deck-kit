@@ -169,6 +169,12 @@ def main(d, outline=False):
                     fail(f"{theme} deck references {fam}, which is {other}'s. "
                          f"{theme} is {' and '.join(FAMILIES[theme])} and nothing else. "
                          "A slide was pasted in from another theme.")
+    # A deck is read by people using screen readers and by browsers
+    # deciding how to hyphenate. Neither works without a language, and
+    # the shell carried no <html> element at all until 2026-09-13.
+    if not re.search(r"<html[^>]*\slang=", html):
+        fail("no lang on the html element. A screen reader has to guess the "
+             "language and a browser cannot hyphenate. shell.html sets it.")
     if "@page" not in html:
         fail("@page rule missing. Print to PDF will not produce one slide per page.")
     if "--stage-w" not in html:
@@ -607,6 +613,33 @@ def main(d, outline=False):
 
 
 
+
+    # ---- every plotted number traces to EVIDENCE.md --------------------
+    # "A number goes on a slide only if it has a line in EVIDENCE.md" has
+    # been the stated rule since the file existed and nothing enforced it.
+    # A waterfall was added to B8 showing recall going nine to seventeen
+    # and no line was ever written for it, which is the exact failure the
+    # rule describes.
+    #
+    # Only the plotted values are checked, not prose: .ch-val, .wf-val,
+    # .stat, .mu-num, .rg-num and the stackbar segments. Those are the
+    # figures a room writes down, and they are unambiguous enough that a
+    # miss here is a miss rather than a false positive.
+    if os.path.exists(ep):
+        ev_nums = set(re.findall(r"\d+(?:\.\d+)?", ev))
+        loose = []
+        for i, sl in enumerate(slides, 1):
+            for cls in ("ch-val", "wf-val", "stat", "mu-num", "rg-num", "sb-seg"):
+                for raw in re.findall(rf'class="{cls}[^"]*"[^>]*>(.*?)<', sl):
+                    for num in re.findall(r"\d+(?:\.\d+)?", re.sub(r"<[^>]+>", "", raw)):
+                        if num not in ev_nums:
+                            loose.append((i, num))
+        if loose:
+            where = ", ".join(f"slide {i}: {v}" for i, v in loose[:6])
+            fail(f"{len(loose)} plotted number(s) with no line in EVIDENCE.md ({where}"
+                 f"{', ...' if len(loose) > 6 else ''}). A number on a slide is a promise "
+                 "that somebody can check it. Write the line, or take the number off.")
+
     # ---- do the companions still describe this deck --------------------
     # The deck is checked against forty rules. The documents a human reads
     # in the room were checked against nothing, so B8 shipped with
@@ -624,6 +657,21 @@ def main(d, outline=False):
             continue
         doc = open(fp, encoding="utf-8").read()
         refs = {int(m) for m in re.findall(r"[Ss]lide (\d{1,2})\b", doc)}
+        # A markdown table with a Slide column carries bare numbers that
+        # the prose pattern above cannot see. B8's shortcut table pointed
+        # at slide 25 after the deck moved to 27 and nothing noticed.
+        for tbl in re.findall(r"\n(\|[^\n]*\|[ \t]*\n(?:\|[^\n]*\|[ \t]*\n)+)", doc):
+            rows = [r for r in tbl.strip().splitlines() if r.startswith("|")]
+            if len(rows) < 3:
+                continue
+            head = [c.strip().lower() for c in rows[0].strip("|").split("|")]
+            if "slide" not in head:
+                continue
+            col = head.index("slide")
+            for r in rows[2:]:
+                cells = [c.strip() for c in r.strip("|").split("|")]
+                if len(cells) > col and cells[col].isdigit():
+                    refs.add(int(cells[col]))
         over = sorted(r for r in refs if r > n)
         if over:
             fail(f"{f} refers to slide {', '.join(map(str, over))} in a {n} slide "
