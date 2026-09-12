@@ -27,7 +27,7 @@ def visible_text(html):
     h = re.sub(r"<[^>]+>", " ", h)
     return h
 
-def main(d):
+def main(d, outline=False):
     idx = os.path.join(d, "index.html")
     if not os.path.exists(idx):
         fail("index.html missing"); return report()
@@ -605,6 +605,52 @@ def main(d):
         warn(f"only {len(shown)} slide in {n} shows a picture or a diagram. In a "
              "deck this long that is close to none.")
 
+
+    # ---- does the deck deliver its own promise ------------------------
+    # The one thing about an argument that is actually checkable. A deck
+    # opens by saying what the room walks out with and closes by handing
+    # something over. If those two share no content words at all, the
+    # deck promised one thing and delivered another, and that is a real
+    # defect rather than a matter of taste.
+    #
+    # It cannot tell you the argument is wrong. It can tell you the deck
+    # forgot what it opened with, which in practice is most of the cases
+    # where a close lands flat.
+    STOP = set("""the a an and or but of to in on for with from that this it is are was
+    were be been being you your yours we our us they them their what which who how why
+    when where can will would could should not no yes all any some one two three each
+    every more most much many into out up down over under after before then than as at
+    by if so do does did have has had here there now new own same other else about""".split())
+    def words(t):
+        return {w for w in re.findall(r"[a-z]{4,}", t.lower()) if w not in STOP}
+    stand = re.search(r'class="t-stand">(.*?)</div>', html, flags=re.S)
+    if stand:
+        promise = words(re.sub(r"<[^>]+>", " ", stand.group(1)))
+        delivered = words(visible_text(slides[-1]))
+        shared = promise & delivered
+        if promise and not shared:
+            warn("the close shares no content word with the cover's promise. The cover "
+                 f"says {sorted(promise)[:6]} and the close says none of it. Either the "
+                 "deck drifted from what it opened with, or the close is handing over "
+                 "something the room was not told to expect.")
+
+    # ---- the argument, made readable ---------------------------------
+    # Not a rule. The titles read in sequence are the argument, and the
+    # only way to judge whether it holds is to read them in sequence,
+    # which nobody does because they are spread over thirty pages.
+    if outline:
+        print("\nTHE ARGUMENT, in order. Read it as prose; if it does not hold "
+              "here it will not hold in the room.\n")
+        for i, sl in enumerate(slides, 1):
+            k = shape(sl)
+            t = re.search(r'class="(?:t-h1|title)">(.*?)</(?:h1|h2)>', sl, flags=re.S)
+            if not t:
+                t = re.search(r'class="(?:chapter|statement)">\s*<h2>(.*?)</h2>', sl, flags=re.S)
+            raw = re.sub(r"<br\s*/?>", " ", t.group(1)) if t else ""
+            txt = re.sub(r"\s+", " ", re.sub(r"<[^>]+>", "", raw)).strip() if t else "-"
+            print(f"  {i:>2}  {k:<10} {txt}")
+        print()
+
     # ---- the close is a transfer and a CTA --------------------------
     close = visible_text(slides[-1])
     for pat, why in (
@@ -643,4 +689,11 @@ def report():
     return 1 if FAIL else 0
 
 if __name__ == "__main__":
-    sys.exit(main(sys.argv[1] if len(sys.argv) > 1 else "."))
+    import argparse
+    ap = argparse.ArgumentParser()
+    ap.add_argument("deck_dir", nargs="?", default=".")
+    ap.add_argument("--outline", action="store_true",
+                    help="print the eyebrow and title of every slide in order, so the "
+                         "argument can be read as prose in half a minute")
+    a = ap.parse_args()
+    sys.exit(main(a.deck_dir, a.outline))

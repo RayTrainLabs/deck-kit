@@ -269,12 +269,99 @@ def waterfall(slides):
                 f'<span class="wf-lab">{label.strip()}</span></div>')
         return open_tag + "".join(out) + "</div>"
 
-    # Depth scan, not a regex. A non greedy </div> matches the first
-    # column's closing tag rather than the block's, so the first version
-    # of this silently rewrote nothing and the chart came out empty.
+    return _rewrite_block(slides, "waterfall", one)
+
+def linechart(slides):
+    """Compute a line chart's geometry from its values.
+
+    It was the last block that made the author write coordinates. Every
+    other chart takes numbers, and an SVG polyline typed by hand is the
+    same failure as a typed waterfall base: a number nobody can check
+    against the thing it claims to plot.
+
+        <div class="linechart" data-x="week 1,week 6" data-max="20">
+          <div class="ln-series" data-v="9,11,14,16,17,17">Retrieval</div>
+          <div class="ln-series b" data-v="9,9.4,9.8,10,10.2,11">Prompt tuning</div>
+        </div>
+
+    The first series is the argument and takes the accent; any with b is
+    the comparison and goes dashed. data-max sets the ceiling, or it is
+    taken from the largest value with a tenth of headroom so the top
+    point is not welded to the frame.
+
+    The caption on the first and last point of the leading series is
+    written automatically, because those two numbers are the ones the
+    room writes down and leaving them to be typed is how they end up
+    disagreeing with the line above them.
+    """
+    def one(open_tag, inner):
+        series = re.findall(r'<div class="ln-series([^"]*)"([^>]*)>(.*?)</div>',
+                            inner, re.S)
+        if not series:
+            return open_tag + inner + "</div>"
+        vals = []
+        for cls, attrs, label in series:
+            mv = re.search(r'data-v="([^"]+)"', attrs)
+            if not mv:
+                sys.exit("an ln-series with no data-v.")
+            vals.append([float(x) for x in mv.group(1).split(",") if x.strip()])
+        n = max(len(v) for v in vals)
+        if n < 2:
+            sys.exit("a line chart needs at least two points.")
+        mm = re.search(r'data-max="([\d.]+)"', open_tag)
+        top = float(mm.group(1)) if mm else max(max(v) for v in vals) * 1.1
+        if top <= 0:
+            sys.exit("line chart maximum is zero")
+        # The viewBox is proportional to the block, 8.925in by 2.35in,
+        # so nothing is stretched. The first version used a 100 x 40 box
+        # with preserveAspectRatio="none", which squashed it into a 3.8:1
+        # frame and drew the stroke and the axis labels 2.7 times wider
+        # than tall. The line looked drawn with a chisel.
+        X0, X1, Y0, Y1 = 3.0, 97.0, 24.0, 3.0
+        def pt(i, v, ln):
+            x = X0 + (X1 - X0) * (i / (ln - 1)) if ln > 1 else X0
+            y = Y1 + (Y0 - Y1) * (1 - min(v, top) / top)
+            return x, y
+        out = ['<svg viewBox="0 0 100 26.3" role="img">',
+               '<path class="ln-grid" d="M0 3 H100 M0 10 H100 M0 17 H100 M0 24 H100"/>']
+        for idx, ((cls, attrs, label), v) in enumerate(zip(series, vals)):
+            pts = " ".join(f"{x:.1f},{y:.1f}" for x, y in
+                           (pt(i, q, len(v)) for i, q in enumerate(v)))
+            out.append(f'<polyline class="ln-path{cls}" points="{pts}"/>')
+        lead, lv = series[0], vals[0]
+        for i in (0, len(lv) - 1):
+            x, y = pt(i, lv[i], len(lv))
+            out.append(f'<circle class="ln-dot" cx="{x:.1f}" cy="{y:.1f}" r="1.1"/>')
+            num = f"{lv[i]:g}"
+            anchor = "start" if i == 0 else "end"
+            dy = 3.2 if i == 0 else -1.9
+            out.append(f'<text class="ln-cap" x="{x:.1f}" y="{y + dy:.1f}" '
+                       f'text-anchor="{anchor}">{num}</text>')
+        mx = re.search(r'data-x="([^"]*)"', open_tag)
+        if mx:
+            labs = [t.strip() for t in mx.group(1).split(",") if t.strip()]
+            if labs:
+                out.append(f'<text class="ln-ax" x="{X0:.1f}" y="0.6">{labs[0]}</text>')
+            if len(labs) > 1:
+                out.append(f'<text class="ln-ax" x="{X1:.1f}" y="0.6" '
+                           f'text-anchor="end">{labs[-1]}</text>')
+        out.append("</svg>")
+        return open_tag + "".join(out) + "</div>"
+
+    return _rewrite_block(slides, "linechart", one)
+
+def _rewrite_block(slides, cls, fn):
+    """Replace each <div class="CLS" ...>...</div>, matching nesting.
+
+    A non greedy </div> matches the first child's closing tag, not the
+    block's, which is how the first waterfall pass silently rewrote
+    nothing. Both blocks use this now rather than each keeping its own
+    copy of the mistake.
+    """
     out, i = [], 0
+    pat = re.compile(rf'<div class="{cls}"[^>]*>')
     while True:
-        m = re.compile(r'<div class="waterfall"[^>]*>').search(slides, i)
+        m = pat.search(slides, i)
         if not m:
             out.append(slides[i:]); break
         out.append(slides[i:m.start()])
@@ -283,7 +370,7 @@ def waterfall(slides):
             depth += 1 if t.group(0).startswith("<div") else -1
             if depth == 0:
                 j = m.end() + t.start(); break
-        out.append(one(m.group(0), slides[m.end():j]))
+        out.append(fn(m.group(0), slides[m.end():j]))
         i = j + len("</div>")
     return "".join(out)
 
@@ -314,6 +401,7 @@ def main(d, theme, footer=None, logo_path=None):
     slides = open(os.path.join(d, "slides.html"), encoding="utf-8").read()
     slides = inline_images(slides, d)
     slides = waterfall(slides)
+    slides = linechart(slides)
 
     n = len(re.findall(r'<section class="slide">', slides))
     if not n:

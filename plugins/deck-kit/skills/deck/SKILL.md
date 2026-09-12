@@ -245,6 +245,18 @@ Do not add rules to a theme stylesheet. If a slide needs CSS that is not in the 
 
 Most decks are worth four companion documents beside the HTML: facilitator notes with the timings and the answers, an FAQ of what the room actually asks, a runsheet for the day, and `EVIDENCE.md`, the sourced claims from Step 0. `check.py` expects `FACILITATOR.md`, `FAQ.md`, `RUNSHEET.md` and `EVIDENCE.md` in the deck directory and fails if any is missing or is a stub.
 
+### Reading the argument
+
+`check.py` cannot tell you an argument is wrong. It can make the argument readable, which is the next best thing and takes half a minute:
+
+```bash
+python3 <skill>/scripts/check.py <deck-dir> --outline
+```
+
+It prints every slide's shape and title in order. The titles in sequence **are** the argument, and the reason nobody audits them is that they are spread over thirty pages. Read the list as prose. If it does not hold there, it will not hold in the room, and no amount of diagram work will save it.
+
+One thing about the argument **is** checkable, and it now runs by default: a deck opens with a promise in the cover standfirst and closes by handing something over. If those two share no content word at all, the deck drifted from what it opened with. That is a defect rather than a matter of taste, and in practice it is most of the cases where a close lands flat.
+
 ### Which block. Start here, not with the block you like.
 
 A vocabulary of nineteen shapes is nineteen new ways to be wrong. Decide from what the slide is carrying, never from what would look good.

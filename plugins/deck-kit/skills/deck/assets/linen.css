@@ -1207,14 +1207,14 @@ body{
 }
 .linechart svg{width:100%;height:100%;display:block;overflow:visible}
 .ln-grid{stroke:var(--card-line);stroke-width:.25;fill:none}
-.ln-path{stroke:var(--accent);stroke-width:1.1;fill:none;
+.ln-path{stroke-width:0.9;stroke:var(--accent);stroke-width:1.1;fill:none;
   stroke-linejoin:round;stroke-linecap:round}
 .ln-path.b{stroke:var(--card-line);stroke-dasharray:2 1.6}
 .ln-dot{fill:var(--accent)}
-.ln-cap{font-size:3.4px;fill:var(--ink);font-weight:700;font-family:var(--head)}
-.ln-ax{font-size:3px;fill:var(--muted);font-family:var(--body)}
+.ln-cap{font-size:2.6px;fill:var(--ink);font-weight:700;font-family:var(--head)}
+.ln-ax{font-size:2.3px;fill:var(--muted);font-family:var(--body)}
 .dark .ln-grid{stroke:var(--dark-line)}
-.dark .ln-path{stroke:var(--accent-lift)}
+.dark .ln-path{stroke-width:0.9;stroke:var(--accent-lift)}
 .dark .ln-path.b{stroke:var(--dark-line)}
 .dark .ln-dot{fill:var(--accent-lift)}
 .dark .ln-cap{fill:#fff}
