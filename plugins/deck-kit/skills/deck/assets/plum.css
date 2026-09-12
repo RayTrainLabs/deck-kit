@@ -81,7 +81,7 @@
   --margin:calc(.525 * var(--in));
   --content:calc(8.925 * var(--in));
   --head:'Sora',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
-  --body:'Figtree',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  --body:'DM Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
   --brand:'Sora',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
   --mono:'Courier New',Courier,monospace;
 
@@ -788,3 +788,20 @@ body{
       the one card that is meant to be seen before it is read. */
 .card{border-width:calc(.7 * var(--pt))}
 .tbl th,.tbl td{border-bottom-width:calc(.7 * var(--pt))}
+
+/* ---- style: edged ------------------------------------------------
+   No fill and no box. A rule down the left of each column, and the
+   title set in italic. This is the editorial voice and it is the one
+   family that is genuinely tiring over a long deck, which is why it
+   is only on the two themes that already carry that warning.
+   The shortcut keeps the tint here, because with every card already
+   carrying a left rule the rule alone no longer distinguishes it. */
+.card{background:none;border:none;border-left:calc(2.5 * var(--pt)) solid var(--card-line);
+      padding:calc(.02 * var(--in)) calc(.20 * var(--in))}
+.dark .card{background:none;border-left-color:var(--dark-line)}
+.card.tip{background:var(--tip-bg);
+          border-left:calc(5 * var(--pt)) solid var(--accent-deep);
+          padding-top:calc(.16 * var(--in));padding-bottom:calc(.16 * var(--in))}
+.dark .card.tip{background:var(--dark-card);border-left-color:var(--accent-lift)}
+.title{font-style:italic;font-weight:600;letter-spacing:-.004em}
+.chapter h2{font-style:italic}

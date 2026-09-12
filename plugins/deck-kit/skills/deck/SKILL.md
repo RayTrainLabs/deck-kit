@@ -57,6 +57,22 @@ Two things about the quiet four that only showed up in the render, not in the CS
 - **`linen` and `plum` set wider.** Epilogue and Sora both run longer than Manrope and Nunito Sans at the same size, so a cover headline or a title that sits on one line in `mist` takes two in those. Moving a finished deck between them is not free. Re render before you present it.
 - **The accent in this group is never light, and it cannot be.** It carries small type on a pale ground and has to clear 4.5:1 there. "Light sage green" as an accent fails outright. What lifts is the page and the card; the theme reads light because three quarters of the slide is the ground.
 
+### The three presentation styles
+
+The eight generated themes used to share one geometry and differ only in hue, which is a fair description of a template recoloured rather than a template designed. The **grid** is still constant, because that is what guarantees nothing collides and what `check.py` enforces. What varies now is the treatment.
+
+| Style | How a card is built | Title | Themes |
+|---|---|---|---|
+| **boxed** | A filled card inside a border. Most legible from the back of a room and most forgiving of a long body | Plain | `navy` `mist` `moss` |
+| **ruled** | No fill, no box, a rule over each column. The page reads as a document rather than as slideware | Heavier, tighter | `boardroom` `slate` `linen` |
+| **edged** | No fill, a thick accent rule down the left of each column | Italic | `crimson` `plum` |
+
+`boxed` is the default and the right answer for a teaching deck. `ruled` suits a room that reads before it listens. `edged` is editorial, carries a short argument well, and gets tiring over thirty slides, which is why it is only on the two themes that already carry that warning.
+
+The shortcut card has to survive each of them. Under `ruled` it cannot lean on a tint it no longer has, so its rule is three times the weight and takes the deep accent. Under `edged` every card already has a left rule, so the shortcut keeps its tint as well.
+
+**Each theme has its own body face**, not just its own heading face. Five themes sharing Figtree was most of why the quiet four read as one template. One rule when adding another: **never pick a family whose name is a prefix of another theme's.** `plum` was briefly given Inter while `slate` has Inter Tight, and the cross theme guard matched "Inter" inside "Inter Tight" and failed every slate deck.
+
 ## Step 0, do the research. Before the block plan, not after.
 
 **Search the web first, every time, even on a topic you know well.** A deck built from what the model already knows is a deck of round claims, and a room can tell within two slides. The research is what produces the numbers, the trend and the shortcuts, and none of those can be invented.

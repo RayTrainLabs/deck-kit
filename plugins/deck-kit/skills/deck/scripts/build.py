@@ -37,20 +37,17 @@ FONTS = {
                  "&family=IBM+Plex+Sans:wght@400;500;600&display=swap"),
     "crimson":  "css2?family=Libre+Franklin:wght@400;500;600;700&display=swap",
     "slate":    "css2?family=Inter+Tight:wght@400;500;600;700&display=swap",
-    # The quiet four. Same generator, tinted ground instead of white. Each
-    # takes Figtree for the body, which daylight and sage also use, and a
-    # heading family no other theme uses. That is not decoration: check.py
-    # identifies a deck's theme by finding the one family unique to it, so a
-    # new theme that borrows both families from an existing one is a theme
-    # the checker cannot tell apart from its neighbour.
-    "mist":     ("css2?family=Manrope:wght@500;600;700"
-                 "&family=Figtree:wght@400;500;600;700&display=swap"),
-    "moss":     ("css2?family=Nunito+Sans:wght@500;600;700"
-                 "&family=Figtree:wght@400;500;600;700&display=swap"),
-    "linen":    ("css2?family=Epilogue:wght@500;600;700"
-                 "&family=Figtree:wght@400;500;600;700&display=swap"),
-    "plum":     ("css2?family=Sora:wght@500;600;700"
-                 "&family=Figtree:wght@400;500;600;700&display=swap"),
+    # The quiet four. Same generator, tinted ground instead of white, and
+    # since 2026-09-12 a body face of their own rather than Figtree for all
+    # four: sharing a body across five themes was most of why they read as
+    # one template recoloured. Each still keeps a heading family no other
+    # theme uses, and that part is not taste: check.py identifies a deck's
+    # theme by finding the one family unique to it, so two themes sharing
+    # both families are two themes the checker cannot tell apart.
+    "mist":     "css2?family=Manrope:wght@500;600;700&family=Karla:wght@400;500;600;700&display=swap",
+    "moss":     "css2?family=Nunito+Sans:wght@500;600;700&family=Mulish:wght@400;500;600;700&display=swap",
+    "linen":     "css2?family=Epilogue:wght@500;600;700&family=Lora:wght@400;500;600;700&display=swap",
+    "plum":     "css2?family=Sora:wght@500;600;700&family=DM+Sans:wght@400;500;600;700&display=swap",
 }
 
 # Each theme's working accent, copied from the token its own stylesheet

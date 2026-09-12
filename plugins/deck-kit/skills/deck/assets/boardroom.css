@@ -783,3 +783,17 @@ body{
       the one card that is meant to be seen before it is read. */
 .card{border-width:calc(.7 * var(--pt))}
 .tbl th,.tbl td{border-bottom-width:calc(.7 * var(--pt))}
+
+/* ---- style: ruled ------------------------------------------------
+   The card loses its fill and its box and keeps a rule over the top.
+   Three columns under three rules read as a document's columns, which
+   is the point: this family is for a room that reads first.
+   The shortcut card cannot rely on a tint it no longer has, so its
+   rule is three times the weight and takes the deep accent. */
+.card{background:none;border:none;border-top:calc(2 * var(--pt)) solid var(--card-line);
+      padding:calc(.18 * var(--in)) calc(.16 * var(--in)) 0 0}
+.dark .card{background:none;border-top-color:var(--dark-line)}
+.card.tip{background:none;border-left:none;
+          border-top:calc(6 * var(--pt)) solid var(--accent-deep)}
+.dark .card.tip{border-top-color:var(--accent-lift)}
+.title{font-weight:700;letter-spacing:-.018em}

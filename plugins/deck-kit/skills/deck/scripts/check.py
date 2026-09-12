@@ -138,6 +138,11 @@ def main(d):
     # are stripped first: shell.html records every font link in a comment on
     # purpose, and each theme's stylesheet explains itself by naming the fonts
     # it is not.
+    # One rule when adding a family here: never pick a name that is a
+    # prefix of another theme's. plum was briefly given Inter while slate
+    # has Inter Tight, and the search below matched "Inter" inside "Inter
+    # Tight" and failed every slate deck. The guard is right to be
+    # suspicious; the fix is a family name that cannot be confused.
     FAMILIES = {
         "daylight":  ["Caladea", "Carlito", "Figtree"],
         "paper":     ["Gelasio"],
@@ -146,10 +151,10 @@ def main(d):
         "navy":      ["Archivo", "IBM Plex Sans"],
         "crimson":   ["Libre Franklin"],
         "slate":     ["Inter Tight"],
-        "mist":      ["Manrope", "Figtree"],
-        "moss":      ["Nunito Sans", "Figtree"],
-        "linen":     ["Epilogue", "Figtree"],
-        "plum":      ["Sora", "Figtree"],
+        "mist":      ["Manrope", "Karla"],
+        "moss":      ["Nunito Sans", "Mulish"],
+        "linen":      ["Epilogue", "Lora"],
+        "plum":      ["Sora", "DM Sans"],
     }
     if theme:
         mine = set(FAMILIES[theme])

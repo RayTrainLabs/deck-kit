@@ -79,7 +79,7 @@
   --margin:calc(.525 * var(--in));
   --content:calc(8.925 * var(--in));
   --head:'Nunito Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
-  --body:'Figtree',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  --body:'Mulish',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
   --brand:'Nunito Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
   --mono:'Courier New',Courier,monospace;
 
