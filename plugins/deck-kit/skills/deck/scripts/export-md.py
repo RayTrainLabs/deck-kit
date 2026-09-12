@@ -27,7 +27,11 @@ def slide_md(s):
     title = (block(r'class="t-h1">(.*?)</h1>', s)
              or block(r'class="title">(.*?)</h2>', s)
              or block(r'class="chapter">\s*<h2>(.*?)</h2>', s)
-             or block(r'class="statement">\s*<h2>(.*?)</h2>', s))
+             or block(r'class="statement">\s*<h2>(.*?)</h2>', s)
+             # A full bleed slide carries its title inside .fu-say, which
+             # is why it exported as "(untitled)" with the headline
+             # repeated below as a bold line.
+             or block(r'class="fu-say">\s*<h2>(.*?)</h2>', s))
     out.append(f"## {title}" if title else "## (untitled)")
     if eyebrow:
         out.append(f"*{eyebrow}*")
@@ -91,6 +95,192 @@ def slide_md(s):
         lab = block(r'class="ch-lab">(.*?)</span>', row)
         val = block(r'class="ch-val">(.*?)</span>', row)
         out.append(f"- **{lab}** {val}".rstrip())
+
+
+    # ---- the nineteen visual blocks -----------------------------------
+    # Every one of these was dropped silently until 2026-09-12. A flow
+    # came out of here as its title and its kicker, with the three stages
+    # gone, which means anyone taking deck.md into Gamma or a document got
+    # the captions and not the argument.
+    #
+    # It is the same mistake as the shortcut card before it: the export
+    # was fixed for the blocks that existed, then nineteen more were added
+    # and nobody came back. So this section is written as one table of
+    # handlers rather than as scattered loops, because the next block
+    # added has to have an obvious place to be registered.
+
+    def pairs(container, row_cls, a="b", b="span"):
+        """Rows of <b>heading</b><span>body</span>, the shape most blocks use."""
+        got = []
+        # (.*?)</div> and not </div></div>: an fl-step closes with
+        # </span></div>, not two divs, so requiring a nested pair matched
+        # nothing and every flow exported as its title and kicker alone.
+        for r in re.findall(rf'class="{row_cls}[^"]*"[^>]*>(.*?)</div>',
+                            container, re.S):
+            head, rest = block(rf"<{a}>(.*?)</{a}>", r), block(rf"<{b}>(.*?)</{b}>", r)
+            if head or rest:
+                got.append((head, rest))
+        return got
+
+    def whole(cls):
+        """The inner html of a block, matched by depth so nesting is safe."""
+        m = re.search(rf'<div class="{cls}"[^>]*>', s)
+        if not m:
+            return ""
+        depth, j = 1, m.end()
+        for t in re.finditer(r"<div\b[^>]*>|</div>", s[m.end():]):
+            depth += 1 if t.group(0).startswith("<div") else -1
+            if depth == 0:
+                j = m.end() + t.start(); break
+        return s[m.end():j]
+
+    # flow, spine, layers: an ordered or plain list of heading plus body
+    for cls, row, bullet in (("flow", "fl-step", True),
+                             ("spine", "spn-node", True),
+                             ("layers", "ly-row", True),
+                             ("stack", "st-row", True)):
+        inner = whole(cls)
+        if not inner:
+            continue
+        if cls == "stack":
+            for r in re.findall(r'class="st-row">(.*?)</div>\s*</div>', inner, re.S):
+                num = block(r'class="st-num">(.*?)</div>', r)
+                head = block(r"<b>(.*?)</b>", r)
+                body = block(r"<span>(.*?)</span>", r)
+                out.append(f"- **{num} {head}** {body}".replace("**  ", "**"))
+        else:
+            for head, body in pairs(inner, row):
+                out.append(f"- **{head}** {body}".rstrip())
+
+    # fishbone: the effect, then the causes feeding it
+    fb = whole("fishbone")
+    if fb:
+        head = block(r'class="fb-head">(.*?)</div>', fb)
+        if head:
+            out.append(f"**Effect:** {head}")
+        for r in re.findall(r'class="fb-rib[^"]*"[^>]*>(.*?)</div>', fb, re.S):
+            b_, sp = block(r"<b>(.*?)</b>", r), block(r"<span>(.*?)</span>", r)
+            if b_:
+                out.append(f"- **{b_}** {sp}".rstrip())
+
+    # funnel and rings: a value and what it is of
+    fn = whole("funnel")
+    if fn:
+        for r in re.findall(r'class="fn-row">(.*?)</div>\s*</div>', fn, re.S):
+            v = block(r'class="fn-bar"[^>]*>(.*?)</div>', r)
+            b_, sp = block(r"<b>(.*?)</b>", r), block(r"<span>(.*?)</span>", r)
+            out.append(f"- **{v}** {b_}. {sp}".rstrip(". "))
+    rg = whole("rings")
+    if rg:
+        for r in re.findall(r'class="rg">(.*?)</div>\s*(?=<div class="rg">|$)', rg, re.S):
+            n = block(r'class="rg-num"[^>]*>(.*?)</text>', r)
+            b_, sp = block(r"<b>(.*?)</b>", r), block(r"<span>(.*?)</span>", r)
+            out.append(f"- **{n}** {b_}. {sp}".rstrip(". "))
+
+    # venn: the sets, then the note under them
+    vn = whole("venn")
+    if vn:
+        for t in re.findall(r'class="vn-set">(.*?)</div>', vn, re.S):
+            out.append(f"- {txt(t)}")
+        note = block(r'class="vn-note">(.*?)</div>', vn)
+        if note:
+            out.append(f"> {note}")
+
+    # matrix: two axes and four quadrants, as a table
+    mx = whole("matrix")
+    if mx:
+        qs = [(("* " if "hi" in c else "") + block(r"<b>(.*?)</b>", q),
+               block(r"<span>(.*?)</span>", q))
+              for c, q in re.findall(r'class="mx-q([^"]*)">(.*?)</div>\s*(?=<div|$)', mx, re.S)]
+        ax = block(r'class="mx-x">(.*?)</div>', s)
+        ay = block(r'class="mx-y">(.*?)</div>', s)
+        if ax or ay:
+            out.append(f"*Axes: {ay or '?'} against {ax or '?'}. The starred quadrant is the answer.*")
+        for head, body in qs:
+            out.append(f"- **{head}** {body}".rstrip())
+
+    # swim: lanes against phases, as a table
+    sw = whole("swim")
+    if sw:
+        heads = [txt(h) for h in re.findall(r'class="sw-h">(.*?)</div>', sw, re.S)]
+        lanes = re.findall(r'class="sw-lane">(.*?)</div>', sw, re.S)
+        cells = [(c, txt(t)) for c, t in re.findall(r'class="sw-cell([^"]*)">(.*?)</div>', sw, re.S)]
+        if heads and lanes:
+            w = len(heads) - 1 or 1
+            lines = ["| " + " | ".join(heads) + " |", "|" + "---|" * len(heads)]
+            for i, lane in enumerate(lanes):
+                row = cells[i * w:(i + 1) * w]
+                lines.append("| " + txt(lane) + " | " +
+                             " | ".join(("**" + v + "**") if "on" in c and v else v
+                                        for c, v in row) + " |")
+            out.append("\n".join(lines))
+
+    # waterfall: the bridge, as value and label
+    wf = whole("waterfall")
+    if wf:
+        for c, attrs, inner in re.findall(r'class="wf-col([^"]*)"([^>]*)>(.*?)$', wf, re.S):
+            pass
+        for col in re.findall(r'<div class="wf-col[^"]*"[^>]*>(.*?)</div>\s*(?=<div class="wf-col|$)', wf, re.S):
+            v = block(r'class="wf-val">(.*?)</span>', col)
+            lab = block(r'class="wf-lab">(.*?)</span>', col)
+            if v or lab:
+                out.append(f"- **{v}** {lab}".rstrip())
+
+    # stackbar and multiples: a row per thing
+    sb = whole("stackbar")
+    if sb:
+        for r in re.findall(r'class="sb-row">(.*?)</div>\s*</div>', sb, re.S):
+            lab = block(r'class="sb-lab">(.*?)</div>', r)
+            segs = [txt(x) for x in re.findall(r'class="sb-seg[^"]*"[^>]*>(.*?)</div>', r, re.S)]
+            out.append(f"- **{lab}** " + " / ".join(segs))
+        key = whole("sb-key") or block(r'class="sb-key">(.*?)</div>\s*<div', s)
+        if key:
+            out.append("*" + re.sub(r"\s+", " ", txt(key)).strip() + "*")
+    mu = whole("multiples")
+    if mu:
+        for c in re.findall(r'class="mu-cell">(.*?)$', mu, re.S)[:1] or []:
+            pass
+        for cell in re.findall(r'<div class="mu-cell">(.*?)(?=<div class="mu-cell">|$)', mu, re.S):
+            h = block(r'class="mu-head">(.*?)</div>', cell)
+            n = block(r'class="mu-num">(.*?)</div>', cell)
+            f_ = block(r'class="mu-foot">(.*?)</div>', cell)
+            if h or n:
+                out.append(f"- **{h} {n}** {f_}".rstrip())
+
+    # linechart: the series and their values, which is what the picture is
+    lc = re.search(r'<div class="linechart"([^>]*)>', s)
+    if lc:
+        xs = re.search(r'data-x="([^"]*)"', lc.group(1))
+        for cls, attrs, label in re.findall(
+                r'<div class="ln-series([^"]*)"([^>]*)>(.*?)</div>', s, re.S):
+            v = re.search(r'data-v="([^"]*)"', attrs)
+            if v:
+                out.append(f"- **{txt(label)}** {v.group(1)}"
+                           + (f"  ({xs.group(1)})" if xs else ""))
+
+    # figure, shot, split, full: the picture, its caption, and its pins
+    for cls in ("figure", "shot", "split", "full"):
+        inner = whole(cls)
+        if not inner:
+            continue
+        alt = re.search(r'<img[^>]*alt="([^"]*)"', inner)
+        src = re.search(r'<img[^>]*src="([^"]{0,60})', inner)
+        if alt or src:
+            out.append(f"![{alt.group(1) if alt else 'image'}]"
+                       f"({'embedded image' if not src or src.group(1).startswith('data:') else src.group(1)})")
+        cap = block(r'class="fig-cap">(.*?)</div>', inner)
+        if cap:
+            out.append(cap)
+        pins = re.findall(r'class="pin[^"]*"[^>]*>(.*?)</span>', inner, re.S)
+        if pins:
+            out.append("*Callouts: " + ", ".join(txt(p) for p in pins) + ". See the source line.*")
+        for tag, pre in (("b", "**"), ("span", "")):
+            for t in re.findall(rf'class="sl-text">.*?<{tag}>(.*?)</{tag}>', inner, re.S):
+                out.append(f"{pre}{txt(t)}{pre}")
+        fp = block(r'class="fu-say">.*?<p>(.*?)</p>', inner)
+        if fp:
+            out.append(fp)
+
 
     box = block(r'class="box">(.*?)</div>', s)
     if box:

@@ -606,6 +606,58 @@ def main(d, outline=False):
              "deck this long that is close to none.")
 
 
+
+    # ---- do the companions still describe this deck --------------------
+    # The deck is checked against forty rules. The documents a human reads
+    # in the room were checked against nothing, so B8 shipped with
+    # FACILITATOR.md saying "Slide 29, the honesty slide, read it straight"
+    # while slide 29 was a cost table. Two slides had been inserted and the
+    # HTML renumbered; the prose did not move.
+    #
+    # This cannot know whether a description is right. It can know whether
+    # the slide exists and whether the number points somewhere absurd,
+    # which is the failure that actually happens: an edit shifts everything
+    # after it by one and nobody re-reads thirty references.
+    for f in ("FACILITATOR.md", "RUNSHEET.md", "FAQ.md"):
+        fp = os.path.join(d, f)
+        if not os.path.exists(fp):
+            continue
+        doc = open(fp, encoding="utf-8").read()
+        refs = {int(m) for m in re.findall(r"[Ss]lide (\d{1,2})\b", doc)}
+        over = sorted(r for r in refs if r > n)
+        if over:
+            fail(f"{f} refers to slide {', '.join(map(str, over))} in a {n} slide "
+                 "deck. The deck was edited and the companion was not.")
+        # The named slide kinds are the ones a facilitator is told to
+        # protect, and the ones most often thrown out of step by an insert.
+        # The pattern is tight on purpose. A proximity match fired on
+        # "Never cut slide 30, 31 or 32: the second turn, the honesty and
+        # the transfer", which does not call slide 30 anything. A checker
+        # that cries wolf gets ignored, and then it is worse than absent,
+        # so this only fires on the literal construction "slide N, the X".
+        for label, pat, kinds in (
+            ("the honesty slide", r"[Ss]lide (\d{1,2}),?\s+(?:is\s+)?the honesty", None),
+            ("the statement",     r"[Ss]lide (\d{1,2}),?\s+(?:is\s+)?the (?:second |first )?statement", {"statement"}),
+            ("the close",         r"[Ss]lide (\d{1,2}),?\s+(?:is\s+)?the (?:close|homework)", None),
+        ):
+            for m in re.finditer(pat, doc):
+                i = int(m.group(1))
+                if not 1 <= i <= n:
+                    continue
+                k = shape(slides[i - 1])
+                txt_i = visible_text(slides[i - 1]).lower()
+                ok = True
+                if kinds and k not in kinds:
+                    ok = False
+                if label == "the honesty slide":
+                    ok = bool(re.search(r"where (this|it) breaks|get wrong|watching for", txt_i))
+                if label == "the close":
+                    ok = (i == n)
+                if not ok:
+                    fail(f"{f} calls slide {i} {label}, but slide {i} is a {k}: "
+                         f"\"{(re.sub(chr(92)+'s+', ' ', txt_i).strip()[:52])}...\". "
+                         "Renumber the companion or move the slide.")
+
     # ---- does the deck deliver its own promise ------------------------
     # The one thing about an argument that is actually checkable. A deck
     # opens by saying what the room walks out with and closes by handing
