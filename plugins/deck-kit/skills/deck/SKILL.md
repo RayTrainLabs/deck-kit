@@ -270,6 +270,30 @@ The kit had fourteen layouts and not one of them produced an image, which meant 
 
 **A diagram earns its place when the relationship between the parts is the lesson.** If the parts are simply a list, a list is honest and a diagram is decoration with arrows on it. `check.py` now fails a deck of fourteen slides or more that contains no picture, no diagram and no chart, and warns a deck of twenty or more with fewer than two. That rule exists because a thirty slide deck passed every other check in this file while being words from end to end: the shape rules only count how the text is boxed, so a deck can vary its boxes perfectly and still show nothing.
 
+### Charts
+
+One horizontal bar chart was the whole instrument. These are the four exhibits a deck actually runs on, plus the ring.
+
+| Block | For | The catch |
+|---|---|---|
+| `waterfall` | The bridge: what the number was, what moved it, what it became | `--base` and `--h` go on the **column**, not the bar. The value label is the bar's sibling and cannot see a property set on it |
+| `linechart` | A measure over time, where direction is the point | Authored as an SVG polyline on a 100 x 40 viewBox, so the points are readable numbers in the markup |
+| `stackbar` | Composition, and how it changes | Four segments is the ceiling. Past that nobody can read the legend against the stack and a table is honest |
+| `multiples` | The same small chart per thing, so the comparison is between panels not colours | Six is the ceiling, four is better |
+| `rings` | One number as a proportion | `--p` on a `pathLength="100"` circle, so the number in the markup is the number on the slide. A pie with five slices is a table that lost its labels; this is the only honest circle |
+
+Every one of them carries the source rule the bar chart already had: `check.py` fails a chart with no `source` line.
+
+**Numbers are authored, not computed, and that is deliberate.** A chart in a deck has four to six values and they come off a line in `EVIDENCE.md`. A data pipeline here would be a way to get numbers onto a slide without anybody having read them.
+
+### Icons
+
+Forty three, all masks, all taking the theme accent. The brand marks and the heartbeat five are filled; the rest are stroke geometry, which is easier to keep correct at 24px and is what Lucide and Feather do.
+
+`measure plan ship monitor loop search file alert globe linkedin github portfolio medium user users check cross clock calendar target flag filter database trendup trenddown code terminal cloud lock key link mail chat book clipboard folder shield bug help coin star idea settings`
+
+Render the sheet before trusting one. `gear` was drawn first and read as a brightness icon rather than a cog, so it became `settings` and took a form that cannot be mistaken.
+
 ### Putting the client's logo on it
 
 A deck delivered into somebody else's room wears their mark, not ours. That decision is made and it is not per deck:

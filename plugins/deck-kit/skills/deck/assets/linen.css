@@ -1136,6 +1136,226 @@ body{
 .dark .ly-row b{color:#fff}
 .dark .ly-row span{color:var(--dark-body)}
 
+/* ==== charts ========================================================
+   The kit had one: six horizontal bars, hand typed. That is the chart
+   you reach for when the shape of a ranking is the argument, and it is
+   the wrong instrument for four of the five exhibits a consulting deck
+   actually runs on. These are those four, plus the ring.
+
+   All of them sit in the same band the table uses, 1.32 to about 4.17,
+   so a kicker at 4.31 and a source at 4.55 still fit under. All of them
+   carry the source rule already in check.py: a figure from outside the
+   room names where it came from.
+
+   Numbers are authored, not computed. That is deliberate. A chart in a
+   deck has four to six values in it and they come off a line in
+   EVIDENCE.md, so a data pipeline here would be a way to get numbers on
+   a slide without anybody reading them.
+   ================================================================== */
+
+/* waterfall: the bridge. What the number was, what moved it, what it
+   became. The most characteristic consulting exhibit there is, and the
+   only one that shows a total and its causes in the same picture.
+   --base and --h go on the COLUMN, not on the bar. The value label is
+   a sibling of the bar, so a custom property set on the bar is
+   invisible to it and the label pins itself to the floor. That is
+   exactly what the first build did: every plus and minus sat in a row
+   along the bottom and the two totals had no label at all. Custom
+   properties inherit down, not sideways.
+
+   --base is the percentage up from the floor where the bar starts and
+   --h is its height. Mark the opening and closing columns with tot,
+   and a decrease with down. */
+.waterfall{
+  position:absolute;left:var(--margin);top:calc(1.45 * var(--in));
+  width:var(--content);height:calc(2.45 * var(--in));
+  display:grid;grid-auto-flow:column;grid-auto-columns:1fr;
+  column-gap:calc(.22 * var(--in));align-items:end;
+}
+.wf-col{position:relative;height:100%;display:flex;flex-direction:column;justify-content:flex-end}
+.wf-bar{
+  position:absolute;left:0;right:0;
+  bottom:calc(var(--base,0) * 1%);height:calc(var(--h) * 1%);
+  background:var(--accent);
+  print-color-adjust:exact;-webkit-print-color-adjust:exact;
+}
+.wf-col.tot .wf-bar{background:var(--accent-deep)}
+.wf-col.down .wf-bar{background:var(--card-line)}
+.wf-val{
+  position:absolute;left:0;right:0;
+  bottom:calc(var(--base,0) * 1% + var(--h) * 1% + .06 * var(--in));
+  text-align:center;font-family:var(--head);font-weight:700;
+  font-size:calc(10 * var(--pt));color:var(--ink);
+}
+.wf-lab{
+  position:absolute;left:0;right:0;top:calc(100% + .08 * var(--in));
+  text-align:center;font-size:calc(8.6 * var(--pt));line-height:1.25;color:var(--muted);
+}
+.dark .wf-col.down .wf-bar{background:var(--dark-line)}
+.dark .wf-bar{background:var(--accent-lift)}
+.dark .wf-val{color:#fff}
+.dark .wf-lab{color:var(--dark-body)}
+
+/* line: a measure over time. The one chart where the direction is the
+   whole point, which the bar chart cannot show at all.
+   Authored as an SVG polyline on a 100 x 40 viewBox, so the points are
+   readable numbers in the markup rather than pixels. Stroke takes the
+   accent from CSS, so it themes like everything else. */
+.linechart{
+  position:absolute;left:var(--margin);top:calc(1.45 * var(--in));
+  width:var(--content);height:calc(2.35 * var(--in));
+}
+.linechart svg{width:100%;height:100%;display:block;overflow:visible}
+.ln-grid{stroke:var(--card-line);stroke-width:.25;fill:none}
+.ln-path{stroke:var(--accent);stroke-width:1.1;fill:none;
+  stroke-linejoin:round;stroke-linecap:round}
+.ln-path.b{stroke:var(--card-line);stroke-dasharray:2 1.6}
+.ln-dot{fill:var(--accent)}
+.ln-cap{font-size:3.4px;fill:var(--ink);font-weight:700;font-family:var(--head)}
+.ln-ax{font-size:3px;fill:var(--muted);font-family:var(--body)}
+.dark .ln-grid{stroke:var(--dark-line)}
+.dark .ln-path{stroke:var(--accent-lift)}
+.dark .ln-path.b{stroke:var(--dark-line)}
+.dark .ln-dot{fill:var(--accent-lift)}
+.dark .ln-cap{fill:#fff}
+.dark .ln-ax{fill:var(--dark-body)}
+
+/* stackbar: composition, and how it changes. Three or four segments a
+   bar, four or five bars. Each segment takes --w as a percentage of
+   its bar. Past four segments nobody can read the legend against the
+   stack and a table is the honest answer. */
+.stackbar{
+  position:absolute;left:var(--margin);top:calc(1.42 * var(--in));
+  width:var(--content);height:calc(2.55 * var(--in));
+  display:grid;align-content:space-between;row-gap:calc(.12 * var(--in));
+}
+.sb-row{display:grid;grid-template-columns:calc(1.35 * var(--in)) 1fr;
+  align-items:center;column-gap:calc(.20 * var(--in))}
+.sb-lab{font-family:var(--head);font-size:calc(9.8 * var(--pt));
+  font-weight:600;color:var(--ink);text-align:right}
+.sb-bar{display:flex;height:calc(.40 * var(--in));overflow:hidden}
+.sb-seg{
+  display:flex;align-items:center;justify-content:center;
+  width:calc(var(--w) * 1%);
+  font-family:var(--head);font-size:calc(8.8 * var(--pt));font-weight:700;
+  color:#fff;background:var(--accent-deep);
+  print-color-adjust:exact;-webkit-print-color-adjust:exact;
+}
+.sb-seg.s2{background:var(--accent)}
+.sb-seg.s3{background:color-mix(in srgb, var(--accent) 46%, var(--page));color:var(--ink)}
+.sb-seg.s4{background:var(--card-line);color:var(--ink)}
+.sb-key{
+  position:absolute;left:calc(1.55 * var(--in));top:calc(4.07 * var(--in));
+  display:flex;gap:calc(.34 * var(--in));
+  font-size:calc(8.6 * var(--pt));color:var(--muted);align-items:center;
+}
+.sb-key i{display:inline-block;width:calc(.16 * var(--in));height:calc(.16 * var(--in));
+  margin-right:calc(.07 * var(--in));vertical-align:-.02em;background:var(--accent-deep);
+  print-color-adjust:exact;-webkit-print-color-adjust:exact}
+.sb-key i.s2{background:var(--accent)}
+.sb-key i.s3{background:color-mix(in srgb, var(--accent) 46%, var(--page))}
+.sb-key i.s4{background:var(--card-line)}
+.dark .sb-lab{color:#fff}
+.dark .sb-key{color:var(--dark-body)}
+.dark .sb-seg.s3{background:color-mix(in srgb, var(--accent-lift) 55%, var(--dark-bg));color:#fff}
+.dark .sb-seg.s4{background:var(--dark-line);color:#fff}
+.dark .sb-seg{background:var(--accent-lift);color:var(--dark-bg)}
+.dark .sb-seg.s2{background:color-mix(in srgb, var(--accent-lift) 78%, var(--dark-bg))}
+
+/* multiples: the same small chart repeated, one per thing, so the
+   comparison is between panels rather than between colours. Six is the
+   ceiling and four is better. Each panel's bar takes --v. */
+.multiples{
+  position:absolute;left:var(--margin);top:calc(1.45 * var(--in));
+  width:var(--content);height:calc(2.45 * var(--in));
+  display:grid;grid-auto-flow:column;grid-auto-columns:1fr;
+  column-gap:calc(.26 * var(--in));
+}
+.mu-cell{
+  display:flex;flex-direction:column;justify-content:flex-end;
+  border-bottom:calc(1.5 * var(--pt)) solid var(--card-line);padding-bottom:calc(.10 * var(--in));
+}
+.mu-head{
+  font-family:var(--head);font-size:calc(9.4 * var(--pt));font-weight:600;
+  color:var(--ink);padding-bottom:calc(.08 * var(--in));
+}
+.mu-num{
+  font-family:var(--head);font-size:calc(19 * var(--pt));font-weight:700;
+  line-height:1;color:var(--accent);padding-bottom:calc(.08 * var(--in));
+}
+.mu-bar{height:calc(.22 * var(--in));background:var(--card-line);
+  print-color-adjust:exact;-webkit-print-color-adjust:exact}
+.mu-bar::after{content:'';display:block;height:100%;width:calc(var(--v) * 1%);
+  background:var(--accent);print-color-adjust:exact;-webkit-print-color-adjust:exact}
+.mu-foot{font-size:calc(8.4 * var(--pt));line-height:1.3;color:var(--muted);
+  padding-top:calc(.08 * var(--in))}
+.dark .mu-cell{border-bottom-color:var(--dark-line)}
+.dark .mu-head{color:#fff}
+.dark .mu-num{color:var(--accent-lift)}
+.dark .mu-bar{background:var(--dark-line)}
+.dark .mu-bar::after{background:var(--accent-lift)}
+.dark .mu-foot{color:var(--dark-body)}
+
+/* ring: one number, as a proportion of a whole. The only chart here
+   that shows a single value, and the only honest use of a circle in a
+   deck: a pie with five slices is a table that lost its labels.
+   --p is the percentage. The dasharray is on a circumference of 100 so
+   the number in the markup is the number on the slide. */
+.rings{
+  position:absolute;left:var(--margin);top:calc(1.48 * var(--in));
+  width:var(--content);height:calc(2.35 * var(--in));
+  display:grid;grid-auto-flow:column;grid-auto-columns:1fr;
+  column-gap:calc(.30 * var(--in));align-items:start;
+}
+.rg{display:flex;flex-direction:column;align-items:center;text-align:center}
+.rg svg{width:calc(1.45 * var(--in));height:calc(1.45 * var(--in));display:block}
+.rg-track{fill:none;stroke:var(--card-line);stroke-width:4.2}
+.rg-arc{fill:none;stroke:var(--accent);stroke-width:4.2;stroke-linecap:butt;
+  transform:rotate(-90deg);transform-origin:center}
+.rg-num{font-family:var(--head);font-size:9px;font-weight:700;fill:var(--ink);
+  text-anchor:middle;dominant-baseline:central}
+.rg b{display:block;font-family:var(--head);font-size:calc(10.5 * var(--pt));
+  font-weight:600;color:var(--ink);padding-top:calc(.10 * var(--in))}
+.rg span{display:block;font-size:calc(8.8 * var(--pt));line-height:1.35;color:var(--muted)}
+.dark .rg-track{stroke:var(--dark-line)}
+.dark .rg-arc{stroke:var(--accent-lift)}
+.dark .rg-num,.dark .rg b{fill:#fff;color:#fff}
+.dark .rg span{color:var(--dark-body)}
+
+/* 30 more icons, stroke geometry. The brand marks and the
+   heartbeat five are filled; these are stroked, which is easier to
+   keep correct at 24px and is what Lucide and Feather do. */
+.ico.user{-webkit-mask-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><g fill=%22none%22 stroke=%22black%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><circle cx=%2212%22 cy=%228%22 r=%224%22/><path d=%22M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7%22/></g></svg>");mask-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><g fill=%22none%22 stroke=%22black%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><circle cx=%2212%22 cy=%228%22 r=%224%22/><path d=%22M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7%22/></g></svg>")}
+.ico.users{-webkit-mask-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><g fill=%22none%22 stroke=%22black%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><circle cx=%229.5%22 cy=%228.5%22 r=%223.5%22/><path d=%22M2.5 20.5c0-3.9 3.1-6 7-6s7 2.1 7 6%22/><path d=%22M17 5.2a3.5 3.5 0 0 1 0 6.6%22/><path d=%22M18.5 14.8c2 .8 3 2.6 3 5.2%22/></g></svg>");mask-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><g fill=%22none%22 stroke=%22black%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><circle cx=%229.5%22 cy=%228.5%22 r=%223.5%22/><path d=%22M2.5 20.5c0-3.9 3.1-6 7-6s7 2.1 7 6%22/><path d=%22M17 5.2a3.5 3.5 0 0 1 0 6.6%22/><path d=%22M18.5 14.8c2 .8 3 2.6 3 5.2%22/></g></svg>")}
+.ico.check{-webkit-mask-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><g fill=%22none%22 stroke=%22black%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><path d=%22M20 6.5 9.5 17.5 4.5 12.5%22/></g></svg>");mask-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><g fill=%22none%22 stroke=%22black%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><path d=%22M20 6.5 9.5 17.5 4.5 12.5%22/></g></svg>")}
+.ico.cross{-webkit-mask-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><g fill=%22none%22 stroke=%22black%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><path d=%22M6 6l12 12M18 6 6 18%22/></g></svg>");mask-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><g fill=%22none%22 stroke=%22black%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><path d=%22M6 6l12 12M18 6 6 18%22/></g></svg>")}
+.ico.clock{-webkit-mask-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><g fill=%22none%22 stroke=%22black%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><circle cx=%2212%22 cy=%2212%22 r=%229%22/><path d=%22M12 6.6V12l3.6 2.2%22/></g></svg>");mask-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><g fill=%22none%22 stroke=%22black%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><circle cx=%2212%22 cy=%2212%22 r=%229%22/><path d=%22M12 6.6V12l3.6 2.2%22/></g></svg>")}
+.ico.calendar{-webkit-mask-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><g fill=%22none%22 stroke=%22black%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><rect x=%223.2%22 y=%225%22 width=%2217.6%22 height=%2216%22 rx=%222%22/><path d=%22M3.2 10h17.6M8 3v4M16 3v4%22/></g></svg>");mask-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><g fill=%22none%22 stroke=%22black%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><rect x=%223.2%22 y=%225%22 width=%2217.6%22 height=%2216%22 rx=%222%22/><path d=%22M3.2 10h17.6M8 3v4M16 3v4%22/></g></svg>")}
+.ico.target{-webkit-mask-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><g fill=%22none%22 stroke=%22black%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><circle cx=%2212%22 cy=%2212%22 r=%229%22/><circle cx=%2212%22 cy=%2212%22 r=%225%22/><circle cx=%2212%22 cy=%2212%22 r=%221.3%22/></g></svg>");mask-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><g fill=%22none%22 stroke=%22black%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><circle cx=%2212%22 cy=%2212%22 r=%229%22/><circle cx=%2212%22 cy=%2212%22 r=%225%22/><circle cx=%2212%22 cy=%2212%22 r=%221.3%22/></g></svg>")}
+.ico.flag{-webkit-mask-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><g fill=%22none%22 stroke=%22black%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><path d=%22M5 21V4M5 5h11l-2 3.5L16 12H5%22/></g></svg>");mask-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><g fill=%22none%22 stroke=%22black%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><path d=%22M5 21V4M5 5h11l-2 3.5L16 12H5%22/></g></svg>")}
+.ico.filter{-webkit-mask-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><g fill=%22none%22 stroke=%22black%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><path d=%22M3.5 5h17l-6.6 7.8V20l-3.8-2.2v-5z%22/></g></svg>");mask-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><g fill=%22none%22 stroke=%22black%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><path d=%22M3.5 5h17l-6.6 7.8V20l-3.8-2.2v-5z%22/></g></svg>")}
+.ico.database{-webkit-mask-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><g fill=%22none%22 stroke=%22black%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><ellipse cx=%2212%22 cy=%226%22 rx=%228%22 ry=%223.2%22/><path d=%22M4 6v12c0 1.8 3.6 3.2 8 3.2s8-1.4 8-3.2V6%22/><path d=%22M4 12c0 1.8 3.6 3.2 8 3.2s8-1.4 8-3.2%22/></g></svg>");mask-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><g fill=%22none%22 stroke=%22black%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><ellipse cx=%2212%22 cy=%226%22 rx=%228%22 ry=%223.2%22/><path d=%22M4 6v12c0 1.8 3.6 3.2 8 3.2s8-1.4 8-3.2V6%22/><path d=%22M4 12c0 1.8 3.6 3.2 8 3.2s8-1.4 8-3.2%22/></g></svg>")}
+.ico.trendup{-webkit-mask-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><g fill=%22none%22 stroke=%22black%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><path d=%22M3 17.5 9.5 11l4 4L21 7.5%22/><path d=%22M15.5 7.5H21V13%22/></g></svg>");mask-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><g fill=%22none%22 stroke=%22black%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><path d=%22M3 17.5 9.5 11l4 4L21 7.5%22/><path d=%22M15.5 7.5H21V13%22/></g></svg>")}
+.ico.trenddown{-webkit-mask-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><g fill=%22none%22 stroke=%22black%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><path d=%22M3 7.5 9.5 14l4-4L21 17.5%22/><path d=%22M15.5 17.5H21V12%22/></g></svg>");mask-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><g fill=%22none%22 stroke=%22black%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><path d=%22M3 7.5 9.5 14l4-4L21 17.5%22/><path d=%22M15.5 17.5H21V12%22/></g></svg>")}
+.ico.code{-webkit-mask-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><g fill=%22none%22 stroke=%22black%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><path d=%22M8.5 17 3.5 12l5-5M15.5 7l5 5-5 5%22/></g></svg>");mask-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><g fill=%22none%22 stroke=%22black%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><path d=%22M8.5 17 3.5 12l5-5M15.5 7l5 5-5 5%22/></g></svg>")}
+.ico.terminal{-webkit-mask-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><g fill=%22none%22 stroke=%22black%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><rect x=%222.6%22 y=%224%22 width=%2218.8%22 height=%2216%22 rx=%222%22/><path d=%22M6.5 9.5 9.5 12l-3 2.5M12.5 15h5%22/></g></svg>");mask-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><g fill=%22none%22 stroke=%22black%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><rect x=%222.6%22 y=%224%22 width=%2218.8%22 height=%2216%22 rx=%222%22/><path d=%22M6.5 9.5 9.5 12l-3 2.5M12.5 15h5%22/></g></svg>")}
+.ico.cloud{-webkit-mask-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><g fill=%22none%22 stroke=%22black%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><path d=%22M7 19h10a4 4 0 0 0 .5-8 6 6 0 0 0-11.4 1.6A3.7 3.7 0 0 0 7 19z%22/></g></svg>");mask-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><g fill=%22none%22 stroke=%22black%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><path d=%22M7 19h10a4 4 0 0 0 .5-8 6 6 0 0 0-11.4 1.6A3.7 3.7 0 0 0 7 19z%22/></g></svg>")}
+.ico.lock{-webkit-mask-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><g fill=%22none%22 stroke=%22black%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><rect x=%224.5%22 y=%2210.5%22 width=%2215%22 height=%2210%22 rx=%222%22/><path d=%22M8 10.5V7.5a4 4 0 0 1 8 0v3%22/></g></svg>");mask-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><g fill=%22none%22 stroke=%22black%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><rect x=%224.5%22 y=%2210.5%22 width=%2215%22 height=%2210%22 rx=%222%22/><path d=%22M8 10.5V7.5a4 4 0 0 1 8 0v3%22/></g></svg>")}
+.ico.key{-webkit-mask-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><g fill=%22none%22 stroke=%22black%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><circle cx=%227.5%22 cy=%2214.5%22 r=%224%22/><path d=%22M10.4 11.6 20 2m-3 3 2.5 2.5M14.5 7.5 17 10%22/></g></svg>");mask-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><g fill=%22none%22 stroke=%22black%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><circle cx=%227.5%22 cy=%2214.5%22 r=%224%22/><path d=%22M10.4 11.6 20 2m-3 3 2.5 2.5M14.5 7.5 17 10%22/></g></svg>")}
+.ico.link{-webkit-mask-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><g fill=%22none%22 stroke=%22black%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><path d=%22M9.5 14.5 14.5 9.5%22/><path d=%22M11 6.5 13 4.5a4.2 4.2 0 0 1 6 6l-2 2%22/><path d=%22M13 17.5l-2 2a4.2 4.2 0 0 1-6-6l2-2%22/></g></svg>");mask-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><g fill=%22none%22 stroke=%22black%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><path d=%22M9.5 14.5 14.5 9.5%22/><path d=%22M11 6.5 13 4.5a4.2 4.2 0 0 1 6 6l-2 2%22/><path d=%22M13 17.5l-2 2a4.2 4.2 0 0 1-6-6l2-2%22/></g></svg>")}
+.ico.mail{-webkit-mask-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><g fill=%22none%22 stroke=%22black%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><rect x=%222.6%22 y=%225%22 width=%2218.8%22 height=%2214%22 rx=%222%22/><path d=%22m3.4 6.6 8.6 6.2 8.6-6.2%22/></g></svg>");mask-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><g fill=%22none%22 stroke=%22black%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><rect x=%222.6%22 y=%225%22 width=%2218.8%22 height=%2214%22 rx=%222%22/><path d=%22m3.4 6.6 8.6 6.2 8.6-6.2%22/></g></svg>")}
+.ico.chat{-webkit-mask-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><g fill=%22none%22 stroke=%22black%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><path d=%22M21 12.5a8 8 0 0 1-8.5 8 9 9 0 0 1-3.6-.7L3.5 21.5l1.7-5A8 8 0 0 1 4.5 12a8 8 0 0 1 8-8 8 8 0 0 1 8.5 8.5z%22/></g></svg>");mask-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><g fill=%22none%22 stroke=%22black%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><path d=%22M21 12.5a8 8 0 0 1-8.5 8 9 9 0 0 1-3.6-.7L3.5 21.5l1.7-5A8 8 0 0 1 4.5 12a8 8 0 0 1 8-8 8 8 0 0 1 8.5 8.5z%22/></g></svg>")}
+.ico.book{-webkit-mask-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><g fill=%22none%22 stroke=%22black%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><path d=%22M4 4.5h6a3 3 0 0 1 3 3V20a2.5 2.5 0 0 0-2.5-2H4z%22/><path d=%22M20 4.5h-6a3 3 0 0 0-3 3V20a2.5 2.5 0 0 1 2.5-2H20z%22/></g></svg>");mask-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><g fill=%22none%22 stroke=%22black%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><path d=%22M4 4.5h6a3 3 0 0 1 3 3V20a2.5 2.5 0 0 0-2.5-2H4z%22/><path d=%22M20 4.5h-6a3 3 0 0 0-3 3V20a2.5 2.5 0 0 1 2.5-2H20z%22/></g></svg>")}
+.ico.clipboard{-webkit-mask-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><g fill=%22none%22 stroke=%22black%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><rect x=%225%22 y=%224.5%22 width=%2214%22 height=%2216.5%22 rx=%222%22/><rect x=%229%22 y=%222.6%22 width=%226%22 height=%223.8%22 rx=%221.2%22/><path d=%22M8.8 11.5h6.4M8.8 15.5h4.4%22/></g></svg>");mask-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><g fill=%22none%22 stroke=%22black%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><rect x=%225%22 y=%224.5%22 width=%2214%22 height=%2216.5%22 rx=%222%22/><rect x=%229%22 y=%222.6%22 width=%226%22 height=%223.8%22 rx=%221.2%22/><path d=%22M8.8 11.5h6.4M8.8 15.5h4.4%22/></g></svg>")}
+.ico.folder{-webkit-mask-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><g fill=%22none%22 stroke=%22black%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><path d=%22M3 6.5a2 2 0 0 1 2-2h4l2 2.6h8a2 2 0 0 1 2 2v9.4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z%22/></g></svg>");mask-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><g fill=%22none%22 stroke=%22black%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><path d=%22M3 6.5a2 2 0 0 1 2-2h4l2 2.6h8a2 2 0 0 1 2 2v9.4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z%22/></g></svg>")}
+.ico.shield{-webkit-mask-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><g fill=%22none%22 stroke=%22black%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><path d=%22M12 2.8 20 6v6c0 4.6-3.3 8-8 9.4C8 20 4.7 16.6 4.7 12V6z%22/></g></svg>");mask-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><g fill=%22none%22 stroke=%22black%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><path d=%22M12 2.8 20 6v6c0 4.6-3.3 8-8 9.4C8 20 4.7 16.6 4.7 12V6z%22/></g></svg>")}
+.ico.bug{-webkit-mask-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><g fill=%22none%22 stroke=%22black%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><rect x=%228%22 y=%227.5%22 width=%228%22 height=%2211%22 rx=%224%22/><path d=%22M8 12H3.5M20.5 12H16M8.8 8.2 6 5.4M15.2 8.2 18 5.4M8.8 17.8 6 20.6M15.2 17.8 18 20.6%22/></g></svg>");mask-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><g fill=%22none%22 stroke=%22black%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><rect x=%228%22 y=%227.5%22 width=%228%22 height=%2211%22 rx=%224%22/><path d=%22M8 12H3.5M20.5 12H16M8.8 8.2 6 5.4M15.2 8.2 18 5.4M8.8 17.8 6 20.6M15.2 17.8 18 20.6%22/></g></svg>")}
+.ico.help{-webkit-mask-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><g fill=%22none%22 stroke=%22black%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><circle cx=%2212%22 cy=%2212%22 r=%229%22/><path d=%22M9.6 9.4a2.5 2.5 0 0 1 4.8.8c0 1.7-2.4 2.2-2.4 3.8%22/><path d=%22M12 17.2h.01%22/></g></svg>");mask-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><g fill=%22none%22 stroke=%22black%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><circle cx=%2212%22 cy=%2212%22 r=%229%22/><path d=%22M9.6 9.4a2.5 2.5 0 0 1 4.8.8c0 1.7-2.4 2.2-2.4 3.8%22/><path d=%22M12 17.2h.01%22/></g></svg>")}
+.ico.coin{-webkit-mask-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><g fill=%22none%22 stroke=%22black%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><circle cx=%2212%22 cy=%2212%22 r=%229%22/><path d=%22M14.6 9.2a3 3 0 0 0-4.8.5c-.8 1.6 1 2.1 2.2 2.6s3 1 2.2 2.6a3 3 0 0 1-4.8.5%22/><path d=%22M12 6.6v10.8%22/></g></svg>");mask-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><g fill=%22none%22 stroke=%22black%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><circle cx=%2212%22 cy=%2212%22 r=%229%22/><path d=%22M14.6 9.2a3 3 0 0 0-4.8.5c-.8 1.6 1 2.1 2.2 2.6s3 1 2.2 2.6a3 3 0 0 1-4.8.5%22/><path d=%22M12 6.6v10.8%22/></g></svg>")}
+.ico.star{-webkit-mask-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><g fill=%22none%22 stroke=%22black%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><path d=%22m12 3.4 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2-5.6-3-5.6 3 1.1-6.2L3 10l6.2-.9z%22/></g></svg>");mask-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><g fill=%22none%22 stroke=%22black%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><path d=%22m12 3.4 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2-5.6-3-5.6 3 1.1-6.2L3 10l6.2-.9z%22/></g></svg>")}
+.ico.idea{-webkit-mask-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><g fill=%22none%22 stroke=%22black%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><path d=%22M9.2 17.5a6.5 6.5 0 1 1 5.6 0%22/><path d=%22M9.5 17.5h5M10.2 20.6h3.6%22/></g></svg>");mask-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><g fill=%22none%22 stroke=%22black%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><path d=%22M9.2 17.5a6.5 6.5 0 1 1 5.6 0%22/><path d=%22M9.5 17.5h5M10.2 20.6h3.6%22/></g></svg>")}
+.ico.settings{-webkit-mask-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><g fill=%22none%22 stroke=%22black%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><path d=%22M4 7h8M17.5 7H20M4 12h3.5M13 12h7M4 17h6.5M16 17H20%22/><circle cx=%2214.5%22 cy=%227%22 r=%222.2%22/><circle cx=%2210%22 cy=%2212%22 r=%222.2%22/><circle cx=%2213%22 cy=%2217%22 r=%222.2%22/></g></svg>");mask-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><g fill=%22none%22 stroke=%22black%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><path d=%22M4 7h8M17.5 7H20M4 12h3.5M13 12h7M4 17h6.5M16 17H20%22/><circle cx=%2214.5%22 cy=%227%22 r=%222.2%22/><circle cx=%2210%22 cy=%2212%22 r=%222.2%22/><circle cx=%2213%22 cy=%2217%22 r=%222.2%22/></g></svg>")}
+
 
 /* ==== the professional departures =================================
    Everything above is sage's geometry, unchanged. These are the four

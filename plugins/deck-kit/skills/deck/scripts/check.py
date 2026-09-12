@@ -325,7 +325,8 @@ def main(d):
         # the mechanism is the very next slide. Two soft slides in a row means
         # the metaphor was never cashed out.
         soft = not re.search(r'class="(tbl|prompt|card|stack|figure|shot|split|full|'
-                             r'flow|spine|fishbone|funnel|venn|matrix|swim|layers)"|<ul>', s)
+                             r'flow|spine|fishbone|funnel|venn|matrix|swim|layers|'
+                             r'waterfall|linechart|stackbar|multiples|rings)"|<ul>', s)
         soft_slides.append((i, soft))
 
         if 'class="checkpoint"' in s: has_checkpoint = True
@@ -367,6 +368,11 @@ def main(d):
         if 'class="matrix"' in s:    return "matrix"
         if 'class="swim"' in s:      return "swim"
         if 'class="layers"' in s:    return "layers"
+        if 'class="waterfall"' in s: return "waterfall"
+        if 'class="linechart"' in s: return "line"
+        if 'class="stackbar"' in s:  return "stackbar"
+        if 'class="multiples"' in s: return "multiples"
+        if 'class="rings"' in s:     return "rings"
         if 'class="chart"' in s:     return "chart"
         if 'class="stack"' in s:     return "stack"
         if 'class="tbl"' in s:       return "table"
@@ -444,7 +450,8 @@ def main(d):
         if n_bar and 'class="band"' in s:
             fail(f"slide {i}: a chart and a band. The chart owns the middle of the page.")
         # The sceptic in row three gets a source or the number is decoration.
-        if ('class="chart"' in s or 'class="stat"' in s) and 'class="source"' not in s:
+        if (re.search(r'class="(chart|stat|waterfall|linechart|stackbar|multiples|rings)"', s)
+                and 'class="source"' not in s):
             fail(f"slide {i}: numbers with no source line. Any figure from outside this "
                  "room carries where it came from and when, on the slide, in 8pt.")
 
@@ -501,7 +508,8 @@ def main(d):
     # does is a document read aloud, and the room would rather have the
     # document.
     VISUAL = ("figure", "shot", "split", "full", "flow", "spine", "fishbone",
-              "funnel", "venn", "matrix", "swim", "layers", "chart")
+              "funnel", "venn", "matrix", "swim", "layers", "chart",
+              "waterfall", "line", "stackbar", "multiples", "rings")
     shown = [i for i, k in shapes if k in VISUAL]
     if n >= 14 and not shown:
         fail(f"{n} slides and not one of them shows anything. No picture, no "
