@@ -49,14 +49,22 @@ def slide_md(s):
     # balanced divs, because a card contains a nested badge div and the
     # shipped markup puts a whole card on one line. Each part is then cut
     # at the first element that cannot be inside a card.
-    for part in re.split(r'<div class="card">', s)[1:]:
-        c = re.split(r'<div class="(?:band|kicker|checkpoint|strip|note|pageno|prompt|tree)"',
+    #
+    # The class pattern has to be open ended. Matching class="card" exactly
+    # meant class="card tip" was never a split point, so the shortcut card
+    # was swallowed into the card before it: its body appended to the wrong
+    # card and its heading dropped, because the h3 taken was the previous
+    # card's. The shortcut is the one card the room came for, and it was the
+    # one the export lost.
+    for part in re.split(r'<div class="card[^"]*">', s)[1:]:
+        c = re.split(r'<div class="(?:band|kicker|checkpoint|strip|note|pageno|prompt|tree|source)"',
                      part)[0]
         badge = block(r'class="badge[^"]*">(.*?)</div>', c)
+        stat = block(r'class="stat">(.*?)</div>', c)
         head = block(r"<h3>(.*?)</h3>", c)
         body = " ".join(txt(p) for p in re.findall(r"<p>(.*?)</p>", c, re.S))
         items = [txt(li) for li in re.findall(r"<li>(.*?)</li>", c, re.S)]
-        label = " / ".join(x for x in (badge if not badge.isdigit() else "", head) if x)
+        label = " / ".join(x for x in (badge if not badge.isdigit() else "", stat, head) if x)
         if label:
             out.append(f"- **{label}**" + (f" {body}" if body else ""))
         elif body:
@@ -74,6 +82,15 @@ def slide_md(s):
             if i == 0:
                 lines.append("|" + "---|" * len(cells))
         out.append("\n".join(lines))
+
+    # The chart is the one element whose whole content is numbers, so an
+    # export that drops it turns the deck's only evidence slide into its
+    # kicker. The bar width is presentation and does not survive; the label
+    # and the value are the argument and do.
+    for row in re.findall(r'class="ch-row">(.*?)</div>', s, re.S):
+        lab = block(r'class="ch-lab">(.*?)</span>', row)
+        val = block(r'class="ch-val">(.*?)</span>', row)
+        out.append(f"- **{lab}** {val}".rstrip())
 
     box = block(r'class="box">(.*?)</div>', s)
     if box:
@@ -96,6 +113,14 @@ def slide_md(s):
         head = block(r"<b>(.*?)</b>", b.group(1))
         rest = block(r"<span>(.*?)</span>", b.group(1))
         out.append(f"**{head}** {rest}".strip())
+
+    # The source line goes last because it is last on the slide, and it goes
+    # in at all because a number without its citation is the one thing this
+    # export must not hand to another generator. It was missing entirely,
+    # which meant every figure in the markdown was unattributable.
+    src = block(r'class="source">(.*?)</div>', s)
+    if src:
+        out.append(f"*{src}*")
 
     return "\n\n".join(out)
 
