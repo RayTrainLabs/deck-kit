@@ -16,7 +16,7 @@ Takes a topic, a slide count, an audience and a theme. Produces one HTML file th
 | topic | free text | required |
 | slides | 8 to 40 | 14 |
 | audience | `non-tech` `mixed` `tech` `exec` | `mixed` |
-| theme | `daylight` `paper` `sage` `boardroom` `navy` `crimson` `slate` | `daylight` |
+| theme | `daylight` `paper` `sage` `boardroom` `navy` `crimson` `slate` `mist` `moss` `linen` `plum` | `daylight` |
 | duration | minutes in the room | 90 |
 | session | "Session 2 of 3" | omitted |
 
@@ -33,10 +33,21 @@ Takes a topic, a slide count, an audience and a theme. Produces one HTML file th
 | `navy` | the evidence deck. One blue in three values, so a chart carries rank by depth of colour rather than by five hues |
 | `crimson` | the recommendation deck, and only when it is short. One family, one red. The red is not rationed by the stylesheet, so past about fifteen slides it stops emphasising and starts shouting |
 | `slate` | rooms where colour would be read as a claim. Regulators, auditors, legal, a supplier review. The only theme that survives a black and white photocopier |
+| `mist` | the same rooms as `sage`, when green is wrong. Sage's calm with the hue turned to a dusty blue, on a pale blue grey ground. Reach for it for a second session that should not look like the first |
+| `moss` | what people mean when they ask for a lighter sage. Pale green ground, a warmer olive accent, and flat, so unlike `sage` it survives being printed |
+| `linen` | warm paper and a soft clay accent. The quiet end of the warm range, where `paper` is the loud end. The easiest of the eleven to read for an hour, so reach for it for long form teaching |
+| `plum` | the deck that has to not look like every other deck in the day. Muted violet, the highest contrast accent in the kit. It differentiates rather than argues, so not for a sceptical room |
 
-The four generated themes are flat by construction: no gradient on the dark slides, no gradient on the band, a small tracked chapter label instead of a 92pt numeral, and hairline rules on the cards. That is the departure from `sage`, and it is deliberate. A gradient is the first thing a projector in a badly lit room turns into a smear.
+The eight generated themes are flat by construction: no gradient on the dark slides, no gradient on the band, a small tracked chapter label instead of a 92pt numeral, and hairline rules on the cards. That is the departure from `sage`, and it is deliberate. A gradient is the first thing a projector in a badly lit room turns into a smear.
 
 Each generated stylesheet carries its own contrast table in its header, computed before the file was written. Fifteen pairs per theme, every one cleared. The header also records why none of them is named after a consulting firm: the published hex values for those firms contradict each other, none is official, and a deck that wears another firm's identity is passing itself off.
+
+The generated eight come in two groups, and the difference is the ground they stand on. `boardroom`, `navy`, `crimson` and `slate` stand on white and are built for a pack that gets printed and passed around. `mist`, `moss`, `linen` and `plum` stand on a tinted ground, which is what makes them read as `sage` variants rather than as consulting decks.
+
+Two things about the quiet four that only showed up in the render, not in the CSS:
+
+- **`linen` and `plum` set wider.** Epilogue and Sora both run longer than Manrope and Nunito Sans at the same size, so a cover headline or a title that sits on one line in `mist` takes two in those. Moving a finished deck between them is not free. Re render before you present it.
+- **The accent in this group is never light, and it cannot be.** It carries small type on a pale ground and has to clear 4.5:1 there. "Light sage green" as an accent fails outright. What lifts is the page and the card; the theme reads light because three quarters of the slide is the ground.
 
 ## Step 0, do the research. Before the block plan, not after.
 

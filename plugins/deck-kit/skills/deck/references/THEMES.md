@@ -1,6 +1,6 @@
 # Themes and layouts
 
-Three themes and eleven layouts. Pick a theme by name, pick layouts by name.
+Eleven themes and thirteen layouts. Pick a theme by name, pick layouts by name.
 
 Every theme uses the same geometry, expressed proportionally: `--stage-w` is the stage width, `--in` is one tenth of it, and `--pt` is `--in / 72`. All geometry is `calc(N * var(--in))` and all type is `calc(Npt * var(--pt))`. A deck is therefore dimensionally identical at any viewport, and prints at any paper size without a single fixed pixel.
 
@@ -27,7 +27,7 @@ Two working rules, both arithmetic rather than taste:
 
 ### `sage`
 
-**Looks like:** pale sage `#F2F5F1` ground, one green family, no second hue anywhere. Gradients on exactly three surfaces: the dark slides, a soft wash in the bottom right corner of the cover, and the band. Everything else is flat, because a gradient under body text moves the contrast ratio around while the reader is still inside the sentence. Outfit for headings, Figtree for body, and no serif anywhere, which was true of sage alone until the generated four arrived.
+**Looks like:** pale sage `#F2F5F1` ground, one green family, no second hue anywhere. Gradients on exactly three surfaces: the dark slides, a soft wash in the bottom right corner of the cover, and the band. Everything else is flat, because a gradient under body text moves the contrast ratio around while the reader is still inside the sentence. Outfit for headings, Figtree for body, and no serif anywhere, which was true of sage alone until the generated eight arrived.
 
 Every colour was picked by computing the ratio first:
 
@@ -51,18 +51,22 @@ Two working rules:
 
 ---
 
-## The generated four
+## The generated eight
 
-`boardroom`, `navy`, `crimson` and `slate` are not measured off anything. They are generated from `sage`'s stylesheet: the geometry is copied byte for byte, the palette is computed, and fifteen contrast pairs per theme are checked before the file is written. Each stylesheet carries its own table of those ratios in its header. Read it there rather than trusting this page.
+Eight of the eleven themes are not measured off anything. They are generated from `sage`'s stylesheet: the geometry is copied byte for byte, the palette is computed, and fifteen contrast pairs per theme are checked before the file is written. Each stylesheet carries its own table of those ratios in its header. Read it there rather than trusting this page.
+
+They fall into two groups, and the difference is the ground they stand on. The first four stand on white and are built for a pack that gets printed and passed around a table. The second four stand on a tinted ground, which is what makes them read as `sage` variants rather than as consulting decks.
 
 They are **not named after consulting firms, and they carry no firm's colours, typefaces or name.** The published hex values for those firms contradict each other, three vendor write ups give three different answers for the same firm's blue, and none of them is official. A deck that wears another firm's identity is passing itself off. The themes are named for what they do.
 
-All four depart from `sage` in the same four ways, and the departures are the point:
+All eight depart from `sage` in the same four ways, and the departures are the point:
 
 1. **Flat.** No gradient on a dark slide, on the cover, or on the band. A gradient is the first thing a projector in a badly lit room turns into a smear.
 2. **A small tracked chapter label** where `sage` sets a 92pt numeral, so a chapter divider can say "Block 2 of 4" rather than "02".
 3. **The source line is upright**, in `--ink-soft`, not italic.
 4. **Hairline rules.** Cards and table cells take a 0.7pt border rather than a full point.
+
+### On white
 
 | Theme | Type | Accent | Reach for it when |
 |---|---|---|---|
@@ -76,13 +80,31 @@ Two things found by rendering these, not by reading the CSS:
 - **`crimson` does not ration its red.** The stylesheet puts the accent on every eyebrow, badge, kicker, bar and numeral, exactly where `sage` puts its green. Green at that frequency reads as a house colour; red at that frequency reads as an alarm. Past about fifteen slides it stops emphasising and starts shouting. Keep crimson for one argument, or use `boardroom`.
 - **`slate`'s shortcut card is carried by its rule alone.** The tint separates from a plain card by 1.08 to 1, measured off the rendered page, which is the same separation the other three have. Theirs also turns the hue and slate's cannot, because slate has no hue. Do not soften that rule, it is the whole signal. For the same reason the wordmark reads as one flat word on slate rather than two tones.
 
-`slate` is also the only theme in the kit that survives a black and white photocopier, which is precisely what `sage` cannot do.
+`slate` is also the theme to reach for when the deck goes through a black and white photocopier, which is precisely what `sage` cannot survive. Every theme in the second group survives it too, for the same reason: they are flat.
+
+### On a tinted ground
+
+Same machinery, same four departures, same fifteen pairs. What changes is that the page is not white, and that is most of why they feel closer to `sage` than to a consulting pack.
+
+| Theme | Type | Accent | Ground | Reach for it when |
+|---|---|---|---|---|
+| `mist` | Manrope titles, Figtree body | dusty blue `#2F5C6E` | `#F1F4F6` | The same rooms as `sage`, when green is wrong: the brand is already green, the subject is not environmental, or it is the second session and it should not look like the first |
+| `moss` | Nunito Sans titles, Figtree body | olive `#4A6B39` | `#F4F6F1` | What people usually mean by a lighter sage. The ground lifts and the accent warms toward olive. Unlike `sage`, it prints |
+| `linen` | Epilogue titles, Figtree body | clay `#7A5C3E` | `#F7F4EF` | A warm room that does not want `paper`'s brick. The easiest of the eleven to read for an hour, so good for long form teaching and for decks that are read rather than presented |
+| `plum` | Sora titles, Figtree body | violet `#5A4374` | `#F4F2F6` | The deck that has to not look like the other four decks in the day. The highest contrast accent in the kit |
+
+Two things found by rendering these four, not by reading the CSS:
+
+- **`linen` and `plum` set wider.** Epilogue and Sora both run longer than Manrope and Nunito Sans at the same size. A title that sits on one line in `mist` takes two in either of them, and the same is true of a band. Moving a finished deck between these four is not free: re render it and look at it before you present.
+- **The accent in this group is never light, and it cannot be.** It carries small type on a pale ground, so it has to clear 4.5 to 1 there. A pale accent fails that outright, which is why "light sage green" is `moss`'s *ground* and not `moss`'s accent. The theme reads light because three quarters of the slide is the ground, not because the ink is faint.
+
+One note on `plum`. Violet is the only hue here with no established meaning in a business deck, and that cuts both ways: nothing is implied by it, and nothing is carried by it either. It is doing a job of differentiation, not a job of argument. Do not reach for it when the room is sceptical and the deck needs to feel sober; that is what `slate` and `boardroom` are for.
 
 ---
 
 ## Layouts
 
-The same thirteen names work in all seven themes. A deck is a list of these. Copy the markup out of `assets/layouts.html` and never invent a class.
+The same thirteen names work in all eleven themes. A deck is a list of these. Copy the markup out of `assets/layouts.html` and never invent a class.
 
 | Name | What it is | Holds |
 |---|---|---|
@@ -102,7 +124,7 @@ The same thirteen names work in all seven themes. A deck is a list of these. Cop
 
 ## Elements
 
-Drop into any layout. All seven themes define them.
+Drop into any layout. All eleven themes define them.
 
 | Name | What it does | Rule |
 |---|---|---|
@@ -120,7 +142,7 @@ Each of these was found by rendering a page and looking at it, not by reading th
 - `.strip` and `.checkpoint` sit at almost the same height and must never appear on the same slide.
 - A table with five or more body rows collides with a `.kicker`.
 - Six rows of wrapping cells run into the page number.
-- On `daylight` and `sage`, `.chapnum` is a 92pt numeral. Put the number alone in it and the word in the eyebrow. On `paper` and on all four generated themes it is a small tracked label and takes more.
+- On `daylight` and `sage`, `.chapnum` is a 92pt numeral. Put the number alone in it and the word in the eyebrow. On `paper` and on all eight generated themes it is a small tracked label and takes more.
 - A `paper` cover headline past about 118 characters reaches a fourth line and runs into the eyebrow.
 - A seventh bar in a `chart` pushes it into the `band`. Six is the ceiling and it is geometry, not taste.
 - A `chart` and a `band` on the same slide collide. The chart owns the middle of the page.

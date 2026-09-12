@@ -68,7 +68,7 @@ The repo owner comes from the third argument, then `$DECK_GH_OWNER`, then your o
 | Path | What it is |
 |---|---|
 | `skills/deck/SKILL.md` | The procedure. Six steps, from block plan to exits |
-| `skills/deck/references/THEMES.md` | The seven themes, the thirteen layouts, and the collisions worth knowing |
+| `skills/deck/references/THEMES.md` | The eleven themes, the thirteen layouts, and the collisions worth knowing |
 | `skills/deck/assets/*.css` | One file per theme. Inlined whole into the deck, never edited |
 | `skills/deck/assets/shell.html` | The page the slides get poured into |
 | `skills/deck/assets/layouts.html` | Every layout. Copy from here |

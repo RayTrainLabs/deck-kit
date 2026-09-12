@@ -109,6 +109,10 @@ def main(d):
         ("navy",      "family=Archivo"),
         ("crimson",   "family=Libre+Franklin"),
         ("slate",     "family=Inter+Tight"),
+        ("mist",      "family=Manrope"),
+        ("moss",      "family=Nunito+Sans"),
+        ("linen",     "family=Epilogue"),
+        ("plum",      "family=Sora"),
     ]
     # Detection runs on comment stripped bytes. shell.html carries a comment
     # listing every theme's font link, so a raw scan matches whichever marker
@@ -124,7 +128,9 @@ def main(d):
         fail("font link missing or unrecognised. daylight wants Caladea, Carlito and Figtree; "
              "paper wants Gelasio; sage wants Outfit and Figtree; boardroom wants Source Serif 4 "
              "and IBM Plex Sans; navy wants Archivo and IBM Plex Sans; crimson wants Libre "
-             "Franklin; slate wants Inter Tight.")
+             "Franklin; slate wants Inter Tight; mist wants Manrope and Figtree; moss wants "
+             "Nunito Sans and Figtree; linen wants Epilogue and Figtree; plum wants Sora "
+             "and Figtree.")
 
     # A font from another theme in the markup means a slide was pasted across
     # themes, which renders as one slide in a different typeface and is almost
@@ -140,6 +146,10 @@ def main(d):
         "navy":      ["Archivo", "IBM Plex Sans"],
         "crimson":   ["Libre Franklin"],
         "slate":     ["Inter Tight"],
+        "mist":      ["Manrope", "Figtree"],
+        "moss":      ["Nunito Sans", "Figtree"],
+        "linen":     ["Epilogue", "Figtree"],
+        "plum":      ["Sora", "Figtree"],
     }
     if theme:
         mine = set(FAMILIES[theme])
