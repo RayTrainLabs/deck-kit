@@ -1,0 +1,49 @@
+<title>{{DECK_TITLE}}</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<!-- {{FONTS}} is the theme's font link. Exactly one of:
+     daylight  css2?family=Caladea:wght@400;700&family=Carlito:wght@400;700&family=Figtree:wght@400;600;700;800&display=swap
+     paper     css2?family=Gelasio:ital,wght@0,400;0,700;1,400;1,700&display=swap -->
+<link href="https://fonts.googleapis.com/{{FONTS}}" rel="stylesheet">
+<style>
+{{CSS}}
+</style>
+
+{{SLIDES}}
+
+<nav class="nav" aria-label="Slide navigation">
+  <button id="prev" aria-label="Previous slide">&#8249;</button>
+  <span class="count" id="counter">1 / {{N}}</span>
+  <button id="next" aria-label="Next slide">&#8250;</button>
+</nav>
+
+<script>
+const slides = Array.from(document.querySelectorAll('.slide'));
+const counter = document.getElementById('counter');
+let current = 0;
+
+const go = i => {
+  current = Math.max(0, Math.min(slides.length - 1, i));
+  slides[current].scrollIntoView({behavior: 'smooth'});
+};
+
+document.getElementById('prev').addEventListener('click', () => go(current - 1));
+document.getElementById('next').addEventListener('click', () => go(current + 1));
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight' || e.key === 'PageDown' || e.key === ' ') { e.preventDefault(); go(current + 1); }
+  if (e.key === 'ArrowLeft'  || e.key === 'PageUp')                    { e.preventDefault(); go(current - 1); }
+  if (e.key === 'Home') { e.preventDefault(); go(0); }
+  if (e.key === 'End')  { e.preventDefault(); go(slides.length - 1); }
+});
+
+const io = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      current = slides.indexOf(entry.target);
+      counter.textContent = (current + 1) + ' / ' + slides.length;
+    }
+  });
+}, {threshold: 0.5});
+slides.forEach(s => io.observe(s));
+</script>

@@ -1,0 +1,231 @@
+<!-- ==================================================================
+     LAYOUT KIT. Copy a block, replace the words, keep the structure.
+     Never invent a class. If a slide does not fit one of these, the
+     slide is wrong, not the kit.
+
+     Every block below is a full <section>. Drop them in order into
+     shell.html at {{SLIDES}}. Renumber .pageno as you go.
+     ================================================================== -->
+
+
+<!-- LAYOUT: cover ................ always slide 1, exactly one per deck -->
+<section class="slide"><div class="stage">
+  <div class="t-mark">ray<em>train</em></div>
+  <div class="t-eyebrow">Workshop series &middot; Session 1 of 3</div>
+  <h1 class="t-h1">The deck title, which is a claim</h1>
+  <div class="t-rule"></div>
+  <div class="t-stand">One line that says what the room walks out able to do.</div>
+  <div class="t-by">Your Name &middot; Your Company</div>
+  <div class="t-meta">Month DD, YYYY &nbsp; &middot; &nbsp; yourcompany.com</div>
+  <div class="pageno">1</div>
+</div></section>
+
+
+<!-- LAYOUT: agenda ............... the running order, with a real clock -->
+<section class="slide"><div class="stage">
+  <div class="eyebrow">The next 90 minutes</div>
+  <h2 class="title">How this runs</h2>
+  <div class="timeline">
+    <div class="tl-row"><div class="tl-time">0:00</div><div class="tl-what"><b>Block heading</b><span>The one point to land, in the room's language</span></div></div>
+    <div class="tl-row"><div class="tl-time">0:20</div><div class="tl-what"><b>Block heading</b><span>First win in about three minutes</span></div></div>
+    <div class="tl-row"><div class="tl-time">0:45</div><div class="tl-what"><b>Block heading</b><span>Where it stops summarising and starts being useful</span></div></div>
+  </div>
+  <div class="pageno">2</div>
+</div></section>
+
+
+<!-- LAYOUT: chapter .............. block divider, dark, numbered -->
+<section class="slide"><div class="stage dark">
+  <div class="eyebrow">Block 2 of 4</div>
+  <div class="chapnum">02</div>
+  <div class="chapter">
+    <h2>The chapter title, which is also a claim</h2>
+    <p>One sentence of what changes for them by the end of this block.</p>
+  </div>
+</div></section>
+
+
+<!-- LAYOUT: three-up ............. three parallel things. The default. -->
+<section class="slide"><div class="stage">
+  <div class="eyebrow">Category, not a sentence</div>
+  <h2 class="title">A claim, not a label</h2>
+  <div class="grid three">
+    <div class="card">
+      <div class="badge">1</div>
+      <h3>Card heading</h3>
+      <p>Two or three lines. Four means the card is doing too much.</p>
+    </div>
+    <div class="card">
+      <div class="badge">2</div>
+      <h3>Card heading</h3>
+      <p>Two or three lines. Four means the card is doing too much.</p>
+    </div>
+    <div class="card">
+      <div class="badge">3</div>
+      <h3>Card heading</h3>
+      <p>Two or three lines. Four means the card is doing too much.</p>
+    </div>
+  </div>
+  <div class="kicker">The line they should leave the slide repeating.</div>
+  <div class="pageno">4</div>
+</div></section>
+
+
+<!-- LAYOUT: four-up .............. four beats that add up to one problem.
+     Often the dark centrepiece. Pair with band. -->
+<section class="slide"><div class="stage dark">
+  <div class="eyebrow">The moment</div>
+  <h2 class="title">Four boring facts. One real problem.</h2>
+  <div class="grid four">
+    <div class="card"><div class="badge">1</div><h3>Fact one</h3><p>Reads like nothing on its own.</p></div>
+    <div class="card"><div class="badge">2</div><h3>Fact two</h3><p>Reads like nothing on its own.</p></div>
+    <div class="card"><div class="badge">3</div><h3>Fact three</h3><p>Reads like nothing on its own.</p></div>
+    <div class="card"><div class="badge">4</div><h3>Fact four</h3><p>Reads like nothing on its own.</p></div>
+  </div>
+  <div class="band">
+    <b>The punchline the room has to look up for.</b>
+    <span>Why the four facts together are the problem.</span>
+  </div>
+  <div class="strip"><b>If yours missed it</b> The exact recovery instruction, not encouragement.</div>
+</div></section>
+
+
+<!-- LAYOUT: two-up ............... contrast. Move 2 of concept explanation. -->
+<section class="slide"><div class="stage">
+  <div class="eyebrow">The contrast</div>
+  <h2 class="title">Same model. Thirty seconds apart.</h2>
+  <div class="grid two">
+    <div class="card">
+      <div class="badge label">Before</div>
+      <p>The lazy version, quoted exactly as it was typed.</p>
+    </div>
+    <div class="card">
+      <div class="badge label">After</div>
+      <p>The loaded version, quoted exactly as it was typed.</p>
+    </div>
+  </div>
+  <div class="kicker">Let them see it. Do not over explain it.</div>
+  <div class="pageno">6</div>
+</div></section>
+
+
+<!-- LAYOUT: rules ................ do and don't. Never more than six a side. -->
+<section class="slide"><div class="stage">
+  <div class="eyebrow">The template</div>
+  <h2 class="title">Dos and don'ts</h2>
+  <div class="grid two">
+    <div class="card">
+      <div class="badge label">Do</div>
+      <ul>
+        <li>Short imperative, one line</li>
+        <li>Short imperative, one line</li>
+        <li>Short imperative, one line</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="badge label">Don't</div>
+      <ul>
+        <li>Short imperative, one line</li>
+        <li>Short imperative, one line</li>
+        <li>Short imperative, one line</li>
+      </ul>
+    </div>
+  </div>
+  <div class="kicker">The test they can apply without you.</div>
+  <div class="pageno">7</div>
+</div></section>
+
+
+<!-- LAYOUT: prompt ............... the hands on slide. TYPE THIS is verbatim.
+     Carries note, tree, checkpoint. Drop .tree if there is no folder. -->
+<section class="slide"><div class="stage">
+  <div class="eyebrow">Round 1 &middot; 10 minutes</div>
+  <h2 class="title">Read my inbox</h2>
+  <div class="prompt">
+    <div class="tag">Type this</div>
+    <div class="box">The exact text, copied off the screen, never a paraphrase.</div>
+  </div>
+  <div class="note">One rule, not a list. Then what to notice in the output.</div>
+  <div class="tree">my-first-agent/
+├── <i>CLAUDE.md</i>          the standing rules
+├── <i>inbox/</i>             10 emails
+└── <i>outputs/</i>           empty, for now</div>
+  <div class="checkpoint"><b>Checkpoint</b><span>A question the room answers out loud before you move on.</span></div>
+  <div class="pageno">8</div>
+</div></section>
+
+
+<!-- COMPOUND: tiers .............. three-up used for participation tiers.
+     Mandatory immediately before every hands on block. Not a new element. -->
+<section class="slide"><div class="stage">
+  <div class="eyebrow">Before we start</div>
+  <h2 class="title">Nobody gets stuck at the door</h2>
+  <div class="grid three">
+    <div class="card"><div class="badge label">A &middot; Run it</div><h3>You have it installed</h3><p>Open the folder and follow along at full size.</p></div>
+    <div class="card"><div class="badge label">B &middot; Lite</div><h3>Any chat window</h3><p>The same exercise, smaller. A real version, not a consolation prize.</p></div>
+    <div class="card"><div class="badge label">C &middot; Watch</div><h3>Follow on screen</h3><p>Watch this one, run it at your desk tonight with the folder we hand over.</p></div>
+  </div>
+  <div class="checkpoint"><b>Checkpoint</b><span>Call out your letter. A, B or C.</span></div>
+</div></section>
+
+
+<!-- LAYOUT: table ................ trade offs, comparisons, tiers of a model
+     Six body rows is the ceiling, and the last two rows are expensive:
+       five or more rows  ..... drop the kicker, it is positioned for a short
+                                table and prints on top of the last row
+       six rows ............... every cell stays under 34 characters, or the
+                                wrapped lines run into the page number
+     Both were found by rendering the PDF and looking at it. -->
+
+<section class="slide"><div class="stage">
+  <div class="eyebrow">The trade off</div>
+  <h2 class="title">What each one costs you</h2>
+  <table class="tbl">
+    <tr><th>Option</th><th>Time to first result</th><th>Ceiling</th><th>When to climb</th></tr>
+    <tr><td>Tier 1</td><td>Ten minutes</td><td>Low</td><td>Same fix three times</td></tr>
+    <tr><td>Tier 2</td><td>An hour</td><td>Medium</td><td>You need the diff</td></tr>
+    <tr><td>Tier 3</td><td>A day</td><td>High</td><td>It has to run without you</td></tr>
+  </table>
+  <div class="kicker">The named signal for when to move up.</div>
+  <div class="pageno">10</div>
+</div></section>
+
+
+<!-- COMPOUND: honesty ........... mandatory, late, before the close.
+     An advanced room respects you more for naming these than for overselling. -->
+<section class="slide"><div class="stage">
+  <div class="eyebrow">Where this breaks</div>
+  <h2 class="title">Three things I am watching for</h2>
+  <div class="grid three">
+    <div class="card"><div class="badge">1</div><h3>The named limit</h3><p>Say it before they find it. Then say what you do about it.</p></div>
+    <div class="card"><div class="badge">2</div><h3>The named limit</h3><p>Say it before they find it. Then say what you do about it.</p></div>
+    <div class="card"><div class="badge">3</div><h3>The named limit</h3><p>Say it before they find it. Then say what you do about it.</p></div>
+  </div>
+  <div class="kicker">If I don't know, I will say I don't know and come back with a precise answer.</div>
+  <div class="pageno">11</div>
+</div></section>
+
+
+<!-- LAYOUT: statement ............ the turn of the argument. One or two per deck. -->
+<section class="slide"><div class="stage dark">
+  <div class="eyebrow">So what did you build</div>
+  <div class="statement">
+    <h2>You didn't write code.<br>You wrote a <em>job description</em>.</h2>
+    <p>The short paragraph that lands it. Then stop talking and let the slide breathe.</p>
+  </div>
+  <div class="pageno">11</div>
+</div></section>
+
+
+<!-- LAYOUT: close ................ a transfer, never a thank you -->
+<section class="slide"><div class="stage">
+  <div class="eyebrow">Before you go</div>
+  <h2 class="title">Three things</h2>
+  <div class="grid three">
+    <div class="card"><div class="badge">1</div><h3>Keep the folder</h3><p>What they take with them that works after the room empties.</p></div>
+    <div class="card"><div class="badge">2</div><h3>Keep the rule</h3><p>The test they can apply without you.</p></div>
+    <div class="card"><div class="badge">3</div><h3>The homework</h3><p>Find me the worst one. Screenshot it, bring it, we fix it live.</p></div>
+  </div>
+  <div class="kicker">Your Name &nbsp;&middot;&nbsp; Your Company &nbsp;&middot;&nbsp; yourcompany.com</div>
+  <div class="pageno">12</div>
+</div></section>
