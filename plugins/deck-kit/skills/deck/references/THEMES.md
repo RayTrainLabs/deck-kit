@@ -53,7 +53,7 @@ Two working rules:
 
 ## Layouts
 
-The same eleven names work in all three themes. A deck is a list of these. Copy the markup out of `assets/layouts.html` and never invent a class.
+The same thirteen names work in all three themes. A deck is a list of these. Copy the markup out of `assets/layouts.html` and never invent a class.
 
 | Name | What it is | Holds |
 |---|---|---|
@@ -68,6 +68,8 @@ The same eleven names work in all three themes. A deck is a list of these. Copy 
 | `rules` | Numbered rule list, each rule with an example underneath | 3 to 5 rules |
 | `statement` | One large claim, one paragraph. Usually dark. The turn of the argument | 1 claim |
 | `close` | Three cards: what happened, what to do next, where to reach you | 3 cards |
+| `chart` | Horizontal bars, label on the left, value on the right. Sits where `table` sits, so the two line up when you flick between them | 3 to 6 bars |
+| `stats` | Three or four cards, each opening on one large numeral with its heading under it | 3 or 4 cards, 1 number each |
 
 ## Elements
 
@@ -79,16 +81,20 @@ Drop into any layout. All three themes define them.
 | `strip` | Thin bordered strip under the band, holding the recovery instruction | Only under a `band`, only on hands on slides |
 | `checkpoint` | Label plus a question to the room, on one row | Only where the room has just done something |
 | `kicker` | One line of interpretation at the bottom | Instead of a `band`, never as well |
+| `source` | 8pt italic line naming publisher and year, low on the page | Required on any slide carrying a `chart` or a `stat`. Clears both `kicker` and `strip` |
+| `card tip` | A modifier on `card`. Tinted ground and an accent rule on the left, for the shortcut in a grid | One per block, never more than one slide in three |
 
 ## Collisions worth knowing
 
-Each of these was found by rendering a page and looking at it, not by reading the CSS. `check.py` catches all four.
+Each of these was found by rendering a page and looking at it, not by reading the CSS. `check.py` catches all of them.
 
 - `.strip` and `.checkpoint` sit at almost the same height and must never appear on the same slide.
 - A table with five or more body rows collides with a `.kicker`.
 - Six rows of wrapping cells run into the page number.
 - On `daylight` and `sage`, `.chapnum` is a 92pt numeral. Put the number alone in it and the word in the eyebrow. On `paper` it is a small tracked label and takes more.
 - A `paper` cover headline past about 118 characters reaches a fourth line and runs into the eyebrow.
+- A seventh bar in a `chart` pushes it into the `band`. Six is the ceiling and it is geometry, not taste.
+- A `chart` and a `band` on the same slide collide. The chart owns the middle of the page.
 
 ---
 

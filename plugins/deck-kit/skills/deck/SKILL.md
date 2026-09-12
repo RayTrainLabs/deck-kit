@@ -30,6 +30,36 @@ Takes a topic, a slide count, an audience and a theme. Produces one HTML file th
 | `paper` | conceptual teaching, frameworks, an argument that is a progression rather than a task list. Executive rooms |
 | `sage` | calm subjects, strategy and policy, rooms being asked to think rather than type. Do not use it for anything printed in black and white: the structure is carried by gradients and greyscale flattens all of it |
 
+## Step 0, do the research. Before the block plan, not after.
+
+**Search the web first, every time, even on a topic you know well.** A deck built from what the model already knows is a deck of round claims, and a room can tell within two slides. The research is what produces the numbers, the trend and the shortcuts, and none of those can be invented.
+
+Four searches is the floor:
+
+1. **The size of the problem.** A survey, a benchmark, an industry report from the last eighteen months. This is the number on the early slide that makes the room sit up.
+2. **The trend.** The same measure at two or three points in time, so the chart has a direction and not just a height.
+3. **What practitioners actually complain about.** Engineering blogs, incident write ups, conference talks. This is where the shortcuts come from, and they are worth more than the survey.
+4. **The counter evidence.** Somebody credible who says the opposite. It goes on the honesty slide and it is the reason the room believes the other twenty nine.
+
+Write what you find into `EVIDENCE.md` in the deck directory, one line per claim, before writing a single slide:
+
+```markdown
+| Claim | Number | Source | Published | Cleared |
+|---|---|---|---|---|
+| Most pilots never reach production | 42% | Name of report, publisher | 2026-03 | yes, external |
+| Our own audit time | 1 hour | Raygency, B8 sessions | 2026-09 | no, a model not a case study |
+```
+
+`check.py` requires the file, five distinct sources, and a year within sight of each URL.
+
+**Three rules about numbers, and they are not negotiable.**
+
+- A number goes on a slide only if it has a line in `EVIDENCE.md`. The slide carries a `source` line in 8pt saying where and when.
+- Anything of ours that has not been cleared stays off the slides and goes in the facilitator notes. Uncleared proof on a slide is the one mistake that costs the room permanently.
+- Every cost figure we produce is a model, not a case study, and the slide says so in those words.
+
+**The shortcuts.** Three or four per deck, one per block, and they come out of search step 3 rather than out of the textbook. A shortcut is the default worth changing, the flag that saves an afternoon, the two steps worth doing in the other order, the thing that only shows up after somebody has run this in anger. If it reads like documentation, it is not one. They go on the slides as `class="card tip"`, not only in the notes: the room came for these.
+
 ## Step 1, plan the blocks. Do not open the HTML yet.
 
 A deck is scaffolding for a session that is mostly not the deck. Sixty minutes of slides is fifteen minutes of slides plus forty five of building.
@@ -102,6 +132,20 @@ Per slide:
 - **Every hands on slide carries a clock**, one rule not a list, an escape hatch, and a checkpoint.
 - **The recovery strip** says what to do when their run did not produce what the slide just promised. A slide carrying the strip drops the slide number.
 
+### Putting the evidence on the page
+
+The research from Step 0 is worth nothing in a file nobody opens. Three blocks carry it onto the slides, and `check.py` counts all three.
+
+| Block | Use it when | Rules |
+|---|---|---|
+| `chart` | the shape of the numbers is the argument, not the height of any one of them | six bars is the ceiling, values are percentages of the widest bar and not of a hundred, never on a slide that also carries a band |
+| `stat` inside a card | one number per card, three or four cards, the numbers are parallel measures of the same thing | the numeral keeps its heading. A numeral with no heading is a quiz |
+| `card tip` | the shortcut: the default worth changing, the flag that saves the afternoon | one per block, never more than one slide in three |
+
+Every slide carrying a `chart` or a `stat` carries a `source` line under it, 8pt, italic, naming the publisher and the year. `check.py` fails the slide without one. A deck of fourteen slides or more with no chart and no numbers anywhere fails outright: it is an opinion, not a deck.
+
+If the point survives being said in a sentence, say it in a sentence. A chart of three bars that all mean the same thing is decoration.
+
 ### The audience parameter picks a track, not a deck
 
 Generate one deck and two tracks, never three decks.
@@ -139,7 +183,7 @@ Do not add rules to a theme stylesheet. If a slide needs CSS that is not in the 
 
 `--footer "acme · B8"` sets the mark that prints opposite the page number on every slide but the cover, which already carries the wordmark at full size. The page then reads the mark on the left and the slide number on the right, on one baseline. Omit the flag and no mark prints. Pass it: a footer carrying the presenter and the module is most of what makes a printed page read as a document rather than a loose slide, and it costs one flag.
 
-Most decks are worth three companion documents beside the HTML: facilitator notes with the timings and the answers, an FAQ of what the room actually asks, and a runsheet for the day. `check.py` expects `FACILITATOR.md`, `FAQ.md` and `RUNSHEET.md` in the deck directory and fails if any is missing or is a stub.
+Most decks are worth four companion documents beside the HTML: facilitator notes with the timings and the answers, an FAQ of what the room actually asks, a runsheet for the day, and `EVIDENCE.md`, the sourced claims from Step 0. `check.py` expects `FACILITATOR.md`, `FAQ.md`, `RUNSHEET.md` and `EVIDENCE.md` in the deck directory and fails if any is missing or is a stub.
 
 ## Step 5, check on the bytes that ship
 

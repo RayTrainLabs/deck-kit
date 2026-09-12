@@ -34,12 +34,39 @@ def main(d):
     html = open(idx, encoding="utf-8").read()
 
     # ---- companions ------------------------------------------------
-    for f in ("FACILITATOR.md", "FAQ.md", "RUNSHEET.md"):
+    for f in ("FACILITATOR.md", "FAQ.md", "RUNSHEET.md", "EVIDENCE.md"):
         p = os.path.join(d, f)
         if not os.path.exists(p):
-            fail(f"{f} missing. A deck without the other three is half the deliverable.")
+            fail(f"{f} missing. A deck without the other four is half the deliverable.")
         elif os.path.getsize(p) < 400:
             fail(f"{f} is {os.path.getsize(p)} bytes. That is a stub, not a document.")
+
+    # ---- evidence ---------------------------------------------------
+    # Every number a room could repeat on Monday has to survive somebody
+    # looking it up on Tuesday. EVIDENCE.md is where that happens: one line
+    # per claim, with where it came from and when it was measured.
+    #
+    # The check is deliberately shallow. It cannot tell whether a source is
+    # any good. It can tell whether the research was done at all, and a deck
+    # built without it fails this and nothing else, which is the point.
+    ep = os.path.join(d, "EVIDENCE.md")
+    if os.path.exists(ep):
+        ev = open(ep, encoding="utf-8").read()
+        urls = set(re.findall(r"https?://[^\s)\]]+", ev))
+        if len(urls) < 5:
+            fail(f"EVIDENCE.md cites {len(urls)} distinct sources. Five is the floor for "
+                 "a deck that puts numbers on a slide. Search, read, and write the line "
+                 "down with the URL and the month it was published.")
+        undated = [u for u in urls
+                   if not re.search(r"20[12]\d", ev[max(0, ev.find(u) - 220):ev.find(u) + 220])]
+        if undated:
+            warn(f"{len(undated)} source(s) in EVIDENCE.md with no year within sight of the "
+                 "URL. A number with no date is a number with no shelf life.")
+        # Our own numbers are models until somebody clears them. The deck says
+        # so on the slide; EVIDENCE.md says which is which.
+        if not re.search(r"\bmodel, not a case study\b|\bnot cleared\b|\bcleared\b", ev, re.I):
+            warn("EVIDENCE.md never marks anything cleared or uncleared. Say which claims "
+                 "are ours and unproven, and keep those off the slides.")
 
 
     # ---- writing rules, on visible text only -----------------------
@@ -319,6 +346,49 @@ def main(d):
         fail(f"{worst} consecutive slides with nothing to look up at, ending at "
              f"slide {at}. One in five carries a band, a dark inversion, a "
              "statement or a strip. Put one in the middle of that run.")
+
+    # ---- evidence on the slides -------------------------------------
+    # A deck can cite five sources in a companion document and still put
+    # nothing on the screen worth writing down. These rules are about the
+    # slides, not the research behind them.
+    n_chart = sum(1 for s in slides if 'class="chart"' in s)
+    n_stat = sum(1 for s in slides if 'class="stat"' in s)
+    if n >= 14 and n_chart + n_stat == 0:
+        fail("no chart and no numbers anywhere in the deck. A room remembers a shape "
+             "and a figure, and forgets a paragraph. At least one slide carries either.")
+    for i, s in enumerate(slides, 1):
+        # Six bars is the ceiling: a seventh row runs from 1.32 past 3.7125
+        # and the band prints on the chart. Measured, not guessed.
+        n_bar = len(re.findall(r'class="ch-row"', s))
+        if n_bar > 6:
+            fail(f"slide {i}: a chart of {n_bar} bars. Six is the ceiling, and past it "
+                 "the chart reaches the band.")
+        if n_bar and 'class="band"' in s:
+            fail(f"slide {i}: a chart and a band. The chart owns the middle of the page.")
+        # The sceptic in row three gets a source or the number is decoration.
+        if ('class="chart"' in s or 'class="stat"' in s) and 'class="source"' not in s:
+            fail(f"slide {i}: numbers with no source line. Any figure from outside this "
+                 "room carries where it came from and when, on the slide, in 8pt.")
+
+    # The shortcut is the reason they came rather than reading the docs. One
+    # per block. The ceiling stops it becoming a colour rather than a signal.
+    n_tip = sum(s.count('class="card tip"') for s in slides)
+    n_chap = sum(1 for _, k in shapes if k == "chapter")
+    if n >= 14:
+        if n_tip < max(1, n_chap):
+            fail(f"{n_tip} shortcut cards against {n_chap} blocks. Every block hands them "
+                 "one thing they could not have read in the documentation: the default "
+                 "worth changing, the flag that saves the afternoon, the two steps done "
+                 "in the other order. Mark it with class=\"card tip\".")
+        if n_tip * 3 > n:
+            fail(f"{n_tip} shortcut cards in {n} slides. Past one slide in three it stops "
+                 "reading as a shortcut and starts reading as a colour.")
+
+    # Specificity. A deck of round claims and no figures is an opinion piece.
+    with_num = sum(1 for s in slides if re.search(r"\d", visible_text(s).replace("&nbsp;", " ")))
+    if n >= 14 and with_num * 3 < n:
+        warn(f"only {with_num} of {n} slides carry a number. Concrete over abstract: a "
+             "count, a duration, a cost, a date. Round claims are forgettable.")
 
     if n >= 20:
         n_stmt = sum(1 for _, k in shapes if k == "statement")

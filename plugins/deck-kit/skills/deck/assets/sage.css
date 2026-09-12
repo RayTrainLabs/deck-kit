@@ -37,6 +37,7 @@
   --muted:#5C6B62;           /* 5.12:1 on the page, 4.65:1 on a card. Body
                                 text sits here and clears AA on both */
   --card:#E6EBE4;
+  --tip-bg:#DCE7DD;      /* shortcut card ground: the sage accent, one step off the card and no further */
   --card-line:#D3DBCF;
   --dark-bg:#1C2622;         /* gradient start, and the flat fallback */
   --dark-bg-to:#243029;      /* gradient end. 1.19:1 apart, so the wash reads
@@ -480,3 +481,104 @@ body{
 }
 .stage.dark::after{color:var(--accent-lift)}
 .stage:has(.t-h1)::after{content:none}
+
+/* ---- evidence: chart, stat, source, shortcut ----------------------
+   Four blocks, added 2026-09-12, because a deck can follow every rule
+   above and still carry nothing a room can quote on Monday. The gap
+   was found the same way the layout gap was: by looking at thirty
+   finished pages and asking what a participant would write down.
+
+   None of these is decoration. A chart earns its place only when the
+   shape of the numbers is the argument. If the point survives being
+   said in a sentence, say it in a sentence.
+   ------------------------------------------------------------------ */
+
+/* A horizontal bar chart. Positioned exactly where .tbl is, because
+   it is a table the eye can read without reading: same top, same
+   left, same 1.75in first column, so a chart slide and a table slide
+   in the same block line up when you flick between them.
+
+   Six rows is the ceiling, and that is geometry rather than taste. Six
+   rows at .24in on a .14in gap runs from 1.32 to 3.46, which leaves a
+   quarter inch before .band at 3.7125. A seventh row eats that gap and
+   the band sits on the chart. check.py fails it. */
+.chart{
+  position:absolute;left:var(--margin);top:calc(1.32 * var(--in));
+  width:var(--content);
+  display:grid;row-gap:calc(.14 * var(--in));
+  height:calc(2.14 * var(--in));align-content:space-between;
+}
+.ch-row{
+  display:grid;align-items:center;
+  grid-template-columns:calc(1.75 * var(--in)) 1fr calc(.85 * var(--in));
+  column-gap:calc(.16 * var(--in));
+}
+.ch-lab{
+  font-family:var(--head);font-weight:600;
+  font-size:calc(9.8 * var(--pt));line-height:1.25;color:var(--ink);
+}
+/* The track is the card border colour, not a grey: a chart that
+   introduces a fourth neutral makes the deck look assembled from
+   two decks. The fill is a pseudo element so the bar value is one
+   number in the markup and nothing else. */
+.ch-bar{
+  height:calc(.24 * var(--in));background:var(--card-line);
+  print-color-adjust:exact;-webkit-print-color-adjust:exact;
+}
+.ch-bar::after{
+  content:'';display:block;height:100%;
+  width:calc(var(--v) * 1%);background:var(--accent);
+  print-color-adjust:exact;-webkit-print-color-adjust:exact;
+}
+.ch-val{
+  font-family:var(--head);font-weight:700;
+  font-size:calc(11.2 * var(--pt));line-height:1;color:var(--accent);
+  text-align:right;white-space:nowrap;
+}
+.dark .ch-lab{color:#fff}
+.dark .ch-bar{background:var(--dark-line)}
+.dark .ch-bar::after{background:var(--accent-lift)}
+.dark .ch-val{color:var(--accent-lift)}
+
+/* The source line. Any number on a slide that came from outside this
+   room carries one, and it sits low and small on purpose: the room
+   reads the number, the sceptic in row three reads the source.
+
+   y 4.55 clears .kicker at 4.31 above it and .strip at 4.8156 below,
+   so a slide can carry a kicker and a source and neither moves. */
+.source{
+  position:absolute;left:var(--margin);top:calc(4.55 * var(--in));
+  width:var(--content);
+  font-size:calc(8 * var(--pt));line-height:1.35;color:var(--muted);
+  font-style:italic;
+}
+.dark .source{color:var(--dark-body)}
+
+/* The number that survives the room. One per card, at the top, set
+   large enough to read from the back and paired with a unit small
+   enough that the numeral is what lands. A card with a .stat in it
+   keeps its heading: the numeral says how much, the heading says of
+   what, and a numeral with no heading is a quiz. */
+.stat{
+  font-family:var(--head);font-weight:700;
+  font-size:calc(30 * var(--pt));line-height:1;
+  letter-spacing:-.02em;color:var(--accent);
+  margin-bottom:calc(.12 * var(--in));
+}
+.stat small{margin-left:calc(.045 * var(--in));font-size:calc(12 * var(--pt));font-weight:600;color:var(--muted);letter-spacing:0}
+.grid.four .stat{font-size:calc(22 * var(--pt))}
+.dark .stat{color:var(--accent-lift)}
+.dark .stat small{color:var(--dark-body)}
+
+/* The shortcut. The one card in a grid that carries the thing they
+   could not have read in the documentation: the workaround, the
+   default worth changing, the ninety seconds that saves the afternoon.
+
+   It is a modifier on .card and not a block of its own, so it inherits
+   every measurement the grid already settled and cannot collide with
+   anything. The rule on the left is 3pt, which is the same
+   weight as the checkpoint's, so the two read as the same gesture. */
+.card.tip{background:var(--tip-bg);border-left:calc(4 * var(--pt)) solid var(--accent-deep)}
+.card.tip .badge{background:var(--accent-deep)}
+.dark .card.tip{border-left-color:var(--accent-lift)}
+.dark .card.tip .badge{background:var(--accent-lift);color:var(--dark-bg)}
