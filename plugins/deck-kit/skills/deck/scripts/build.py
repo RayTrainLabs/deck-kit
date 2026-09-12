@@ -16,7 +16,7 @@ who are not us, and a brand baked into a build tool is a brand on somebody
 else's slides. It is written as a one line stylesheet after the theme, because
 the theme file is inlined whole and unedited and nothing rewrites it.
 """
-import os, re, sys
+import base64, os, re, sys
 
 HERE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -93,6 +93,76 @@ def favicon(theme):
            f"text-anchor='middle'>r</text></svg>")
     return f'<link rel="icon" href="data:image/svg+xml,{svg}">'
 
+LOGO_TYPES = {".png": "image/png", ".jpg": "image/jpeg", ".jpeg": "image/jpeg",
+              ".svg": "image/svg+xml", ".webp": "image/webp", ".gif": "image/gif"}
+
+def logo(path):
+    """The client's mark, inlined as a data URI, or nothing at all.
+
+    Whose brand goes on a delivered deck is a business decision and it was
+    made once: the client's mark takes the cover position and the content
+    slide corner, and ours stays as the small footer mark. So this does three
+    things together, and they only make sense together.
+
+      1. On the cover, the client's logo replaces our wordmark at the same
+         origin. The text is not deleted, it is set to zero and painted over,
+         so an existing deck picks this up with no change to its markup.
+      2. On every other slide, a small version sits bottom left, where the
+         footer mark used to be.
+      3. Our footer mark therefore moves to the right, next to the page
+         number, because the left corner now belongs to the client.
+
+    The file is inlined rather than linked because index.html is one self
+    contained document. A linked logo is a broken image the first time the
+    deck is opened from a USB stick in a room with no wifi, which is the room
+    this template exists for.
+
+    Not painted on dark slides. A client logo is almost always dark ink on
+    transparency, and on a dark chapter divider that is an invisible smudge.
+    Hiding it there is the safe default; a reversed mark would need a second
+    file and that is a decision nobody has asked for yet.
+    """
+    if not path:
+        return ""
+    ext = os.path.splitext(path)[1].lower()
+    if ext not in LOGO_TYPES:
+        sys.exit(f"--logo {path}: want one of {', '.join(sorted(LOGO_TYPES))}")
+    if not os.path.exists(path):
+        sys.exit(f"--logo {path}: no such file")
+    raw = open(path, "rb").read()
+    if len(raw) > 1_000_000:
+        sys.exit(f"--logo {path}: {len(raw)//1024}KB. Over 1MB is a source file, "
+                 "not a logo. Export it at the size it prints, a few hundred "
+                 "pixels tall, and try again.")
+    # The hard limit alone is too loose to be useful. A 609KB photograph
+    # passed it in testing and turned a 53KB deck into 860KB, which is a
+    # sixteen fold increase nobody asked for and nobody would notice until
+    # they mailed it. The logo is inlined once, but that once is in every
+    # copy of the file that ever gets sent.
+    if len(raw) > 150_000:
+        print(f"  note: {os.path.basename(path)} is {len(raw)//1024}KB and is "
+              "inlined into the deck. A logo is line art: a few hundred pixels "
+              "tall as PNG or SVG is usually under 40KB.", file=sys.stderr)
+    uri = f"data:{LOGO_TYPES[ext]};base64,{base64.b64encode(raw).decode()}"
+    # Geometry, all of it read off the stylesheet rather than chosen:
+    # .t-mark sits at .62/.46, the checkpoint ends at 5.235, the page number
+    # sits at 9.075/5.28 and the stage is 5.625 tall. The content slide logo
+    # is .24in tall from 5.28, which clears the checkpoint by .045in and stays
+    # inside the stage. Verified by rendering a slide that carries a
+    # checkpoint, not by trusting this comment.
+    return (
+        f':root{{--logo:url("{uri}")}}'
+        '.t-mark{font-size:0;width:calc(2.9 * var(--in));'
+        'height:calc(.62 * var(--in));'
+        'background:var(--logo) left center/contain no-repeat}'
+        '.stage:not(:has(.t-h1))::before{content:"";position:absolute;'
+        'left:var(--margin);top:calc(5.28 * var(--in));'
+        'width:calc(1.6 * var(--in));height:calc(.24 * var(--in));'
+        'background:var(--logo) left center/contain no-repeat}'
+        '.stage.dark::before{content:none}'
+        '.stage::after{left:auto;right:calc(1.1 * var(--in))}'
+    )
+
 def footmark(text):
     """The footer string as a CSS declaration, or nothing at all.
 
@@ -112,7 +182,7 @@ def footmark(text):
     # escape, the second one is the space you can see.
     return ':root{--footmark:"' + text.replace("\u00b7", "\\00b7 ") + '"}'
 
-def main(d, theme, footer=None):
+def main(d, theme, footer=None, logo_path=None):
     if theme not in FONTS:
         sys.exit(f"unknown theme {theme!r}. Built themes: {', '.join(FONTS)}")
     shell = open(os.path.join(HERE, "assets", "shell.html"), encoding="utf-8").read()
@@ -133,6 +203,7 @@ def main(d, theme, footer=None):
                 .replace("{{FAVICON}}", favicon(theme))
                 .replace("{{N}}", str(n))
                 .replace("{{FOOTMARK}}", footmark(footer))
+                .replace("{{LOGO}}", logo(logo_path))
                 .replace("{{CSS}}", css)
                 .replace("{{SLIDES}}", slides))
     for stray in re.findall(r"\{\{[A-Z_]+\}\}", out):
@@ -141,7 +212,8 @@ def main(d, theme, footer=None):
     path = os.path.join(d, "index.html")
     open(path, "w", encoding="utf-8").write(out)
     print(f"{path}: {n} slides, theme {theme}, "
-          f"footer {footer or 'none'}, {len(out)} bytes")
+          f"footer {footer or 'none'}, logo {os.path.basename(logo_path) if logo_path else 'none'}, "
+          f"{len(out)} bytes")
 
 if __name__ == "__main__":
     import argparse
@@ -150,5 +222,8 @@ if __name__ == "__main__":
     p.add_argument("--theme", default="daylight")
     p.add_argument("--footer", default=None,
                    help='footer mark opposite the page number, e.g. "acme \u00b7 B8"')
+    p.add_argument("--logo", default=None,
+                   help="client logo, inlined. Takes the cover position and the "
+                        "content slide corner; our footer mark moves right")
     a = p.parse_args()
-    main(a.deck_dir, a.theme, a.footer)
+    main(a.deck_dir, a.theme, a.footer, a.logo)

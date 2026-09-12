@@ -212,6 +212,27 @@ Do not add rules to a theme stylesheet. If a slide needs CSS that is not in the 
 
 Most decks are worth four companion documents beside the HTML: facilitator notes with the timings and the answers, an FAQ of what the room actually asks, a runsheet for the day, and `EVIDENCE.md`, the sourced claims from Step 0. `check.py` expects `FACILITATOR.md`, `FAQ.md`, `RUNSHEET.md` and `EVIDENCE.md` in the deck directory and fails if any is missing or is a stub.
 
+### Putting the client's logo on it
+
+A deck delivered into somebody else's room wears their mark, not ours. That decision is made and it is not per deck:
+
+```bash
+python3 <skill>/scripts/build.py <deck-dir> --theme daylight \
+        --footer "raygency \u00b7 B8" --logo path/to/client-logo.png
+```
+
+Three things move together, which is why it is one flag and not three:
+
+1. On the cover, the client's logo takes our wordmark's position. The markup does not change, so an existing deck picks it up on the next build.
+2. On every other light slide, a small version sits bottom left.
+3. Our footer mark moves right, next to the page number, because the left corner now belongs to them.
+
+It is inlined as a data URI, not linked, because `index.html` is one self contained file and a linked logo is a broken image the first time the deck is opened from a USB stick in a room with no wifi.
+
+**It is not painted on dark slides.** A client logo is almost always dark ink on transparency, and on a dark chapter divider that is an invisible smudge. If the client has a reversed mark and wants it there, that is a second file and a change to this script, not something to fake with opacity.
+
+Give it line art a few hundred pixels tall, PNG or SVG. The build warns past 150KB and refuses past 1MB, because whatever you pass is inlined into every copy of the deck that ever gets sent. A 609KB photograph turned a 53KB deck into 860KB in testing.
+
 ## Step 5, check on the bytes that ship
 
 ```bash
