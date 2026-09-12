@@ -353,3 +353,183 @@
     <a href="https://your-portfolio.com" aria-label="Portfolio"><span class="ico portfolio"></span></a>
     <a href="https://medium.com/@handle" aria-label="Medium"><span class="ico medium"></span></a>
   </div>
+
+
+<!-- ==================================================================
+     PICTURES AND DIAGRAMS, added 2026-09-12.
+
+     The kit had fourteen layouts and not one of them produced an
+     image. Everything below sits in the band the table and the chart
+     use, so a kicker at 4.31 and a source at 4.55 still fit under it.
+
+     Images: write a relative path in src and build.py inlines it as a
+     data URI. The deck stays one file.
+
+     A diagram earns its place when the relationship between the parts
+     is the lesson. If the parts are a list, a list is honest and a
+     diagram is decoration with arrows on it.
+     ================================================================== -->
+
+<!-- LAYOUT: figure ......... an image and its caption. The caption is not optional: a screenshot with none makes the room hunt for what to look at. -->
+<section class="slide"><div class="stage">
+  <div class="eyebrow">Pictures</div>
+  <h2 class="title">A figure carries its caption</h2>
+  <div class="figure">
+    <img src="shot.png" alt="Retrieval results panel">
+    <div class="fig-cap">The top five chunks for one question. The second row is the events memo that answered it wrongly.</div>
+  </div>
+  <div class="pageno">2</div>
+</div></section>
+
+<!-- LAYOUT: shot ........... a screenshot with numbered pins. Set --ar to the image's own aspect ratio or the pins land in the gutter beside the picture instead of on it. Pins take --x and --y as percentages. -->
+<section class="slide"><div class="stage">
+  <div class="eyebrow">Pictures</div>
+  <h2 class="title">A pin beats the phrase look at the top right</h2>
+  <div class="shot">
+    <img src="shot.png" alt="Retrieval results panel">
+    <span class="pin" style="--x:16;--y:30">1</span>
+    <span class="pin" style="--x:16;--y:44">2</span>
+    <span class="pin" style="--x:63;--y:44">3</span>
+  </div>
+  <div class="source">Pin 1 is the score. Pin 2 is the wrong document scoring within two points of the right one. Pin 3 is the phrase that pulled it in.</div>
+  <div class="pageno">3</div>
+</div></section>
+
+<!-- LAYOUT: split .......... picture one side, argument the other. Add wide when the image is wide and the text is short. -->
+<section class="slide"><div class="stage">
+  <div class="eyebrow">Pictures</div>
+  <h2 class="title">Half picture, half argument</h2>
+  <div class="split">
+    <img src="shot.png" alt="Retrieval results panel">
+    <div class="sl-text">
+      <b>Similar is not relevant</b>
+      <span>Two of these five are about leave. One of them is the policy and one is a party memo, and the vector cannot tell you which is which because nobody kept the document type at indexing time.</span>
+    </div>
+  </div>
+  <div class="pageno">4</div>
+</div></section>
+
+<!-- LAYOUT: full ........... full bleed image with one line over it. The scrim is mandatory: this is the only element whose background is a photograph nobody has seen, so contrast cannot be computed. Keep the text in the left column where the scrim is darkest. -->
+<section class="slide"><div class="stage">
+  <div class="full">
+    <img src="shot.png" alt="Retrieval results panel">
+    <div class="fu-say">
+      <h2>Five paragraphs somebody else picked.</h2>
+      <p>The model never sees your corpus. It sees this, and it answers from it whether or not the answer is in here.</p>
+    </div>
+  </div>
+  <div class="pageno">5</div>
+</div></section>
+
+<!-- LAYOUT: flow ........... stages in order. Reach for it wherever a slide says first, then, then. -->
+<section class="slide"><div class="stage">
+  <div class="eyebrow">Diagrams</div>
+  <h2 class="title">Retrieval is three jobs wearing one name</h2>
+  <div class="flow">
+    <div class="fl-step"><span class="ico file"></span><b>Index</b><span>Split, embed, store with whatever you kept about where it came from.</span></div>
+    <div class="fl-step"><span class="ico search"></span><b>Search</b><span>Turn the question into a vector, return the k nearest. Usually five.</span></div>
+    <div class="fl-step"><span class="ico monitor"></span><b>Write</b><span>Answer from what it was handed, and from nothing else.</span></div>
+  </div>
+  <div class="kicker">The slide that was a list for thirty versions is a pipeline.</div>
+  <div class="pageno">6</div>
+</div></section>
+
+<!-- LAYOUT: spine .......... one vertical thread with parallel points hanging off it. -->
+<section class="slide"><div class="stage">
+  <div class="eyebrow">Diagrams</div>
+  <h2 class="title">Everything hangs off one thread</h2>
+  <div class="spine">
+    <div class="spn-node"><b>Open the folder</b><span>Before any code. One hour, and it finds three of your six failure modes.</span></div>
+    <div class="spn-node"><b>Fix the filing</b><span>Split on headings, keep five fields, re-index one document at a time.</span></div>
+    <div class="spn-node"><b>Score the retrieval</b><span>Twenty questions, the expected document named by hand, recall at 5 and at 10.</span></div>
+    <div class="spn-node"><b>Then, and only then, the answer</b><span>Grounding, refusal thresholds, and the bill.</span></div>
+  </div>
+  <div class="pageno">7</div>
+</div></section>
+
+<!-- LAYOUT: fishbone ....... causes feeding one effect. Ribs take --x, a percentage across the spine. Stagger them. -->
+<section class="slide"><div class="stage">
+  <div class="eyebrow">Diagrams</div>
+  <h2 class="title">Why the right document never came back</h2>
+  <div class="fishbone">
+    <div class="fb-rib up" style="--x:4"><b>Ingestion</b><span>Scanned pages, no extractable text</span><span class="fb-bone"></span></div>
+    <div class="fb-rib up" style="--x:40"><b>Chunking</b><span>Rule split from its exception</span><span class="fb-bone"></span></div>
+    <div class="fb-rib down" style="--x:22"><b>Metadata</b><span>No date, no jurisdiction</span><span class="fb-bone"></span></div>
+    <div class="fb-rib down" style="--x:58"><b>Query</b><span>Phrased nothing like the corpus</span><span class="fb-bone"></span></div>
+    <div class="fb-head">Confident wrong answer</div>
+  </div>
+  <div class="pageno">8</div>
+</div></section>
+
+<!-- LAYOUT: funnel ......... stages that lose volume. --w is the bar width as a percentage. -->
+<section class="slide"><div class="stage">
+  <div class="eyebrow">Diagrams</div>
+  <h2 class="title">Where the twenty questions go</h2>
+  <div class="funnel">
+    <div class="fn-row"><div class="fn-bar" style="--w:100">20</div><div><b>Questions written by hand</b><span>From last month's tickets, phrasing untouched</span></div></div>
+    <div class="fn-row"><div class="fn-bar" style="--w:78">14</div><div><b>Right document in the top ten</b><span>An indexing problem is ruled out for these</span></div></div>
+    <div class="fn-row"><div class="fn-bar" style="--w:52">9</div><div><b>Right document in the top five</b><span>Recall at 5, the only number that predicts anything</span></div></div>
+    <div class="fn-row"><div class="fn-bar" style="--w:30">5</div><div><b>Answered correctly from it</b><span>The gap between this and the row above is grounding</span></div></div>
+  </div>
+  <div class="source">Illustrative shape, not measured. Your own twenty will not look like this.</div>
+  <div class="pageno">9</div>
+</div></section>
+
+<!-- LAYOUT: venn ........... two or three overlapping sets. The overlap darkens by alpha, not by a blend mode, so it prints as it screens. -->
+<section class="slide"><div class="stage">
+  <div class="eyebrow">Diagrams</div>
+  <h2 class="title">Retrieval sits where all three overlap</h2>
+  <div class="venn">
+    <div class="vn-set">The documents you actually have</div>
+    <div class="vn-set">The questions people actually ask</div>
+    <div class="vn-set">What the index can find</div>
+    <div class="vn-note">Everything outside the middle is a refusal you should be logging.</div>
+  </div>
+  <div class="pageno">10</div>
+</div></section>
+
+<!-- LAYOUT: matrix ......... two axes, four quadrants, one of them marked hi. The axis labels sit outside the grid so they do not steal a quadrant's width. -->
+<section class="slide"><div class="stage">
+  <div class="eyebrow">Diagrams</div>
+  <h2 class="title">Fix the cheap and certain one first</h2>
+  <div class="matrix">
+    <div class="mx-q hi"><b>Split on headings</b><span>One afternoon, large and predictable effect</span></div>
+    <div class="mx-q"><b>Re-rank the top twenty</b><span>Days, large effect, ongoing cost per query</span></div>
+    <div class="mx-q"><b>Add the five fields</b><span>Hours, effect only on filtered questions</span></div>
+    <div class="mx-q"><b>Change the embedding model</b><span>A week, and you re-index everything to find out</span></div>
+  </div>
+  <div class="mx-x">Effort</div>
+  <div class="mx-y">Effect</div>
+  <div class="pageno">11</div>
+</div></section>
+
+<!-- LAYOUT: swim ........... who does what, when. Set --cols to the number of phases and mark the cells that matter with on. -->
+<section class="slide"><div class="stage">
+  <div class="eyebrow">Diagrams</div>
+  <h2 class="title">Who is actually holding this</h2>
+  <div class="swim" style="--cols:4">
+    <div class="sw-h"></div>
+    <div class="sw-h">Audit</div><div class="sw-h">Re-index</div><div class="sw-h">Score</div><div class="sw-h">Run</div>
+    <div class="sw-lane">Engineering</div>
+    <div class="sw-cell on">Owns the folder report</div><div class="sw-cell on">Owns the parser</div><div class="sw-cell">Runs the set</div><div class="sw-cell">On call</div>
+    <div class="sw-lane">The business</div>
+    <div class="sw-cell">Names the corpus</div><div class="sw-cell"></div><div class="sw-cell on">Writes the twenty</div><div class="sw-cell on">Reads the refusal log</div>
+    <div class="sw-lane">Legal</div>
+    <div class="sw-cell">Clears the corpus</div><div class="sw-cell"></div><div class="sw-cell"></div><div class="sw-cell on">Signs off the citations</div>
+  </div>
+  <div class="pageno">12</div>
+</div></section>
+
+<!-- LAYOUT: layers ......... a stack where the order is the argument. Mark the load bearing rows with hi. -->
+<section class="slide"><div class="stage">
+  <div class="eyebrow">Diagrams</div>
+  <h2 class="title">Nothing above works until the layer under it does</h2>
+  <div class="layers">
+    <div class="ly-row"><b>The answer</b><span>Grounding, citation, refusal threshold</span></div>
+    <div class="ly-row"><b>Retrieval</b><span>k, re-ranking, hybrid search</span></div>
+    <div class="ly-row hi"><b>The index</b><span>Chunking, the five fields, freshness</span></div>
+    <div class="ly-row hi"><b>The corpus</b><span>What is in the folder, and what is scanned, stale or duplicated</span></div>
+  </div>
+  <div class="kicker">Every hour spent on the top row while the bottom row is broken is an hour wasted.</div>
+  <div class="pageno">13</div>
+</div></section>

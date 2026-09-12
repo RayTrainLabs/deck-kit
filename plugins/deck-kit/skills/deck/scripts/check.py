@@ -219,7 +219,11 @@ def main(d):
         st = visible_text(s)
         tag = f"slide {i}"
 
-        if "t-h1" not in s and "eyebrow" not in s:
+        # The cover and a full bleed image slide are the two that carry no
+        # eyebrow, and for the same reason: there is no category line to
+        # write because the slide is one thing at full size. Found by
+        # building the probe deck, which failed its own full bleed slide.
+        if "t-h1" not in s and 'class="full"' not in s and "eyebrow" not in s:
             fail(f"{tag}: no eyebrow. Every slide has one.")
         eb = re.search(r'class="eyebrow">(.*?)<', s, flags=re.S)
         if eb:
@@ -320,7 +324,8 @@ def main(d):
         # (no table, no prompt, no list, no cards) is one half of a pair, and
         # the mechanism is the very next slide. Two soft slides in a row means
         # the metaphor was never cashed out.
-        soft = not re.search(r'class="(tbl|prompt|card|stack)"|<ul>', s)
+        soft = not re.search(r'class="(tbl|prompt|card|stack|figure|shot|split|full|'
+                             r'flow|spine|fishbone|funnel|venn|matrix|swim|layers)"|<ul>', s)
         soft_slides.append((i, soft))
 
         if 'class="checkpoint"' in s: has_checkpoint = True
@@ -350,6 +355,19 @@ def main(d):
         if "chapnum" in s:           return "chapter"
         if 'class="statement"' in s: return "statement"
         if 'class="prompt"' in s:    return "prompt"
+        if 'class="full"' in s:      return "full"
+        if 'class="shot"' in s:      return "shot"
+        if 'class="figure"' in s:    return "figure"
+        if 'class="split"' in s:     return "split"
+        if 'class="flow"' in s:      return "flow"
+        if 'class="spine"' in s:     return "spine"
+        if 'class="fishbone"' in s:  return "fishbone"
+        if 'class="funnel"' in s:    return "funnel"
+        if 'class="venn"' in s:      return "venn"
+        if 'class="matrix"' in s:    return "matrix"
+        if 'class="swim"' in s:      return "swim"
+        if 'class="layers"' in s:    return "layers"
+        if 'class="chart"' in s:     return "chart"
         if 'class="stack"' in s:     return "stack"
         if 'class="tbl"' in s:       return "table"
         if 'class="timeline"' in s:  return "timeline"
@@ -469,6 +487,32 @@ def main(d):
         fail("no checkpoint anywhere in the deck.")
     if n >= 8 and not any("chapnum" in s for s in slides):
         warn("no chapter dividers in a deck this long. Blocks should be visible.")
+
+
+    # ---- does the deck show anything ---------------------------------
+    # This rule exists because a deck passed every other check in this
+    # file with thirty slides and not one picture in it. The shape rules
+    # above count the arrangement of text containers, so a deck can vary
+    # its boxes perfectly and still be words from end to end, and the
+    # contact sheet does not catch it either: thirty varied text slides
+    # look varied.
+    #
+    # A slide is the one medium that can show a thing. A deck that never
+    # does is a document read aloud, and the room would rather have the
+    # document.
+    VISUAL = ("figure", "shot", "split", "full", "flow", "spine", "fishbone",
+              "funnel", "venn", "matrix", "swim", "layers", "chart")
+    shown = [i for i, k in shapes if k in VISUAL]
+    if n >= 14 and not shown:
+        fail(f"{n} slides and not one of them shows anything. No picture, no "
+             "diagram, no chart. The shape rules above only count how the text "
+             "is boxed, so a deck can pass all of them and still be words from "
+             "end to end. Ask which slide is a pipeline, a comparison of two "
+             "axes, a screenshot with the thing circled on it, and build that "
+             "one first.")
+    elif n >= 20 and len(shown) < 2:
+        warn(f"only {len(shown)} slide in {n} shows a picture or a diagram. In a "
+             "deck this long that is close to none.")
 
     # ---- the close is a transfer and a CTA --------------------------
     close = visible_text(slides[-1])

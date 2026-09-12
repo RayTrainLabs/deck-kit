@@ -245,6 +245,31 @@ Do not add rules to a theme stylesheet. If a slide needs CSS that is not in the 
 
 Most decks are worth four companion documents beside the HTML: facilitator notes with the timings and the answers, an FAQ of what the room actually asks, a runsheet for the day, and `EVIDENCE.md`, the sourced claims from Step 0. `check.py` expects `FACILITATOR.md`, `FAQ.md`, `RUNSHEET.md` and `EVIDENCE.md` in the deck directory and fails if any is missing or is a stub.
 
+### Pictures and diagrams
+
+The kit had fourteen layouts and not one of them produced an image, which meant a deck teaching software could not show the software. Twelve blocks now do.
+
+| Block | For | The catch |
+|---|---|---|
+| `figure` | An image and its caption | The caption is not optional. A screenshot with none makes the room hunt for what to look at |
+| `shot` | A screenshot with numbered pins | Set `--ar` to the image's own aspect ratio, or the pins land in the gutter beside the picture instead of on it |
+| `split` | Picture one side, argument the other | Add `wide` when the image is wide and the text is short |
+| `full` | Full bleed image, one line over it | The scrim is mandatory, see below |
+| `flow` | Stages in order | Reach for it wherever a slide says "first, then, then" |
+| `spine` | One thread with parallel points off it | For a sequence whose steps are not equal in weight |
+| `fishbone` | Causes feeding one effect | Ribs take `--x` across the spine. Stagger them |
+| `funnel` | Stages that lose volume | `--w` is the bar width as a percentage |
+| `venn` | Two or three overlapping sets | Overlap darkens by alpha, not a blend mode, so it prints as it screens |
+| `matrix` | Two axes, four quadrants | Mark the answer with `hi`. Axis labels sit outside the grid |
+| `swim` | Who does what, when | Set `--cols`, and mark only the cells that matter with `on` |
+| `layers` | A stack where the order is the argument | Mark the load bearing rows with `hi` |
+
+**Images are inlined.** Write a relative path in `src` and `build.py` embeds it as a data URI at build time, so the deck stays one file. It warns past 6MB of images, because base64 adds a third and a deck past about 8MB stops being mailable.
+
+**`full` is the one element whose contrast cannot be computed**, because its background is a photograph nobody has seen yet. The scrim is what makes it safe: a gradient from 88 percent to 20 percent across the frame, guaranteeing a dark field under the left column. Never remove it and never put copy outside that column.
+
+**A diagram earns its place when the relationship between the parts is the lesson.** If the parts are simply a list, a list is honest and a diagram is decoration with arrows on it. `check.py` now fails a deck of fourteen slides or more that contains no picture, no diagram and no chart, and warns a deck of twenty or more with fewer than two. That rule exists because a thirty slide deck passed every other check in this file while being words from end to end: the shape rules only count how the text is boxed, so a deck can vary its boxes perfectly and still show nothing.
+
 ### Putting the client's logo on it
 
 A deck delivered into somebody else's room wears their mark, not ours. That decision is made and it is not per deck:

@@ -648,3 +648,377 @@ body{
 .social a{display:inline-flex;text-decoration:none;line-height:0}
 .social .ico{width:calc(.245 * var(--in));height:calc(.245 * var(--in))}
 .stage:has(.social)::after{content:none}
+
+/* ==== pictures =====================================================
+   The kit had none. Fourteen layouts and not one of them produced an
+   image, which meant a deck teaching software could not show the
+   software. Every block below sits in the same band the table and the
+   chart use, 1.32 down to about 4.17, so a kicker at 4.31 and a source
+   at 4.55 still fit under it.
+
+   Images are inlined as data URIs by build.py. Write a relative path
+   and it is embedded at build time; the deck stays one file.
+   ================================================================== */
+
+/* figure: an image with a caption. The caption is not optional
+   furniture. A screenshot with no caption makes the room hunt for
+   what they are supposed to be looking at. */
+.figure{
+  position:absolute;left:var(--margin);top:calc(1.32 * var(--in));
+  width:var(--content);height:calc(2.85 * var(--in));
+  display:flex;flex-direction:column;gap:calc(.15 * var(--in));
+}
+.figure img{
+  width:100%;flex:1 1 auto;min-height:0;object-fit:contain;object-position:center;
+}
+.fig-cap{
+  flex:0 0 auto;font-size:calc(9.8 * var(--pt));line-height:1.35;color:var(--muted);
+}
+.dark .figure img{border-color:var(--dark-line);background:var(--dark-card)}
+.dark .fig-cap{color:var(--dark-body)}
+
+/* shot: a screenshot with numbered pins on it. The pin is the whole
+   point. "Look at the top right" is a sentence the room has to decode
+   while the slide is already moving; a numbered dot on the pixel is
+   not. Position each pin with --x and --y as percentages of the
+   image box. The ring around it is the page colour, so a pin stays
+   readable on a dark screenshot and on a light one. */
+.shot{
+  position:absolute;top:calc(1.32 * var(--in));
+  height:calc(2.85 * var(--in));
+  aspect-ratio:var(--ar, 1.78);
+  left:50%;transform:translateX(-50%);
+}
+.shot img{
+  width:100%;height:100%;display:block;object-fit:fill;
+  border:calc(1 * var(--pt)) solid var(--card-line);
+}
+.pin{
+  position:absolute;left:calc(var(--x) * 1%);top:calc(var(--y) * 1%);
+  transform:translate(-50%,-50%);
+  width:calc(.30 * var(--in));height:calc(.30 * var(--in));border-radius:50%;
+  background:var(--teal);color:#fff;
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--head);font-size:calc(10 * var(--pt));font-weight:700;line-height:1;
+  box-shadow:0 0 0 calc(2 * var(--pt)) var(--page);
+  print-color-adjust:exact;-webkit-print-color-adjust:exact;
+}
+.dark .shot img{border-color:var(--dark-line);background:var(--dark-card)}
+.dark .pin{box-shadow:0 0 0 calc(2 * var(--pt)) var(--dark-card)}
+
+/* split: the picture on one side, the argument on the other. Use wide
+   when the image is a wide screenshot and the text is short. */
+.split{
+  position:absolute;left:var(--margin);top:calc(1.32 * var(--in));
+  width:var(--content);height:calc(2.85 * var(--in));
+  display:grid;grid-template-columns:1fr 1fr;
+  column-gap:calc(.34 * var(--in));align-items:center;
+}
+.split.wide{grid-template-columns:1.4fr 1fr}
+.split img{
+  width:100%;height:auto;max-height:100%;object-fit:contain;
+  border:calc(1 * var(--pt)) solid var(--card-line);
+}
+.sl-text b{
+  display:block;font-family:var(--head);
+  font-size:calc(14 * var(--pt));font-weight:600;line-height:1.2;color:var(--ink);
+  padding-bottom:calc(.12 * var(--in));
+}
+.sl-text span{font-size:calc(10.5 * var(--pt));line-height:1.5;color:var(--muted)}
+.dark .sl-text b{color:#fff}
+.dark .sl-text span{color:var(--dark-body)}
+
+/* full: a full bleed image with one line over it.
+   The scrim is mandatory and it is not a taste decision. Every other
+   colour pair in this kit was checked against a known background;
+   this is the one element whose background is a photograph nobody has
+   seen yet, so contrast cannot be computed. The gradient guarantees a
+   dark field under the text regardless of what the picture is doing.
+   Never remove it, and never put body copy outside the left column
+   where it is darkest. */
+.full{position:absolute;inset:0;overflow:hidden}
+.full img{width:100%;height:100%;object-fit:cover;display:block}
+.full::after{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(95deg, rgba(8,10,12,.88) 0%, rgba(8,10,12,.74) 42%,
+                                     rgba(8,10,12,.20) 100%);
+  print-color-adjust:exact;-webkit-print-color-adjust:exact;
+}
+.fu-say{
+  position:absolute;left:var(--margin);top:calc(1.75 * var(--in));
+  width:calc(5.3 * var(--in));z-index:2;
+}
+.fu-say h2{
+  font-family:var(--head);font-size:calc(29 * var(--pt));font-weight:700;
+  line-height:1.16;letter-spacing:-.012em;color:#fff;
+}
+.fu-say p{
+  font-size:calc(11.5 * var(--pt));line-height:1.5;color:rgba(255,255,255,.92);
+  padding-top:calc(.22 * var(--in));
+}
+
+/* ==== diagrams =====================================================
+   A diagram earns its place when the relationship between the parts
+   is the lesson. If the parts are simply a list, a list is honest and
+   a diagram is decoration with arrows on it.
+   ================================================================== */
+
+/* flow: stages in order, with the arrow between them doing the work.
+   Reach for it wherever a slide currently says "first, then, then". */
+.flow{
+  position:absolute;left:var(--margin);top:calc(1.60 * var(--in));
+  width:var(--content);height:calc(2.10 * var(--in));
+  display:grid;grid-auto-flow:column;grid-auto-columns:1fr;
+  column-gap:calc(.54 * var(--in));align-items:stretch;
+}
+.fl-step{
+  position:relative;background:var(--card);
+  border:calc(1 * var(--pt)) solid var(--card-line);
+  padding:calc(.22 * var(--in));
+  display:flex;flex-direction:column;gap:calc(.06 * var(--in));
+  print-color-adjust:exact;-webkit-print-color-adjust:exact;
+}
+.fl-step + .fl-step::before{
+  content:'';position:absolute;left:calc(-.40 * var(--in));top:50%;
+  width:calc(.22 * var(--in));height:calc(.22 * var(--in));
+  transform:translateY(-50%) rotate(45deg);
+  border-top:calc(2.2 * var(--pt)) solid var(--teal);
+  border-right:calc(2.2 * var(--pt)) solid var(--teal);
+}
+.fl-step b{
+  font-family:var(--head);font-size:calc(12 * var(--pt));font-weight:600;
+  color:var(--ink);display:block;
+}
+.fl-step span{font-size:calc(9.4 * var(--pt));line-height:1.4;color:var(--muted)}
+.dark .fl-step{background:var(--dark-card);border-color:var(--dark-line)}
+.dark .fl-step b{color:#fff}
+.dark .fl-step span{color:var(--dark-body)}
+.dark .fl-step + .fl-step::before{border-color:var(--mint)}
+
+/* spine: one vertical line, with parallel points hanging off it.
+   For a sequence whose steps are not equal in weight, or a timeline
+   where what matters is that everything hangs off one thread. */
+.spine{
+  position:absolute;left:var(--margin);top:calc(1.42 * var(--in));
+  width:var(--content);height:calc(2.70 * var(--in));
+  padding-left:calc(1.00 * var(--in));
+  display:grid;row-gap:calc(.10 * var(--in));align-content:space-between;
+}
+.spine::before{
+  content:'';position:absolute;left:calc(.30 * var(--in));top:calc(.14 * var(--in));
+  bottom:calc(.14 * var(--in));width:calc(2.5 * var(--pt));background:var(--teal);
+  print-color-adjust:exact;-webkit-print-color-adjust:exact;
+}
+.spn-node{position:relative}
+.spn-node::before{
+  content:'';position:absolute;left:calc(-.62 * var(--in));top:calc(.17 * var(--in));
+  width:calc(.50 * var(--in));height:calc(2 * var(--pt));background:var(--teal);
+}
+.spn-node::after{
+  content:'';position:absolute;left:calc(-.79 * var(--in));top:calc(.08 * var(--in));
+  width:calc(.20 * var(--in));height:calc(.20 * var(--in));border-radius:50%;
+  background:var(--page);border:calc(2.5 * var(--pt)) solid var(--teal);
+  print-color-adjust:exact;-webkit-print-color-adjust:exact;
+}
+.spn-node b{
+  display:block;font-family:var(--head);font-size:calc(12 * var(--pt));
+  font-weight:600;color:var(--ink);
+}
+.spn-node span{font-size:calc(9.4 * var(--pt));line-height:1.4;color:var(--muted)}
+.dark .spine::before,.dark .spn-node::before{background:var(--mint)}
+.dark .spn-node::after{background:var(--dark-bg);border-color:var(--mint)}
+.dark .spn-node b{color:#fff}
+.dark .spn-node span{color:var(--dark-body)}
+
+/* fishbone: causes feeding one effect. The only diagram here that is
+   genuinely a diagram rather than a arranged list, and the only one
+   worth the space when a room is arguing about why something broke.
+   Ribs take --x, a percentage across the spine. */
+.fishbone{
+  position:absolute;left:var(--margin);top:calc(1.45 * var(--in));
+  width:var(--content);height:calc(2.60 * var(--in));
+}
+.fishbone::before{
+  content:'';position:absolute;left:0;right:calc(1.70 * var(--in));top:50%;
+  height:calc(2.5 * var(--pt));background:var(--teal);transform:translateY(-50%);
+  print-color-adjust:exact;-webkit-print-color-adjust:exact;
+}
+.fb-head{
+  position:absolute;right:0;top:50%;transform:translateY(-50%);
+  width:calc(1.62 * var(--in));min-height:calc(.70 * var(--in));
+  display:flex;align-items:center;justify-content:center;text-align:center;
+  background:var(--teal);color:#fff;padding:calc(.12 * var(--in));
+  font-family:var(--head);font-size:calc(10.5 * var(--pt));font-weight:600;line-height:1.25;
+  print-color-adjust:exact;-webkit-print-color-adjust:exact;
+}
+.fb-rib{position:absolute;left:calc(var(--x) * 1%);width:calc(1.85 * var(--in))}
+.fb-rib b{
+  display:block;font-family:var(--head);font-size:calc(10 * var(--pt));
+  font-weight:600;color:var(--ink);line-height:1.2;
+}
+.fb-rib span{display:block;font-size:calc(8.6 * var(--pt));line-height:1.32;color:var(--muted)}
+.fb-bone{
+  position:absolute;left:0;
+  width:calc(.56 * var(--in));height:calc(1.8 * var(--pt));
+  background:var(--teal);transform-origin:left center;
+  print-color-adjust:exact;-webkit-print-color-adjust:exact;
+}
+.fb-rib.up{bottom:calc(50% + .30 * var(--in))}
+.fb-rib.up .fb-bone{bottom:0;transform:rotate(34deg)}
+.fb-rib.down{top:calc(50% + .30 * var(--in))}
+.fb-rib.down .fb-bone{top:0;transform:rotate(-34deg)}
+.dark .fishbone::before,.dark .fb-bone{background:var(--mint)}
+.dark .fb-rib b{color:#fff}
+.dark .fb-rib span{color:var(--dark-body)}
+.dark .fb-head{background:var(--mint);color:var(--dark-bg)}
+
+/* funnel: stages that lose volume. Bars are centred and shrink, which
+   reads as a funnel without a single clip-path, because clip-path is
+   the first thing a PDF renderer gets wrong. --w is the width as a
+   percentage of the block. */
+.funnel{
+  position:absolute;left:var(--margin);top:calc(1.45 * var(--in));
+  width:var(--content);height:calc(2.60 * var(--in));
+  display:grid;align-content:space-between;row-gap:calc(.10 * var(--in));
+}
+.fn-row{
+  display:grid;grid-template-columns:1fr calc(3.30 * var(--in));
+  align-items:center;column-gap:calc(.30 * var(--in));
+}
+.fn-bar{
+  width:calc(var(--w) * 1%);margin:0 auto;height:calc(.46 * var(--in));
+  background:var(--teal);color:#fff;
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--head);font-size:calc(12.5 * var(--pt));font-weight:700;line-height:1;
+  print-color-adjust:exact;-webkit-print-color-adjust:exact;
+}
+.fn-row b{
+  display:block;font-family:var(--head);font-size:calc(11 * var(--pt));
+  font-weight:600;color:var(--ink);
+}
+.fn-row span{display:block;font-size:calc(9 * var(--pt));line-height:1.35;color:var(--muted)}
+.dark .fn-bar{background:var(--mint);color:var(--dark-bg)}
+.dark .fn-row b{color:#fff}
+.dark .fn-row span{color:var(--dark-body)}
+
+/* venn: two or three sets that overlap. The fill is the accent at low
+   alpha rather than a blend mode, so the overlap darkens by simple
+   arithmetic and prints the same way it screens. */
+.venn{
+  position:absolute;left:var(--margin);top:calc(1.45 * var(--in));
+  width:var(--content);height:calc(2.55 * var(--in));
+  display:flex;align-items:center;justify-content:center;
+}
+.vn-set{
+  width:calc(1.78 * var(--in));height:calc(1.78 * var(--in));border-radius:50%;
+  border:calc(2 * var(--pt)) solid var(--teal);
+  background:color-mix(in srgb, var(--teal) 15%, transparent);
+  display:flex;align-items:center;justify-content:center;text-align:center;
+  padding:calc(.20 * var(--in));
+  font-family:var(--head);font-size:calc(10 * var(--pt));font-weight:600;
+  line-height:1.25;color:var(--ink);
+  print-color-adjust:exact;-webkit-print-color-adjust:exact;
+}
+.vn-set + .vn-set{margin-left:calc(-.52 * var(--in))}
+.vn-note{
+  position:absolute;left:0;right:0;bottom:0;text-align:center;
+  font-size:calc(9.4 * var(--pt));color:var(--muted);
+}
+.dark .vn-set{border-color:var(--mint);color:#fff;
+  background:color-mix(in srgb, var(--mint) 18%, transparent)}
+.dark .vn-note{color:var(--dark-body)}
+
+/* matrix: two axes, four quadrants, and one of them is the answer.
+   Mark it with hi. The axis labels are separate elements because they
+   sit outside the grid, which is the only way they do not steal a
+   quadrant's width. */
+.matrix{
+  position:absolute;left:calc(1.20 * var(--in));top:calc(1.42 * var(--in));
+  width:calc(7.55 * var(--in));height:calc(2.48 * var(--in));
+  display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;
+  gap:calc(2 * var(--pt));background:var(--card-line);
+  border:calc(2 * var(--pt)) solid var(--card-line);
+  print-color-adjust:exact;-webkit-print-color-adjust:exact;
+}
+.mx-q{
+  background:var(--card);padding:calc(.20 * var(--in));
+  display:flex;flex-direction:column;gap:calc(.05 * var(--in));
+}
+.mx-q.hi{background:var(--tip-bg)}
+.mx-q b{font-family:var(--head);font-size:calc(11.5 * var(--pt));font-weight:600;color:var(--ink)}
+.mx-q span{font-size:calc(9 * var(--pt));line-height:1.35;color:var(--muted)}
+.mx-x{
+  position:absolute;left:calc(1.20 * var(--in));top:calc(4.02 * var(--in));
+  width:calc(7.55 * var(--in));text-align:center;
+  font-size:calc(8.6 * var(--pt));letter-spacing:.16em;text-transform:uppercase;
+  font-weight:700;color:var(--teal);
+}
+.mx-y{
+  position:absolute;left:calc(.62 * var(--in));top:calc(3.90 * var(--in));
+  transform:rotate(-90deg);transform-origin:left center;white-space:nowrap;
+  font-size:calc(8.6 * var(--pt));letter-spacing:.16em;text-transform:uppercase;
+  font-weight:700;color:var(--teal);
+}
+.dark .matrix{background:var(--dark-line);border-color:var(--dark-line)}
+.dark .mx-q{background:var(--dark-card)}
+.dark .mx-q.hi{background:var(--dark-bg)}
+.dark .mx-q b{color:#fff}
+.dark .mx-q span{color:var(--dark-body)}
+.dark .mx-x,.dark .mx-y{color:var(--mint)}
+
+/* swimlane: who does what, when. Set --cols to the number of phases.
+   Mark the cells that matter with on; a lane of uniformly filled
+   cells is a table wearing a costume. */
+.swim{
+  position:absolute;left:var(--margin);top:calc(1.42 * var(--in));
+  width:var(--content);height:calc(2.70 * var(--in));
+  display:grid;
+  grid-template-columns:calc(1.25 * var(--in)) repeat(var(--cols,3), 1fr);
+  gap:calc(1.5 * var(--pt));
+  background:var(--card-line);border:calc(1.5 * var(--pt)) solid var(--card-line);
+  print-color-adjust:exact;-webkit-print-color-adjust:exact;
+}
+.sw-h{
+  background:var(--teal);color:#fff;
+  display:flex;align-items:center;justify-content:center;text-align:center;
+  font-family:var(--head);font-size:calc(8.8 * var(--pt));font-weight:700;
+  letter-spacing:.10em;text-transform:uppercase;padding:calc(.10 * var(--in));
+}
+.sw-lane{
+  background:var(--card);display:flex;align-items:center;
+  padding:calc(.12 * var(--in));
+  font-family:var(--head);font-size:calc(9.6 * var(--pt));font-weight:600;color:var(--ink);
+}
+.sw-cell{
+  background:var(--page);padding:calc(.14 * var(--in));
+  font-size:calc(8.8 * var(--pt));line-height:1.35;color:var(--muted);
+  display:flex;align-items:center;
+}
+.sw-cell.on{background:var(--tip-bg);color:var(--ink)}
+.dark .swim{background:var(--dark-line);border-color:var(--dark-line)}
+.dark .sw-h{background:var(--mint);color:var(--dark-bg)}
+.dark .sw-lane{background:var(--dark-card);color:#fff}
+.dark .sw-cell{background:var(--dark-bg);color:var(--dark-body)}
+.dark .sw-cell.on{background:var(--dark-card);color:#fff}
+
+/* layers: a stack where the order is the argument. An architecture,
+   a maturity ladder, anything read bottom up or top down. */
+.layers{
+  position:absolute;left:var(--margin);top:calc(1.45 * var(--in));
+  width:var(--content);height:calc(2.60 * var(--in));
+  display:grid;align-content:space-between;row-gap:calc(.10 * var(--in));
+}
+.ly-row{
+  display:grid;grid-template-columns:calc(1.75 * var(--in)) 1fr;
+  align-items:center;column-gap:calc(.24 * var(--in));
+  background:var(--card);border-left:calc(4 * var(--pt)) solid var(--teal);
+  padding:calc(.12 * var(--in)) calc(.24 * var(--in));
+  print-color-adjust:exact;-webkit-print-color-adjust:exact;
+}
+.ly-row.hi{background:var(--tip-bg)}
+.ly-row b{font-family:var(--head);font-size:calc(11 * var(--pt));font-weight:600;color:var(--ink)}
+.ly-row span{font-size:calc(9.3 * var(--pt));line-height:1.4;color:var(--muted)}
+.dark .ly-row{background:var(--dark-card);border-left-color:var(--mint)}
+.dark .ly-row.hi{background:var(--dark-bg)}
+.dark .ly-row b{color:#fff}
+.dark .ly-row span{color:var(--dark-body)}

@@ -160,6 +160,49 @@ def logo(path):
         '.stage::after{left:auto;right:calc(1.1 * var(--in))}'
     )
 
+IMG_TYPES = {".png": "image/png", ".jpg": "image/jpeg", ".jpeg": "image/jpeg",
+             ".svg": "image/svg+xml", ".webp": "image/webp", ".gif": "image/gif"}
+
+def inline_images(slides, d):
+    """Turn <img src="shot.png"> into <img src="data:image/png;base64,...">.
+
+    A deck is one self contained file. An <img> pointing at a sibling file
+    is a broken image the moment the html is mailed on its own, which is
+    the normal way a deck travels, so the picture has to live inside it.
+
+    Only relative paths are touched. A data: URI is already inlined and an
+    http: one is somebody's deliberate choice to depend on a network.
+
+    Resolved against the deck directory, not the working directory, so the
+    same slides.html builds from anywhere.
+    """
+    total = [0]
+    def sub(m):
+        pre, src, post = m.group(1), m.group(2), m.group(3)
+        if src.startswith(("data:", "http:", "https:", "//")):
+            return m.group(0)
+        path = src if os.path.isabs(src) else os.path.join(d, src)
+        if not os.path.exists(path):
+            sys.exit(f"{src}: no such image, referenced by slides.html")
+        ext = os.path.splitext(path)[1].lower()
+        if ext not in IMG_TYPES:
+            sys.exit(f"{src}: want one of {', '.join(sorted(IMG_TYPES))}")
+        raw = open(path, "rb").read()
+        total[0] += len(raw)
+        return (f'{pre}data:{IMG_TYPES[ext]};base64,'
+                f'{base64.b64encode(raw).decode()}{post}')
+    out = re.sub(r'(<img[^>]*\ssrc=")([^"]+)(")', sub, slides)
+    if total[0]:
+        n = len(re.findall(r"<img", out))
+        print(f"  {n} image(s) inlined, {total[0]//1024}KB before base64")
+        # Base64 adds a third. A deck past about 8MB stops being mailable
+        # and starts being a file people decline to open.
+        if total[0] > 6_000_000:
+            print(f"  WARNING: {total[0]//1024//1024}MB of images. Export them at "
+                  "the size they print, around 1600px on the long edge.",
+                  file=sys.stderr)
+    return out
+
 def footmark(text):
     """The footer string as a CSS declaration, or nothing at all.
 
@@ -185,6 +228,7 @@ def main(d, theme, footer=None, logo_path=None):
     shell = open(os.path.join(HERE, "assets", "shell.html"), encoding="utf-8").read()
     css = open(os.path.join(HERE, "assets", f"{theme}.css"), encoding="utf-8").read()
     slides = open(os.path.join(d, "slides.html"), encoding="utf-8").read()
+    slides = inline_images(slides, d)
 
     n = len(re.findall(r'<section class="slide">', slides))
     if not n:
