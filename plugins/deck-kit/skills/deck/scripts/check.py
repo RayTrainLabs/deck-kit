@@ -496,6 +496,89 @@ def main(d):
         warn("no chapter dividers in a deck this long. Blocks should be visible.")
 
 
+
+    # ---- is the block the right block ---------------------------------
+    # A vocabulary of nineteen shapes is a way to be wrong in nineteen new
+    # ways. Most of "which block" is judgment and stays in SKILL.md, but a
+    # useful share of misuse is arithmetic and belongs here: a flow of two
+    # is a sentence with an arrow in it, a 2x2 with nothing marked is four
+    # boxes, a funnel whose bars do not narrow is a bar chart lying about
+    # its own shape.
+    for i, s in enumerate(slides, 1):
+        tag = f"slide {i}"
+
+        if 'class="flow"' in s:
+            n_st = len(re.findall(r'class="fl-step"', s))
+            if n_st < 3:
+                fail(f"{tag}: a flow of {n_st}. Two boxes and an arrow is a "
+                     "sentence. Three is where a sequence starts being a shape.")
+            if n_st > 5:
+                fail(f"{tag}: a flow of {n_st} steps. Five is the ceiling; past it "
+                     "the boxes are too narrow to hold the words that explain them.")
+
+        if 'class="venn"' in s:
+            n_set = len(re.findall(r'class="vn-set"', s))
+            if n_set > 3:
+                fail(f"{tag}: a venn of {n_set} sets. Three is the ceiling, because "
+                     "four circles cannot show all their intersections and the one "
+                     "you care about stops being visible.")
+
+        if 'class="matrix"' in s:
+            if 'class="mx-q hi"' not in s:
+                fail(f"{tag}: a 2x2 with no quadrant marked. A matrix exists to say "
+                     "which quadrant is the answer. Unmarked it is four boxes with "
+                     "axes drawn round them. Add hi to one.")
+            if 'class="mx-x"' not in s or 'class="mx-y"' not in s:
+                fail(f"{tag}: a 2x2 with an unlabelled axis. Both axes are named or "
+                     "the reader is guessing what the position means.")
+
+        if 'class="funnel"' in s:
+            ws = [float(w) for w in re.findall(r'class="fn-bar"[^>]*--w:\s*([\d.]+)', s)]
+            if ws and any(b > a for a, b in zip(ws, ws[1:])):
+                fail(f"{tag}: a funnel whose bars widen. The widths are {ws}. A funnel "
+                     "is a thing that loses volume at every stage; if yours gains, it "
+                     "is a bar chart and should say so.")
+
+        for cls, lim, why in (("sb-seg", 4, "segments in a stacked bar. Past four nobody "
+                               "can match the legend to the stack and a table is honest"),
+                              ("mu-cell", 6, "small multiples. Six is the ceiling and four "
+                               "is better; past it each panel is too small to read"),
+                              ("rg", 4, "rings on one slide. Past four they stop being "
+                               "figures worth writing down and become a pattern")):
+            for block in re.findall(r'class="(?:stackbar|multiples|rings)".*?(?=<div class="(?:kicker|source|pageno)"|</div></section>)', s, re.S):
+                n_c = len(re.findall(rf'class="{cls}[ "]', block))
+                if n_c > lim:
+                    fail(f"{tag}: {n_c} {why}.")
+
+        if 'class="shot"' in s and "--ar" not in s:
+            fail(f"{tag}: a shot with no --ar. The box has to carry the image's own "
+                 "aspect ratio or the pins land in the gutter beside the picture "
+                 "instead of on it.")
+
+        for block in re.findall(r'<img[^>]*>', s):
+            if "alt=" not in block:
+                warn(f"{tag}: an image with no alt text.")
+
+        for cls, name, lim in (("spn-node", "spine", 3), ("ly-row", "layers", 3)):
+            if f'class="{name}"' in s:
+                # [ "] and not a closing quote: ly-row hi is still a
+                # ly-row. Counting class="ly-row" exactly saw two of four
+                # and failed a correct slide. This is the third time this
+                # exact mistake has cost something in this repo.
+                n_r = len(re.findall(rf'class="{cls}[ "]', s))
+                if n_r < lim:
+                    fail(f"{tag}: a {name} of {n_r}. Under three there is no sequence "
+                         "to show and two cards say it more plainly.")
+
+        if 'class="fishbone"' in s:
+            if 'class="fb-head"' not in s:
+                fail(f"{tag}: a fishbone with no effect at the end of the spine. The "
+                     "causes have to feed something or it is four labels on a line.")
+            n_rib = len(re.findall(r'class="fb-rib', s))
+            if n_rib < 3:
+                fail(f"{tag}: a fishbone with {n_rib} ribs. Under three, the causes are "
+                     "a list and the diagram is decoration.")
+
     # ---- does the deck show anything ---------------------------------
     # This rule exists because a deck passed every other check in this
     # file with thirty slides and not one picture in it. The shape rules

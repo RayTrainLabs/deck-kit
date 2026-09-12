@@ -245,6 +245,42 @@ Do not add rules to a theme stylesheet. If a slide needs CSS that is not in the 
 
 Most decks are worth four companion documents beside the HTML: facilitator notes with the timings and the answers, an FAQ of what the room actually asks, a runsheet for the day, and `EVIDENCE.md`, the sourced claims from Step 0. `check.py` expects `FACILITATOR.md`, `FAQ.md`, `RUNSHEET.md` and `EVIDENCE.md` in the deck directory and fails if any is missing or is a stub.
 
+### Which block. Start here, not with the block you like.
+
+A vocabulary of nineteen shapes is nineteen new ways to be wrong. Decide from what the slide is carrying, never from what would look good.
+
+| What the slide actually carries | The block |
+|---|---|
+| Three or four parallel things, equal weight | `grid three` / `four-up` |
+| Three or four things whose bodies run past three lines | `stack` |
+| Two options weighed against each other | `tbl`, two columns |
+| Five or six attributes across three or four things | `tbl` |
+| A sequence where each step feeds the next | `flow` |
+| A sequence hanging off one thread, steps unequal in weight | `spine` |
+| An order where the lower thing must work first | `layers` |
+| Causes feeding one effect, and the room disagrees about which | `fishbone` |
+| Two axes and one right answer | `matrix` |
+| Who does what, when | `swim` |
+| Stages that lose volume | `funnel` |
+| Sets that overlap, and the overlap is the point | `venn` |
+| A ranking, where the shape of the order is the argument | `chart` |
+| What a number was, what moved it, what it became | `waterfall` |
+| A measure over time, where direction is the point | `linechart` |
+| Composition, and how it differs across cases | `stackbar` |
+| The same measure per thing, compared | `multiples` |
+| One number as a proportion of a whole | `rings` |
+| A thing you can point at on screen | `figure`, or `shot` if you need to point at part of it |
+| A picture that carries the feeling and one line that carries the claim | `full` |
+| The claim the whole block turns on | `statement` |
+
+**Three tests before you commit to a diagram.**
+
+1. **Say it as a sentence first.** If the sentence is as clear, write the sentence. A `flow` of two boxes is a sentence with an arrow in it, which is why `check.py` fails one.
+2. **Cover the labels.** If the picture still says something, the shape is doing work. If it becomes meaningless, you have arranged a list and called it a diagram.
+3. **Ask what would change the picture.** If no plausible different answer would look different, the diagram is illustrating rather than arguing. A 2x2 with nothing marked is the common case, and it fails.
+
+**What `check.py` now enforces of this**, because a share of misuse is arithmetic rather than taste: a `flow` under three steps or over five, a `venn` over three sets, a `matrix` with no quadrant marked or an unlabelled axis, a `funnel` whose bars widen, a `stackbar` past four segments, `multiples` past six, `rings` past four, a `spine` or `layers` under three rows, a `fishbone` with no effect or under three ribs, and a `shot` with no `--ar`. `build.py` refuses a `waterfall` whose deltas do not sum to its closing total, because that is the one error in a bridge chart that nobody catches in the room: the bars look fine and the arithmetic is wrong.
+
 ### Pictures and diagrams
 
 The kit had fourteen layouts and not one of them produced an image, which meant a deck teaching software could not show the software. Twelve blocks now do.

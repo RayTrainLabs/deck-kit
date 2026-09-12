@@ -203,6 +203,90 @@ def inline_images(slides, d):
                   file=sys.stderr)
     return out
 
+def waterfall(slides):
+    """Compute a bridge chart's bars from its values.
+
+    The first version made the author type --base and --h as percentages
+    for every column, which is the deck asking a person to do arithmetic
+    that the deck already has the numbers for. Get one base wrong by two
+    and the bridge no longer bridges, and nothing catches it: the slide
+    renders, it is just quietly lying.
+
+    So the markup carries values and labels only:
+
+        <div class="waterfall">
+          <div class="wf-col" data-v="9"    data-tot>Baseline</div>
+          <div class="wf-col" data-v="+4">Split on headings</div>
+          <div class="wf-col" data-v="-1">Cheaper embedding</div>
+          <div class="wf-col" data-v="17"   data-tot>After one week</div>
+        </div>
+
+    A column with data-tot is an absolute: it stands on the floor and its
+    height is its value. Everything else is a delta that floats on the
+    running total, above it when positive and below it when negative.
+
+    The scale is the largest value or cumulative, mapped to 82 percent,
+    which leaves the value label room above the tallest bar rather than
+    letting it print off the top of the block.
+    """
+    def one(open_tag, inner):
+        cols = re.findall(r'<div class="wf-col([^"]*)"([^>]*)>(.*?)</div>', inner, re.S)
+        if not cols:
+            return open_tag + inner + '</div>'
+        run, rows, peak = 0.0, [], 0.0
+        for cls, attrs, label in cols:
+            mv = re.search(r'data-v="([+-]?[\d.]+)"', attrs)
+            if not mv:
+                sys.exit("a wf-col with no data-v. Every column carries its value.")
+            v = float(mv.group(1))
+            if "data-tot" in attrs:
+                # Compare before overwriting. The first version set run = v
+                # and then checked run against v further down, which is a
+                # comparison that can never fail, so a bridge declaring 99
+                # against deltas summing to 17 built without complaint.
+                if rows and abs(v - run) > 0.005:
+                    sys.exit(f"waterfall does not close: the deltas sum to {run:g} "
+                             f"but the closing total says {v:g}. Fix the numbers, "
+                             "not the chart.")
+                base, h, run = 0.0, v, v
+            elif v >= 0:
+                base, h = run, v
+                run += v
+            else:
+                run += v
+                base, h = run, -v
+            rows.append((cls, mv.group(1), label, base, h))
+            peak = max(peak, base + h)
+        if peak <= 0:
+            sys.exit("waterfall values sum to nothing")
+        k = 82.0 / peak
+        out = []
+        for cls, raw, label, base, h in rows:
+            val = raw if raw.startswith(("+", "-")) else raw
+            out.append(
+                f'<div class="wf-col{cls}" style="--base:{base*k:.2f};--h:{h*k:.2f}">'
+                f'<span class="wf-val">{val}</span><span class="wf-bar"></span>'
+                f'<span class="wf-lab">{label.strip()}</span></div>')
+        return open_tag + "".join(out) + "</div>"
+
+    # Depth scan, not a regex. A non greedy </div> matches the first
+    # column's closing tag rather than the block's, so the first version
+    # of this silently rewrote nothing and the chart came out empty.
+    out, i = [], 0
+    while True:
+        m = re.compile(r'<div class="waterfall"[^>]*>').search(slides, i)
+        if not m:
+            out.append(slides[i:]); break
+        out.append(slides[i:m.start()])
+        depth, j = 1, m.end()
+        for t in re.finditer(r'<div\b[^>]*>|</div>', slides[m.end():]):
+            depth += 1 if t.group(0).startswith("<div") else -1
+            if depth == 0:
+                j = m.end() + t.start(); break
+        out.append(one(m.group(0), slides[m.end():j]))
+        i = j + len("</div>")
+    return "".join(out)
+
 def footmark(text):
     """The footer string as a CSS declaration, or nothing at all.
 
@@ -229,6 +313,7 @@ def main(d, theme, footer=None, logo_path=None):
     css = open(os.path.join(HERE, "assets", f"{theme}.css"), encoding="utf-8").read()
     slides = open(os.path.join(d, "slides.html"), encoding="utf-8").read()
     slides = inline_images(slides, d)
+    slides = waterfall(slides)
 
     n = len(re.findall(r'<section class="slide">', slides))
     if not n:

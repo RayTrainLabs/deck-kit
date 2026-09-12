@@ -533,3 +533,23 @@
   <div class="kicker">Every hour spent on the top row while the bottom row is broken is an hour wasted.</div>
   <div class="pageno">13</div>
 </div></section>
+
+
+<!-- LAYOUT: waterfall ..... the bridge. Values only: build.py computes
+     every base and height, scales the block, and refuses to build if the
+     deltas do not sum to the closing total. data-tot marks an absolute
+     column; everything else is a delta. -->
+<section class="slide"><div class="stage">
+  <div class="eyebrow">The bridge</div>
+  <h2 class="title">Where the number actually went</h2>
+  <div class="waterfall">
+    <div class="wf-col tot" data-v="9" data-tot>Where it<br>started</div>
+    <div class="wf-col" data-v="+4">The change that<br>did most</div>
+    <div class="wf-col" data-v="+3">The second<br>change</div>
+    <div class="wf-col down" data-v="-1">What cost<br>you</div>
+    <div class="wf-col" data-v="+2">The last<br>change</div>
+    <div class="wf-col tot" data-v="17" data-tot>Where it<br>ended</div>
+  </div>
+  <div class="source">Where the numbers came from, and when.</div>
+  <div class="pageno">18</div>
+</div></section>
