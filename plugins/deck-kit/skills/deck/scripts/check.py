@@ -215,6 +215,21 @@ def main(d):
                 warn(f"{tag}: hands on slide with no TYPE THIS block.")
             if not re.search(r"\d+\s*(min|minute)", st, re.I):
                 fail(f"{tag}: hands on slide with no clock. The time is always on the slide.")
+            # The prompt box starts at 1.45in and the note starts at 3.22in, so
+            # the box owns 1.77in. The tag and the box padding take 0.71in of
+            # that, leaving four lines of 12pt mono, and the 3.82in measure sets
+            # 38 characters to the line. Past that the note prints on top of the
+            # box. Without a note the floor is the checkpoint at 4.86in, which is
+            # ten lines. Both numbers were found by rendering the page twice and
+            # looking at it: the arithmetic said 53 characters and was wrong.
+            bx = re.search(r'class="box">(.*?)</div>', s, flags=re.S)
+            if bx:
+                n_ch = len(re.sub(r"<[^>]+>", "", bx.group(1)).strip())
+                ceiling = 130 if 'class="note"' in s else 360
+                if n_ch > ceiling:
+                    fail(f"{tag}: TYPE THIS box is {n_ch} characters against a ceiling of "
+                         f"{ceiling}. It overruns and the next element prints on top of it. "
+                         "Cut the prompt, do not shrink the type.")
         # An analogy is never the payload. A slide with no mechanism on it
         # (no table, no prompt, no list, no cards) is one half of a pair, and
         # the mechanism is the very next slide. Two soft slides in a row means

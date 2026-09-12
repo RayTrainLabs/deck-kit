@@ -131,13 +131,13 @@ The check catches rule breaks. It does not catch a slide that is ugly or a claim
 
 ## Step 6, the exits
 
-**Ask with AskUserQuestion, `multiSelect: true`, all three options, every time.** Not prose at the end of a message, not a question the user has to answer in words, and never a choice of one. The three exits are not alternatives: a link, a PDF and a Gamma are different deliverables for different rooms, and the common answer is all of them.
+**Ask with AskUserQuestion, `multiSelect: true`, all four options, every time.** Not prose at the end of a message, not a question the user has to answer in words, and never a choice of one. The four exits are not alternatives: a link, a PDF, a Markdown file and a Gamma are different deliverables for different rooms, and the common answer is all of them.
 
 ```
 question:    "How do you want this deck out? Pick as many as you need."
 header:      "Exits"
 multiSelect: true
-options:     GitHub Pages  |  PDF  |  Gamma
+options:     GitHub Pages  |  PDF  |  Markdown  |  Gamma
 ```
 
 **GitHub Pages**, the live link:
@@ -149,6 +149,14 @@ ${CLAUDE_PLUGIN_ROOT}/skills/deck/scripts/publish-pages.sh <deck-dir> <repo-name
 `owner` defaults to `$DECK_GH_OWNER`, then to your own GitHub account. The script creates a **public** repo and enables Pages, because Pages on the Free plan publishes only from public repos. Confirm with the user before pushing anything with client names or unreleased material in it, and keep facilitator notes out of the published directory.
 
 **PDF**, when the design has to survive the handoff. `export-pdf.sh`, above. It verifies the page count matches the slide count and fails loudly if not.
+
+**Markdown**, the text of the deck as a file the user can read, diff or paste into another generator:
+
+```bash
+python3 ${CLAUDE_PLUGIN_ROOT}/skills/deck/scripts/export-md.py <deck-dir>
+```
+
+Writes `<deck-dir>/deck.md`, one section per slide in running order, carrying the words and the structure and nothing else. It is an export, not a source: edits belong in `slides.html`, and running it again overwrites `deck.md`. It is also the hand route into Gamma when the user would rather paste than run a script, so offer it alongside Gamma rather than instead of it.
 
 **Gamma**, only after the HTML is final. Gamma's URL import rejects GitHub Pages, so the route is the deck's text content, which produces a **new, separate** artifact in Gamma's own look. Gamma cannot edit an existing gamma and cannot round trip back. Say that plainly rather than implying a sync.
 
