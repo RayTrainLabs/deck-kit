@@ -25,6 +25,21 @@ OWNER="${3:-${DECK_GH_OWNER:-$(gh api user --jq .login)}}"
 
 [ -f "$DIR/index.html" ] || { echo "no index.html in $DIR. Run build.py first." >&2; exit 1; }
 
+# Facilitator material is written for the person at the front of the room and
+# nobody else. This publishes a whole directory, so it refuses rather than
+# relying on you reading the warning above at the end of a long day.
+NOTES=""
+for f in FACILITATOR.md FAQ.md RUNSHEET.md; do
+  [ -e "$DIR/$f" ] && NOTES="$NOTES $f"
+done
+if [ -n "$NOTES" ]; then
+  echo "REFUSING: facilitator material in $DIR:$NOTES" >&2
+  echo "Everything in the directory goes public. Publish a clean copy instead:" >&2
+  echo "  mkdir -p /tmp/$REPO && cp \"$DIR\"/index.html \"$DIR\"/deck.pdf /tmp/$REPO/" >&2
+  echo "  $0 /tmp/$REPO $REPO" >&2
+  exit 1
+fi
+
 echo "About to create the PUBLIC repo $OWNER/$REPO from $DIR"
 echo "Contents:"
 ls -1 "$DIR" | sed 's/^/  /'
